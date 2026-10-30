@@ -1,6 +1,7 @@
 """
 Reusable Plotly visualizations for EduMetrics.
-Standardized design system with high-contrast, modern business intelligence aesthetics.
+Standardized design system with high-contrast, modern business intelligence aesthetics,
+custom HTML tooltips, and MBA-grade presentation clarity.
 """
 
 from typing import List, Optional
@@ -19,76 +20,144 @@ from src.config import (
     ATTENDANCE_CRITICAL_THRESHOLD
 )
 
+DEFAULT_FONT = "Plus Jakarta Sans, Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif"
+
 DEFAULT_LAYOUT = dict(
     paper_bgcolor="rgba(0,0,0,0)",
     plot_bgcolor="rgba(0,0,0,0)",
-    font=dict(family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif", size=12, color="#1E293B"),
-    margin=dict(l=40, r=40, t=50, b=40),
-    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+    font=dict(family=DEFAULT_FONT, size=12, color="#334155"),
+    margin=dict(l=35, r=35, t=55, b=35),
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="right",
+        x=1,
+        font=dict(size=11, color="#475569")
+    ),
+    hoverlabel=dict(
+        bgcolor="#0F172A",
+        font_size=12.5,
+        font_family=DEFAULT_FONT,
+        font_color="#F8FAFC"
+    )
 )
 
 
 def apply_theme(fig: go.Figure) -> go.Figure:
-    """Applies uniform minimalist styling and grid lines to Plotly charts."""
+    """Applies uniform minimalist styling and soft grid lines to Plotly charts."""
     fig.update_layout(**DEFAULT_LAYOUT)
-    fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor="#E2E8F0", zeroline=False)
-    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor="#E2E8F0", zeroline=False)
+    fig.update_xaxes(
+        showgrid=True, 
+        gridwidth=1, 
+        gridcolor="#F1F5F9", 
+        zeroline=False,
+        tickfont=dict(color="#64748B", size=11),
+        title_font=dict(color="#334155", size=12, family=DEFAULT_FONT)
+    )
+    fig.update_yaxes(
+        showgrid=True, 
+        gridwidth=1, 
+        gridcolor="#F1F5F9", 
+        zeroline=False,
+        tickfont=dict(color="#64748B", size=11),
+        title_font=dict(color="#334155", size=12, family=DEFAULT_FONT)
+    )
     return fig
 
 
 def plot_placement_donut(df: pd.DataFrame) -> go.Figure:
-    """Creates a sleek donut chart showing Placed vs Unplaced proportion."""
+    """Creates a sleek donut chart with central KPI callout showing Placed vs Unplaced proportion."""
     status_counts = df["placement_status"].value_counts().reset_index()
     status_counts.columns = ["Status", "Count"]
     
+    total = status_counts["Count"].sum()
+    placed_count = int(status_counts[status_counts["Status"].str.lower() == "placed"]["Count"].sum()) if len(status_counts) > 0 else 0
+    rate = round((placed_count / total) * 100.0, 1) if total > 0 else 0.0
+    
     colors = {
         "Placed": COLOR_SUCCESS,
-        "Unplaced": "#94A3B8"
+        "Unplaced": "#CBD5E1"
     }
     
     fig = go.Figure(data=[go.Pie(
         labels=status_counts["Status"],
         values=status_counts["Count"],
-        hole=0.65,
-        marker=dict(colors=[colors.get(s, COLOR_PRIMARY) for s in status_counts["Status"]]),
-        textinfo="label+percent",
-        textfont=dict(size=13, family="sans-serif"),
-        hoverinfo="label+value+percent"
+        hole=0.68,
+        marker=dict(
+            colors=[colors.get(s, COLOR_PRIMARY) for s in status_counts["Status"]],
+            line=dict(color="#FFFFFF", width=2.5)
+        ),
+        textinfo="percent",
+        textfont=dict(size=13, family=DEFAULT_FONT, color="#FFFFFF"),
+        hovertemplate="<b>%{label} Cohort</b><br>Students: <b>%{value:,}</b><br>Proportion: <b>%{percent}</b><extra></extra>"
     )])
     
     fig.update_layout(
-        title="<b>Placement Status Distribution</b>",
-        showlegend=False,
+        title=dict(
+            text="<b>Placement Status Conversion</b><br><span style='font-size:12px; color:#64748B;'>Proportion of cohort with accepted offers</span>",
+            font=dict(size=15, color="#0F172A")
+        ),
+        annotations=[dict(
+            text=f"<b>{rate}%</b><br><span style='font-size:11px; color:#64748B;'>Placed</span>",
+            x=0.5, y=0.5,
+            font_size=19,
+            font_family=DEFAULT_FONT,
+            font_color="#0F172A",
+            showarrow=False
+        )],
+        showlegend=True,
         **DEFAULT_LAYOUT
     )
     return fig
 
 
 def plot_academic_distribution(df: pd.DataFrame) -> go.Figure:
-    """Plots histogram and density of student academic percentage."""
+    """Plots histogram and density of student academic percentage with refined styling."""
+    mean_val = float(df["academic_percentage"].mean())
+    median_val = float(df["academic_percentage"].median())
+    
     fig = px.histogram(
         df,
         x="academic_percentage",
-        nbins=25,
+        nbins=28,
         color_discrete_sequence=[COLOR_PRIMARY],
-        opacity=0.85,
-        labels={"academic_percentage": "Academic Percentage (%)"},
-        title="<b>Overall Academic Score Distribution</b>",
+        opacity=0.88,
+        labels={"academic_percentage": "Academic Aggregate Score (%)"},
+        title="<b>Overall Academic Score Distribution</b><br><span style='font-size:12px; color:#64748B;'>Density of academic percentages across all enrolled students</span>",
         marginal="box"
     )
+    
+    fig.update_traces(
+        hovertemplate="Score Band: <b>%{x}%</b><br>Student Count: <b>%{y}</b><extra></extra>"
+    )
+    
     fig.add_vline(
-        x=float(df["academic_percentage"].mean()),
+        x=mean_val,
         line_dash="dash",
         line_color=COLOR_ACCENT,
-        annotation_text=f"Batch Mean: {df['academic_percentage'].mean():.1f}%",
-        annotation_position="top left"
+        line_width=2,
+        annotation_text=f"Mean: {mean_val:.1f}%",
+        annotation_position="top left",
+        annotation_font=dict(size=11, color=COLOR_ACCENT, family=DEFAULT_FONT)
+    )
+    
+    fig.add_vline(
+        x=median_val,
+        line_dash="dot",
+        line_color=COLOR_SUCCESS,
+        line_width=1.5,
+        annotation_text=f"Median: {median_val:.1f}%",
+        annotation_position="bottom left",
+        annotation_font=dict(size=11, color=COLOR_SUCCESS, family=DEFAULT_FONT)
     )
     return apply_theme(fig)
 
 
 def plot_grade_distribution(band_counts: pd.DataFrame) -> go.Figure:
-    """Bar chart of students by academic grade band."""
+    """Bar chart of students by academic grade band with clean percentage labels."""
     colors = [COLOR_SUCCESS, COLOR_PRIMARY, COLOR_ACCENT, COLOR_DANGER]
+    
     fig = px.bar(
         band_counts,
         x="Grade Band",
@@ -96,44 +165,60 @@ def plot_grade_distribution(band_counts: pd.DataFrame) -> go.Figure:
         color="Grade Band",
         color_discrete_sequence=colors,
         text="Student Count",
-        title="<b>Student Grade Band Distribution</b>"
+        title="<b>Student Grade Band Distribution</b><br><span style='font-size:12px; color:#64748B;'>Classification into distinction, honors, and remediation tiers</span>"
     )
-    fig.update_traces(textposition="outside")
+    fig.update_traces(
+        textposition="outside",
+        textfont=dict(size=12, family=DEFAULT_FONT, color="#0F172A"),
+        hovertemplate="<b>%{x}</b><br>Total Students: <b>%{y}</b><extra></extra>",
+        marker_line_width=0
+    )
     fig.update_layout(showlegend=False)
     return apply_theme(fig)
 
 
 def plot_attendance_vs_academic(df: pd.DataFrame) -> go.Figure:
-    """Scatter plot correlating attendance with academic percentage."""
+    """Scatter plot correlating attendance with academic percentage, with policy threshold."""
     fig = px.scatter(
         df,
         x="attendance_percentage",
         y="academic_percentage",
         color="placement_status",
         color_discrete_map={"Placed": COLOR_SUCCESS, "Unplaced": "#94A3B8"},
-        hover_data=["student_id", "student_name", "specialization"],
+        custom_data=["student_id", "student_name", "specialization"],
         labels={
-            "attendance_percentage": "Attendance Percentage (%)",
-            "academic_percentage": "Academic Percentage (%)",
-            "placement_status": "Placement Status"
+            "attendance_percentage": "Attendance Rate (%)",
+            "academic_percentage": "Academic Aggregate (%)",
+            "placement_status": "Recruitment Status"
         },
-        title="<b>Attendance vs. Academic Performance</b>",
-        opacity=0.75
+        title="<b>Attendance Compliance vs. Academic Achievement</b><br><span style='font-size:12px; color:#64748B;'>Evaluating student discipline relative to institutional benchmark and recruitment outcomes</span>",
+        opacity=0.82
     )
     
+    fig.update_traces(
+        marker=dict(size=7, line=dict(width=0.5, color="#FFFFFF")),
+        hovertemplate="<b>%{customdata[1]}</b> (%{customdata[0]})<br>"
+                      "Specialization: %{customdata[2]}<br>"
+                      "Attendance: <b>%{x:.1f}%</b><br>"
+                      "Academic Score: <b>%{y:.1f}%</b><br>"
+                      "Status: <b>%{fullData.name}</b><extra></extra>"
+    )
+    
+    # Critical threshold reference line
     fig.add_vline(
         x=ATTENDANCE_CRITICAL_THRESHOLD,
-        line_dash="dot",
+        line_dash="dash",
         line_color=COLOR_DANGER,
         line_width=2,
-        annotation_text="75% Critical Threshold",
-        annotation_position="bottom right"
+        annotation_text="75% Critical Cutoff",
+        annotation_position="bottom right",
+        annotation_font=dict(size=11, color=COLOR_DANGER, family=DEFAULT_FONT)
     )
     return apply_theme(fig)
 
 
 def plot_placement_by_specialization(spec_df: pd.DataFrame) -> go.Figure:
-    """Horizontal bar chart showing placement rate per specialization."""
+    """Horizontal bar chart showing placement rate per specialization with clean styling."""
     fig = px.bar(
         spec_df,
         y="Specialization",
@@ -142,10 +227,17 @@ def plot_placement_by_specialization(spec_df: pd.DataFrame) -> go.Figure:
         color="Placement Rate (%)",
         color_continuous_scale="Blues",
         text="Placement Rate (%)",
-        title="<b>Placement Rate by Academic Specialization</b>"
+        title="<b>Placement Conversion by Academic Specialization</b><br><span style='font-size:12px; color:#64748B;'>Comparative recruitment performance across postgraduate majors</span>"
     )
-    fig.update_traces(texttemplate="%{text:.1f}%", textposition="outside")
-    fig.update_layout(coloraxis_showscale=False)
+    fig.update_traces(
+        texttemplate="<b>%{text:.1f}%</b>", 
+        textposition="outside",
+        hovertemplate="<b>%{y}</b><br>Placement Rate: <b>%{x:.1f}%</b><extra></extra>"
+    )
+    fig.update_layout(
+        coloraxis_showscale=False,
+        yaxis=dict(categoryorder="total ascending")
+    )
     return apply_theme(fig)
 
 
@@ -164,30 +256,43 @@ def plot_salary_distribution(df: pd.DataFrame) -> go.Figure:
         color="specialization",
         color_discrete_sequence=PALETTE_CATEGORICAL,
         points="all",
-        labels={"specialization": "Specialization", "salary_lpa": "Package (LPA)"},
-        title="<b>Salary Package Spread by Specialization (LPA)</b>"
+        labels={"specialization": "Specialization", "salary_lpa": "Package (₹ LPA)"},
+        title="<b>Compensation Dispersion by Major (₹ LPA)</b><br><span style='font-size:12px; color:#64748B;'>Median, interquartile ranges, and outlier corporate offers</span>"
+    )
+    fig.update_traces(
+        hovertemplate="Specialization: <b>%{x}</b><br>Package: <b>₹%{y:.2f} LPA</b><extra></extra>",
+        marker=dict(size=4.5, opacity=0.7)
     )
     fig.update_layout(showlegend=False)
     return apply_theme(fig)
 
 
 def plot_company_hires(comp_df: pd.DataFrame) -> go.Figure:
-    """Bar chart of top recruiting companies."""
+    """Horizontal bar chart of top recruiting companies and average packages."""
     if len(comp_df) == 0:
         return go.Figure()
         
+    top_comps = comp_df.head(10).copy()
+    
     fig = px.bar(
-        comp_df.head(10),
+        top_comps,
         x="Students Hired",
         y="Company",
         orientation="h",
         color="Avg Package (LPA)",
         color_continuous_scale="Viridis",
         text="Students Hired",
-        title="<b>Top Hiring Companies & Average Packages</b>"
+        title="<b>Top Corporate Hiring Partners & Average Offers</b><br><span style='font-size:12px; color:#64748B;'>Ranked by hiring volume with color coding by average package (LPA)</span>"
     )
-    fig.update_traces(textposition="outside")
-    fig.update_layout(yaxis=dict(autorange="reversed"))
+    fig.update_traces(
+        textposition="outside",
+        textfont=dict(family=DEFAULT_FONT, size=11),
+        hovertemplate="Company: <b>%{y}</b><br>Hires: <b>%{x}</b><br>Avg Package: <b>₹%{marker.color:.2f} LPA</b><extra></extra>"
+    )
+    fig.update_layout(
+        yaxis=dict(autorange="reversed"),
+        coloraxis_colorbar=dict(title="Avg LPA", len=0.8)
+    )
     return apply_theme(fig)
 
 
@@ -205,30 +310,35 @@ def plot_skills_placement_impact(df: pd.DataFrame, skill_col: str, skill_label: 
         color="Proficiency Level",
         color_discrete_map={"Beginner": "#94A3B8", "Intermediate": COLOR_PRIMARY, "Advanced": COLOR_SUCCESS},
         text="Placement Rate (%)",
-        title=f"<b>Placement Rate by {skill_label} Proficiency</b>"
+        title=f"<b>{skill_label} Competence vs. Placement Rate</b><br><span style='font-size:12px; color:#64748B;'>Progression from Beginner to Advanced</span>"
     )
-    fig.update_traces(texttemplate="%{text:.1f}%", textposition="outside")
-    fig.update_layout(showlegend=False)
+    fig.update_traces(
+        texttemplate="<b>%{text:.1f}%</b>", 
+        textposition="outside",
+        hovertemplate="Proficiency: <b>%{x}</b><br>Placement Conversion: <b>%{y:.1f}%</b><extra></extra>"
+    )
+    fig.update_layout(
+        showlegend=False,
+        yaxis=dict(range=[0, 105])
+    )
     return apply_theme(fig)
 
 
 def plot_student_radar_benchmark(student: pd.Series, batch_df: pd.DataFrame) -> go.Figure:
     """
-    Creates a radar (spider) benchmark chart comparing student scores against cohort averages.
+    Creates an executive radar benchmark chart comparing student scores against cohort averages.
     """
-    # Categories to evaluate
     categories = [
         "Academic %", 
         "Attendance %", 
-        "SQL (1-3)", 
-        "Python (1-3)", 
-        "Power BI (1-3)", 
+        "SQL Skills", 
+        "Python Skills", 
+        "Power BI", 
         "Certifications"
     ]
     
     prof_map = {"Beginner": 1, "Intermediate": 2, "Advanced": 3}
     
-    # Student scores
     stu_acad = float(student.get("academic_percentage", 0))
     stu_att = float(student.get("attendance_percentage", 0))
     stu_sql = prof_map.get(str(student.get("sql_proficiency", "")).capitalize(), 1)
@@ -246,7 +356,6 @@ def plot_student_radar_benchmark(student: pd.Series, batch_df: pd.DataFrame) -> 
         min((stu_certs / 5.0) * 100.0, 100.0)
     ]
     
-    # Batch averages
     avg_acad = float(batch_df["academic_percentage"].mean())
     avg_att = float(batch_df["attendance_percentage"].mean())
     avg_sql = batch_df["sql_proficiency"].map(prof_map).mean()
@@ -263,7 +372,6 @@ def plot_student_radar_benchmark(student: pd.Series, batch_df: pd.DataFrame) -> 
         min((avg_certs / 5.0) * 100.0, 100.0)
     ]
     
-    # Close the radar loop
     radar_categories = categories + [categories[0]]
     stu_values += [stu_values[0]]
     batch_values += [batch_values[0]]
@@ -274,26 +382,40 @@ def plot_student_radar_benchmark(student: pd.Series, batch_df: pd.DataFrame) -> 
         r=batch_values,
         theta=radar_categories,
         fill='toself',
-        fillcolor='rgba(148, 163, 184, 0.25)',
+        fillcolor='rgba(148, 163, 184, 0.22)',
         line=dict(color='#94A3B8', width=2, dash='dot'),
-        name='Batch Average'
+        name='Cohort Benchmark Average',
+        hovertemplate="Dimension: <b>%{theta}</b><br>Cohort Avg: <b>%{r:.1f}%</b><extra></extra>"
     ))
     
     fig.add_trace(go.Scatterpolar(
         r=stu_values,
         theta=radar_categories,
         fill='toself',
-        fillcolor='rgba(37, 99, 235, 0.35)',
-        line=dict(color=COLOR_PRIMARY, width=2.5),
-        name=f"Student ({student.get('student_name', 'Selected')})"
+        fillcolor='rgba(37, 99, 235, 0.32)',
+        line=dict(color=COLOR_PRIMARY, width=2.8),
+        name=f"Student Profile ({student.get('student_name', 'Selected')})",
+        hovertemplate="Dimension: <b>%{theta}</b><br>Student Score: <b>%{r:.1f}%</b><extra></extra>"
     ))
     
     fig.update_layout(
         polar=dict(
-            radialaxis=dict(visible=True, range=[0, 100], showline=False, ticksuffix="%"),
+            radialaxis=dict(
+                visible=True, 
+                range=[0, 100], 
+                showline=False, 
+                ticksuffix="%",
+                tickfont=dict(size=10, color="#94A3B8")
+            ),
+            angularaxis=dict(
+                tickfont=dict(size=11, family=DEFAULT_FONT, color="#1E293B")
+            ),
             bgcolor="rgba(0,0,0,0)"
         ),
-        title="<b>Student Competency Profile vs. Batch Average</b>",
+        title=dict(
+            text="<b>Multi-Axis Competency Benchmark</b><br><span style='font-size:12px; color:#64748B;'>Individual student scores indexed against the full batch benchmark</span>",
+            font=dict(size=15, color="#0F172A")
+        ),
         showlegend=True,
         **DEFAULT_LAYOUT
     )
@@ -301,7 +423,7 @@ def plot_student_radar_benchmark(student: pd.Series, batch_df: pd.DataFrame) -> 
 
 
 def plot_correlation_heatmap(corr_df: pd.DataFrame) -> go.Figure:
-    """Heatmap of numerical correlation matrix."""
+    """Heatmap of numerical correlation matrix with clear formatting."""
     if len(corr_df) == 0:
         return go.Figure()
         
@@ -310,7 +432,7 @@ def plot_correlation_heatmap(corr_df: pd.DataFrame) -> go.Figure:
         "attendance_percentage": "Attendance %",
         "certifications_count": "Certifications",
         "technical_score_10": "Tech Index (10)",
-        "salary_lpa": "Salary (LPA)"
+        "salary_lpa": "Package (LPA)"
     }
     
     clean_labels = [labels.get(c, c) for c in corr_df.columns]
@@ -319,18 +441,21 @@ def plot_correlation_heatmap(corr_df: pd.DataFrame) -> go.Figure:
         corr_df.values,
         x=clean_labels,
         y=clean_labels,
-        color_continuous_scale="RdBu_r",
+        color_continuous_scale="Blues",
         zmin=-1,
         zmax=1,
         text_auto=".2f",
-        title="<b>Correlation Matrix (Numerical Attributes)</b>"
+        title="<b>Pairwise Correlation Matrix</b><br><span style='font-size:12px; color:#64748B;'>Pearson correlation coefficients among key numerical attributes</span>"
+    )
+    fig.update_traces(
+        hovertemplate="Factor 1: <b>%{y}</b><br>Factor 2: <b>%{x}</b><br>Correlation r: <b>%{z:.3f}</b><extra></extra>"
     )
     fig.update_layout(**DEFAULT_LAYOUT)
     return fig
 
 
 def plot_semester_comparison(df: pd.DataFrame) -> go.Figure:
-    """Boxplot of academic performance across semesters."""
+    """Boxplot of academic performance across semesters with jittered dots."""
     fig = px.box(
         df,
         x="semester",
@@ -338,8 +463,12 @@ def plot_semester_comparison(df: pd.DataFrame) -> go.Figure:
         color="semester",
         color_discrete_sequence=PALETTE_CATEGORICAL,
         category_orders={"semester": ["Semester 1", "Semester 2", "Semester 3", "Semester 4"]},
-        labels={"semester": "Semester", "academic_percentage": "Academic Percentage (%)"},
-        title="<b>Semester-Level Academic Performance Comparison</b>"
+        labels={"semester": "Semester", "academic_percentage": "Academic Aggregate (%)"},
+        title="<b>Semester-Level Academic Progression</b><br><span style='font-size:12px; color:#64748B;'>Distribution of marks across curriculum semesters</span>"
+    )
+    fig.update_traces(
+        hovertemplate="Semester: <b>%{x}</b><br>Score: <b>%{y:.1f}%</b><extra></extra>",
+        marker=dict(size=3.5, opacity=0.6)
     )
     fig.update_layout(showlegend=False)
     return apply_theme(fig)

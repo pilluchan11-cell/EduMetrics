@@ -58,16 +58,32 @@ def main():
     with st.sidebar:
         st.markdown(
             f"""
-            <div style="text-align: center; padding: 12px 0 16px 0;">
-                <h2 style="margin: 0; color: #1E3A8A; font-weight: 800; font-size: 24px;">🎓 {APP_NAME}</h2>
-                <div style="font-size: 11.5px; color: #475569; font-weight: 500; margin-top: 4px;">{APP_TAGLINE}</div>
+            <div style="padding: 10px 0 16px 0; border-bottom: 1px solid #E2E8F0; margin-bottom: 14px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 38px; height: 38px; border-radius: 9px; background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%); display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; box-shadow: 0 4px 10px rgba(37,99,235,0.25);">
+                        🎓
+                    </div>
+                    <div>
+                        <h2 style="margin: 0; color: #0F172A; font-weight: 800; font-size: 21px; letter-spacing: -0.02em;">{APP_NAME}</h2>
+                        <span style="font-size: 10.5px; font-weight: 700; color: #2563EB; letter-spacing: 0.05em; text-transform: uppercase;">Analytics Suite</span>
+                    </div>
+                </div>
+                <div style="font-size: 12px; color: #64748B; font-weight: 500; margin-top: 8px; line-height: 1.4;">
+                    {APP_TAGLINE}
+                </div>
             </div>
             """,
             unsafe_allow_html=True
         )
         
-        st.markdown("---")
-        st.markdown("**MODULE NAVIGATION**")
+        st.markdown(
+            """
+            <div style="font-size: 11px; font-weight: 700; color: #94A3B8; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px;">
+                ANALYTICS MODULES
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
         
         page = st.radio(
             "Select Dashboard View:",
@@ -84,8 +100,15 @@ def main():
             label_visibility="collapsed"
         )
         
-        st.markdown("---")
-        st.markdown("**GLOBAL COHORT FILTERS**")
+        st.markdown("<hr style='margin: 14px 0; border: none; border-top: 1px solid #E2E8F0;'>", unsafe_allow_html=True)
+        st.markdown(
+            """
+            <div style="font-size: 11px; font-weight: 700; color: #94A3B8; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px;">
+                COHORT SLICING FILTERS
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
         
         # 1. Specialization Multi-select
         all_specs = sorted(list(df_raw["specialization"].dropna().unique()))
@@ -93,13 +116,13 @@ def main():
             "Specialization / Major:",
             options=all_specs,
             default=all_specs,
-            help="Filter analytics by student major."
+            help="Filter analytics across student majors."
         )
         
         # 2. Semester Multi-select
         all_sems = sorted(list(df_raw["semester"].dropna().unique()))
         selected_sems = st.multiselect(
-            "Semester:",
+            "Curriculum Semester:",
             options=all_sems,
             default=all_sems,
             help="Filter by active study semester."
@@ -107,7 +130,7 @@ def main():
         
         # 3. Placement Status Radio
         placement_filter = st.radio(
-            "Placement Status:",
+            "Recruitment Status:",
             options=["All Students", "Placed Only", "Unplaced Only"],
             index=0,
             horizontal=False
@@ -115,25 +138,24 @@ def main():
         
         # 4. Minimum Attendance Slider
         min_attendance = st.slider(
-            "Minimum Attendance (%):",
+            "Minimum Attendance Cutoff (%):",
             min_value=0,
             max_value=100,
             value=0,
             step=5,
-            help="Filter for students with attendance above this threshold."
+            help="Filter for students with attendance at or above this threshold."
         )
         
         # Filter Reset Button
-        if st.button("↺ Reset All Filters", use_container_width=True):
+        if st.button("↺ Reset All Slicing Filters", use_container_width=True):
             st.rerun()
 
-        st.markdown("---")
+        st.markdown("<hr style='margin: 14px 0; border: none; border-top: 1px solid #E2E8F0;'>", unsafe_allow_html=True)
         st.markdown(
             """
-            <div style="font-size: 11px; color: #94A3B8; line-height: 1.4;">
-                <strong>EduMetrics v1.0.0</strong><br>
-                Built with Python & Streamlit.<br>
-                <em>Data is 100% synthetic for academic demonstration.</em>
+            <div style="font-size: 11px; color: #64748B; line-height: 1.5;">
+                <strong style="color: #0F172A;">EduMetrics</strong> | Student Performance & Placement Analytics<br>
+                <em>MBA Decision Science Research Edition</em>
             </div>
             """,
             unsafe_allow_html=True
@@ -145,7 +167,7 @@ def main():
     if selected_specs:
         filtered_df = filtered_df[filtered_df["specialization"].isin(selected_specs)]
     else:
-        filtered_df = filtered_df.iloc[0:0]  # Empty if none selected
+        filtered_df = filtered_df.iloc[0:0]
         
     if selected_sems:
         filtered_df = filtered_df[filtered_df["semester"].isin(selected_sems)]
@@ -160,16 +182,16 @@ def main():
     if min_attendance > 0:
         filtered_df = filtered_df[filtered_df["attendance_percentage"] >= min_attendance]
 
-    # Quick Cohort Indicator
+    # Quick Active Filter Badge
     total_raw = len(df_raw)
     current_count = len(filtered_df)
     pct_showing = round((current_count / total_raw) * 100.0, 1) if total_raw > 0 else 0
     
     st.markdown(
         f"""
-        <div style="display: flex; justify-content: flex-end; margin-bottom: -15px;">
-            <span style="font-size: 12px; color: #64748B; background: #F1F5F9; padding: 4px 12px; border-radius: 9999px;">
-                Active Filter: <strong>{current_count}</strong> of <strong>{total_raw}</strong> students ({pct_showing}%)
+        <div style="display: flex; justify-content: flex-end; margin-top: -8px; margin-bottom: 10px;">
+            <span style="font-size: 12px; font-weight: 600; color: #1E40AF; background: #EFF6FF; border: 1px solid #DBEAFE; padding: 4px 14px; border-radius: 9999px;">
+                Active Filter: <strong>{current_count}</strong> of <strong>{total_raw}</strong> Students ({pct_showing}%)
             </span>
         </div>
         """,

@@ -14,43 +14,123 @@ from src.visualizations import (
     plot_placement_by_specialization,
     plot_academic_distribution
 )
-from src.ui_components import render_hero, render_disclaimer, render_kpi
+from src.ui_components import (
+    render_hero, 
+    render_disclaimer, 
+    render_kpi, 
+    render_section_header,
+    render_footer
+)
 from src.config import COLOR_PRIMARY, COLOR_SUCCESS, COLOR_ACCENT, COLOR_SECONDARY
 
 
 def render(df: pd.DataFrame) -> None:
     """Renders the executive dashboard page."""
-    render_hero("Executive Overview & Institutional KPIs")
+    render_hero("Executive Dashboard & Strategic KPIs")
     render_disclaimer()
     
     if len(df) == 0:
-        st.warning("⚠️ No student records match the current filter criteria.")
+        st.warning("⚠️ No student records match the active filter criteria. Adjust the sidebar filters to view data.")
         return
         
     kpis = compute_executive_kpis(df)
     
-    # KPI Row 1: Core Institutional Metrics
-    st.markdown('<div class="section-title">📌 Key Performance Indicators</div>', unsafe_allow_html=True)
+    # Section 1: Academic & Cohort Health
+    render_section_header(
+        "Institutional Cohort Health & Compliance", 
+        "Key operational indicators tracking cohort size, academic aggregates, and classroom attendance.",
+        "🏛️"
+    )
     c1, c2, c3, c4 = st.columns(4)
     with c1:
-        render_kpi("Total Enrolled Cohort", f"{kpis['total_students']:,}", "Active Student Profiles", COLOR_PRIMARY)
+        render_kpi(
+            "Total Enrolled Cohort", 
+            f"{kpis['total_students']:,}", 
+            "Active Student Records", 
+            COLOR_PRIMARY, 
+            icon="👥",
+            chip_text="Active Batch",
+            chip_color="#EFF6FF"
+        )
     with c2:
-        render_kpi("Overall Placement Rate", f"{kpis['placement_rate']}%", f"{kpis['placed_count']} Placed / {kpis['unplaced_count']} Unplaced", COLOR_SUCCESS)
+        render_kpi(
+            "Overall Placement Rate", 
+            f"{kpis['placement_rate']}%", 
+            f"{kpis['placed_count']} Placed / {kpis['unplaced_count']} Seeking", 
+            COLOR_SUCCESS, 
+            icon="🎯",
+            chip_text="Recruitment Rate",
+            chip_color="#DCFCE7"
+        )
     with c3:
-        render_kpi("Average Academic Score", f"{kpis['avg_academic']}%", "Aggregate Across Semesters", COLOR_SECONDARY)
+        render_kpi(
+            "Average Academic Marks", 
+            f"{kpis['avg_academic']}%", 
+            "Cohort Aggregate Score", 
+            COLOR_SECONDARY, 
+            icon="📚",
+            chip_text="Aggregate",
+            chip_color="#CCFBF1"
+        )
     with c4:
-        render_kpi("Average Attendance", f"{kpis['avg_attendance']}%", "Threshold Benchmark: 75%", COLOR_ACCENT)
+        att_color = COLOR_ACCENT if kpis['avg_attendance'] >= 75 else "#EF4444"
+        render_kpi(
+            "Average Attendance", 
+            f"{kpis['avg_attendance']}%", 
+            "Threshold Cutoff: 75%", 
+            att_color, 
+            icon="⏰",
+            chip_text="Compliance",
+            chip_color="#FEF3C7" if kpis['avg_attendance'] >= 75 else "#FEE2E2"
+        )
         
-    # KPI Row 2: Compensation & Placement Metrics
+    # Section 2: Compensation & Placement Market Performance
+    render_section_header(
+        "Recruitment & Market Outcomes", 
+        "Placement conversion statistics and compensation packages secured across recruiting partners.",
+        "💼"
+    )
     c5, c6, c7, c8 = st.columns(4)
     with c5:
-        render_kpi("Placed Students", f"{kpis['placed_count']}", "Offers Accepted", COLOR_SUCCESS)
+        render_kpi(
+            "Offers Accepted", 
+            f"{kpis['placed_count']}", 
+            "Corporate Placements", 
+            COLOR_SUCCESS, 
+            icon="✅",
+            chip_text="Confirmed",
+            chip_color="#DCFCE7"
+        )
     with c6:
-        render_kpi("Unplaced / In-Process", f"{kpis['unplaced_count']}", "Seeking Placement", "#64748B")
+        render_kpi(
+            "Active In-Process", 
+            f"{kpis['unplaced_count']}", 
+            "Awaiting Offers / Drives", 
+            "#64748B", 
+            icon="⏳",
+            chip_text="In Pipeline",
+            chip_color="#F1F5F9"
+        )
     with c7:
-        render_kpi("Average Salary (Placed)", f"₹{kpis['avg_salary']} LPA", "Mean Compensation", COLOR_PRIMARY)
+        render_kpi(
+            "Average CTC Package", 
+            f"₹{kpis['avg_salary']} LPA", 
+            "Mean Placement Compensation", 
+            COLOR_PRIMARY, 
+            icon="💰",
+            chip_text="Mean Package",
+            chip_color="#EFF6FF"
+        )
     with c8:
-        render_kpi("Highest Salary Package", f"₹{kpis['highest_salary']} LPA", "Top Corporate Offer", COLOR_ACCENT)
+        render_kpi(
+            "Highest Campus CTC", 
+            f"₹{kpis['highest_salary']} LPA", 
+            "Top Tier Corporate Offer", 
+            COLOR_ACCENT, 
+            icon="🏆",
+            chip_text="Max Offer",
+            chip_color="#FEF3C7"
+        )
 
     st.markdown("<br>", unsafe_allow_html=True)
     
@@ -58,32 +138,39 @@ def render(df: pd.DataFrame) -> None:
     col_left, col_right = st.columns([5, 7])
     
     with col_left:
-        st.markdown('<div class="section-title">🎯 Placement Conversion</div>', unsafe_allow_html=True)
         fig_donut = plot_placement_donut(df)
         st.plotly_chart(fig_donut, use_container_width=True)
         
     with col_right:
-        st.markdown('<div class="section-title">📊 Placement Rate by Specialization</div>', unsafe_allow_html=True)
         spec_df = compute_placement_by_specialization(df)
         fig_spec = plot_placement_by_specialization(spec_df)
         st.plotly_chart(fig_spec, use_container_width=True)
         
     # Full Width Academic Overview
-    st.markdown('<div class="section-title">📈 Batch Academic Score Distribution</div>', unsafe_allow_html=True)
+    render_section_header(
+        "Academic Achievement Distribution",
+        "Statistical curve showing how academic scores are dispersed across the entire postgraduate cohort.",
+        "📈"
+    )
     fig_dist = plot_academic_distribution(df)
     st.plotly_chart(fig_dist, use_container_width=True)
     
-    # Executive Summary Card
+    # Strategic Executive Takeaways Callout
     st.markdown(
         f"""
-        <div style="background: #F1F5F9; border-radius: 10px; padding: 18px 24px; margin-top: 15px; border-left: 4px solid #2563EB;">
-            <h4 style="margin: 0 0 8px 0; color: #1E3A8A;">Strategic Executive Takeaways</h4>
-            <ul style="margin: 0; padding-left: 20px; color: #334155; font-size: 14px; line-height: 1.6;">
-                <li>The current active cohort exhibits an overall placement rate of <strong>{kpis['placement_rate']}%</strong> with an average package of <strong>₹{kpis['avg_salary']} LPA</strong>.</li>
-                <li>Batch attendance stands at <strong>{kpis['avg_attendance']}%</strong>, comfortably above the institution's 75% critical cutoff.</li>
-                <li><strong>{kpis['unplaced_count']} students</strong> currently require targeted intervention in resume refinement, technical coding bootcamps, and mock interviews.</li>
+        <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 22px 26px; margin-top: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03); border-left: 5px solid #2563EB;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                <span style="font-size: 20px;">📋</span>
+                <h4 style="margin: 0; color: #0F172A; font-size: 17px; font-weight: 700;">Executive Takeaways & Management Summary</h4>
+            </div>
+            <ul style="margin: 0; padding-left: 20px; color: #334155; font-size: 14px; line-height: 1.7;">
+                <li>The active student cohort demonstrates an overall placement conversion of <strong>{kpis['placement_rate']}%</strong> with an average salary package of <strong>₹{kpis['avg_salary']} LPA</strong>.</li>
+                <li>Batch average attendance is currently <strong>{kpis['avg_attendance']}%</strong>, tracking above the mandatory 75% institutional compliance requirement.</li>
+                <li>There are <strong>{kpis['unplaced_count']} students</strong> currently in the career development pipeline who would benefit from targeted technical workshops and mentorship interventions.</li>
             </ul>
         </div>
         """,
         unsafe_allow_html=True
     )
+    
+    render_footer()

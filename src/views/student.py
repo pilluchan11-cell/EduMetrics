@@ -7,20 +7,30 @@ import streamlit as st
 import pandas as pd
 from src.rules_engine import evaluate_student_profile
 from src.visualizations import plot_student_radar_benchmark
-from src.ui_components import render_hero, render_disclaimer, render_kpi
-from src.config import COLOR_PRIMARY, COLOR_SUCCESS, COLOR_DANGER, COLOR_ACCENT
+from src.ui_components import (
+    render_hero, 
+    render_disclaimer, 
+    render_kpi, 
+    render_section_header,
+    render_footer
+)
+from src.config import COLOR_PRIMARY, COLOR_SUCCESS, COLOR_DANGER, COLOR_ACCENT, COLOR_SECONDARY
 
 
 def render(df: pd.DataFrame) -> None:
     """Renders the individual student analytics page."""
-    render_hero("Individual Student Deep Dive & Profiler")
+    render_hero("Individual Student Profile & Diagnostic Dossier")
     render_disclaimer()
     
     if len(df) == 0:
-        st.warning("⚠️ No student records available in the filtered dataset.")
+        st.warning("⚠️ No student records available in the filtered dataset. Reset sidebar filters.")
         return
         
-    st.markdown('<div class="section-title">🔍 Select or Search Student Record</div>', unsafe_allow_html=True)
+    render_section_header(
+        "Student Profile Selector",
+        "Select or search any student to inspect individual grades, attendance, skills, and personalized guidance.",
+        "🔍"
+    )
     
     # Quick filter and selector
     student_labels = {
@@ -31,22 +41,21 @@ def render(df: pd.DataFrame) -> None:
     col_sel1, col_sel2 = st.columns([8, 4])
     with col_sel1:
         selected_id = st.selectbox(
-            "Choose a student:",
+            "Choose a student profile:",
             options=list(student_labels.keys()),
             format_func=lambda x: student_labels[x]
         )
     with col_sel2:
         quick_placed_filter = st.radio(
-            "Browse Cohort:",
-            options=["All", "Only Placed", "Only Unplaced"],
+            "Cohort Quick View:",
+            options=["All Students", "Placed Only", "Unplaced Only"],
             horizontal=True
         )
         
-    # Re-evaluate selection if browse cohort changes
     filtered_students = df.copy()
-    if quick_placed_filter == "Only Placed":
+    if quick_placed_filter == "Placed Only":
         filtered_students = filtered_students[filtered_students["placement_status"].str.lower() == "placed"]
-    elif quick_placed_filter == "Only Unplaced":
+    elif quick_placed_filter == "Unplaced Only":
         filtered_students = filtered_students[filtered_students["placement_status"].str.lower() == "unplaced"]
         
     if selected_id not in filtered_students["student_id"].values:
@@ -54,83 +63,132 @@ def render(df: pd.DataFrame) -> None:
             selected_id = filtered_students["student_id"].iloc[0]
         else:
             st.info("No students found in this filter.")
+            render_footer()
             return
 
     student = df[df["student_id"] == selected_id].iloc[0]
     
-    st.markdown("---")
+    st.markdown("<br>", unsafe_allow_html=True)
     
-    # Student Header Banner
+    # Executive Student Dossier Banner
     is_placed = str(student.get("placement_status", "")).lower() == "placed"
     status_badge_class = "badge-placed" if is_placed else "badge-unplaced"
+    status_icon = "✅" if is_placed else "⏳"
+    status_text = "OFFER ACCEPTED" if is_placed else "IN PLACEMENT PIPELINE"
     
     banner_html = f"""
-    <div style="background: white; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px 24px; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.03);">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-            <div>
-                <h2 style="margin: 0; font-size: 24px; color: #0F172A;">{student['student_name']}</h2>
-                <span style="color: #64748B; font-size: 14px; font-weight: 500;">
-                    ID: <strong>{student['student_id']}</strong> | Specialization: <strong>{student['specialization']}</strong> | Semester: <strong>{student['semester']}</strong>
-                </span>
+    <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 22px 28px; margin-bottom: 22px; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+        <div style="display: flex; align-items: center; gap: 18px;">
+            <div style="width: 54px; height: 54px; border-radius: 12px; background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%); display: flex; align-items: center; justify-content: center; font-size: 24px; color: white;">
+                👤
             </div>
             <div>
-                <span class="{status_badge_class}" style="font-size: 14px; padding: 6px 14px;">
-                    {student['placement_status'].upper()}
-                </span>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <h2 style="margin: 0; font-size: 22px; font-weight: 800; color: #0F172A;">{student['student_name']}</h2>
+                    <span style="background: #EFF6FF; color: #1E40AF; padding: 2px 8px; border-radius: 6px; font-size: 11.5px; font-weight: 700;">{student['student_id']}</span>
+                </div>
+                <div style="color: #64748B; font-size: 13.5px; margin-top: 4px;">
+                    Major: <strong style="color: #334155;">{student['specialization']}</strong> • 
+                    Semester: <strong style="color: #334155;">{student['semester']}</strong> • 
+                    Demographic Record: <strong style="color: #334155;">{student.get('gender', '-')}</strong>
+                </div>
             </div>
+        </div>
+        <div>
+            <span class="{status_badge_class}" style="font-size: 13px; padding: 6px 14px; letter-spacing: 0.03em;">
+                {status_icon} {status_text}
+            </span>
         </div>
     </div>
     """
     st.markdown(banner_html, unsafe_allow_html=True)
     
-    # Student Core Metrics Grid
+    # Core Student Metric Cards
     c1, c2, c3, c4 = st.columns(4)
     with c1:
-        render_kpi("Academic Score", f"{student['academic_percentage']}%", student.get("grade_band", ""), COLOR_PRIMARY)
+        render_kpi(
+            "Academic Marks", 
+            f"{student['academic_percentage']}%", 
+            student.get("grade_band", ""), 
+            COLOR_PRIMARY,
+            icon="🎓",
+            chip_text="Score",
+            chip_color="#EFF6FF"
+        )
     with c2:
-        render_kpi("Attendance", f"{student['attendance_percentage']}%", student.get("attendance_band", ""), COLOR_ACCENT if student['attendance_percentage'] >= 75 else COLOR_DANGER)
+        att_col = COLOR_ACCENT if student['attendance_percentage'] >= 75 else COLOR_DANGER
+        render_kpi(
+            "Attendance Compliance", 
+            f"{student['attendance_percentage']}%", 
+            student.get("attendance_band", ""), 
+            att_col,
+            icon="⏰",
+            chip_text="Attendance",
+            chip_color="#FEF3C7" if student['attendance_percentage'] >= 75 else "#FEE2E2"
+        )
     with c3:
-        render_kpi("Technical Competence", f"{student.get('technical_score_10', 'N/A')}/10", "Composite Skill Index", COLOR_SUCCESS)
+        render_kpi(
+            "Technical Skill Index", 
+            f"{student.get('technical_score_10', 'N/A')}/10", 
+            "Software Competency Rating", 
+            COLOR_SECONDARY,
+            icon="💻",
+            chip_text="Tool Index",
+            chip_color="#CCFBF1"
+        )
     with c4:
         if is_placed:
-            render_kpi("Placed Package", f"₹{student.get('salary_lpa', 'N/A')} LPA", f"Company: {student.get('company', '-')}", COLOR_SUCCESS)
+            render_kpi(
+                "Secured Offer Package", 
+                f"₹{student.get('salary_lpa', 'N/A')} LPA", 
+                f"Company: {student.get('company', '-')}", 
+                COLOR_SUCCESS,
+                icon="💼",
+                chip_text="Placed",
+                chip_color="#DCFCE7"
+            )
         else:
-            render_kpi("Placement Status", "In Process", "Seeking Placement", "#64748B")
+            render_kpi(
+                "Recruitment Status", 
+                "Seeking Offer", 
+                "Active in Placement Drives", 
+                "#64748B",
+                icon="⏳",
+                chip_text="In Process",
+                chip_color="#F1F5F9"
+            )
             
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # Profile Details & Radar Benchmark
+    # Profile Details & Radar Benchmark Row
     col_radar, col_details = st.columns([6, 6])
     
     with col_radar:
-        st.markdown('<div class="section-title">📊 Competency Radar Benchmark</div>', unsafe_allow_html=True)
         fig_radar = plot_student_radar_benchmark(student, df)
         st.plotly_chart(fig_radar, use_container_width=True)
         
     with col_details:
-        st.markdown('<div class="section-title">📋 Academic & Profile Record</div>', unsafe_allow_html=True)
+        render_section_header("Academic & Technical Profile Record", "Detailed institutional log of student qualifications.", "📋")
         
         profile_data = {
-            "Attribute": [
-                "Gender (Demographic Record)",
+            "Dimension": [
                 "Undergraduate / Current Major",
-                "Python Proficiency",
-                "SQL Proficiency",
-                "Power BI Proficiency",
-                "Verified Certifications",
-                "Summer Internship Status",
-                "Recruiting Corporate Entity",
-                "Compensation Package (CTC)"
+                "Python Proficiency Level",
+                "SQL Relational Proficiency",
+                "Power BI Business Analytics",
+                "Verified Industry Certifications",
+                "Summer Internship Completed",
+                "Hiring Corporate Partner",
+                "Accepted Compensation Package"
             ],
-            "Recorded Details": [
-                student.get("gender", "-"),
+            "Logged Credential": [
                 student.get("specialization", "-"),
                 student.get("python_proficiency", "-"),
                 student.get("sql_proficiency", "-"),
                 student.get("power_bi_proficiency", "-"),
-                f"{student.get('certifications_count', 0)} completed",
-                student.get("internship_status", "-"),
-                student.get("company", "Not Placed / In Process"),
+                f"{student.get('certifications_count', 0)} Verified Credentials",
+                "Yes (Summer Internship Verified)" if student.get("internship_status") == "Completed" else "No Prior Internship Logged",
+                student.get("company", "Not Placed / Seeking Offer"),
                 f"₹{student.get('salary_lpa')} LPA" if is_placed else "N/A"
             ]
         }
@@ -139,7 +197,11 @@ def render(df: pd.DataFrame) -> None:
     st.markdown("<br>", unsafe_allow_html=True)
     
     # Personalized Recommendations Engine Output
-    st.markdown('<div class="section-title">💡 Personalized Diagnostic & Actionable Guidance</div>', unsafe_allow_html=True)
+    render_section_header(
+        "Explainable Career Diagnostic & Actionable Guidance",
+        "Deterministic, rule-based diagnostic flags tailored specifically to this student's profile.",
+        "💡"
+    )
     recs = evaluate_student_profile(student)
     
     for r in recs:
@@ -147,18 +209,20 @@ def render(df: pd.DataFrame) -> None:
         badge_class = "badge-placed" if r["status"] == "Strength" else ("badge-danger" if r["status"] == "Critical" else "badge-warning")
         
         card_html = f"""
-        <div style="background: white; border: 1px solid #E2E8F0; border-left: 5px solid {status_color}; border-radius: 8px; padding: 14px 18px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+        <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-left: 5px solid {status_color}; border-radius: 10px; padding: 16px 20px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                 <span style="font-weight: 700; font-size: 15px; color: #0F172A;">{r['title']}</span>
                 <span class="{badge_class}">{r['category']} • {r['status']}</span>
             </div>
-            <p style="margin: 0 0 6px 0; color: #334155; font-size: 13.5px;">{r['message']}</p>
-            <div style="font-size: 13px; color: #1E3A8A; background: #F8FAFC; padding: 8px 12px; border-radius: 6px;">
-                <strong>Actionable Next Step:</strong> {r['action']}
+            <p style="margin: 0 0 8px 0; color: #334155; font-size: 13.5px; line-height: 1.5;">{r['message']}</p>
+            <div style="font-size: 13px; color: #1E3A8A; background: #F8FAFC; border: 1px solid #E2E8F0; padding: 9px 14px; border-radius: 6px; margin-bottom: 6px;">
+                <strong>Recommended Next Action:</strong> {r['action']}
             </div>
-            <div style="font-size: 11.5px; color: #64748B; margin-top: 5px;">
-                <em>Policy/Rationale:</em> {r['rationale']}
+            <div style="font-size: 11.5px; color: #64748B;">
+                <em>Policy / Rationale:</em> {r['rationale']}
             </div>
         </div>
         """
         st.markdown(card_html, unsafe_allow_html=True)
+        
+    render_footer()

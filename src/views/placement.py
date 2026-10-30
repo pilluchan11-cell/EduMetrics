@@ -17,7 +17,13 @@ from src.visualizations import (
     plot_company_hires,
     plot_skills_placement_impact
 )
-from src.ui_components import render_hero, render_disclaimer, render_kpi
+from src.ui_components import (
+    render_hero, 
+    render_disclaimer, 
+    render_kpi, 
+    render_section_header,
+    render_footer
+)
 from src.config import COLOR_PRIMARY, COLOR_SUCCESS, COLOR_ACCENT, COLOR_SECONDARY
 
 
@@ -27,40 +33,78 @@ def render(df: pd.DataFrame) -> None:
     render_disclaimer()
     
     if len(df) == 0:
-        st.warning("⚠️ No student records match the current filter criteria.")
+        st.warning("⚠️ No student records match the active filter criteria. Adjust the sidebar filters to view data.")
         return
         
     kpis = compute_executive_kpis(df)
     
-    # Placement KPI summary
-    st.markdown('<div class="section-title">💼 Placement & Salary Benchmarks</div>', unsafe_allow_html=True)
+    # Section 1: Placement & Compensation KPIs
+    render_section_header(
+        "Recruitment Conversion & Salary Benchmarks",
+        "Key market compensation figures evaluating batch competitiveness and offer distribution.",
+        "💼"
+    )
     c1, c2, c3, c4 = st.columns(4)
     with c1:
-        render_kpi("Overall Placement Rate", f"{kpis['placement_rate']}%", f"{kpis['placed_count']} of {kpis['total_students']} Students", COLOR_SUCCESS)
+        render_kpi(
+            "Overall Placement Conversion", 
+            f"{kpis['placement_rate']}%", 
+            f"{kpis['placed_count']} of {kpis['total_students']} Students Placed", 
+            COLOR_SUCCESS, 
+            icon="🎯",
+            chip_text="Placement %",
+            chip_color="#DCFCE7"
+        )
     with c2:
-        render_kpi("Median CTC Offer", f"₹{kpis['median_salary']} LPA", "50th Percentile Compensation", COLOR_PRIMARY)
+        render_kpi(
+            "Median CTC Package", 
+            f"₹{kpis['median_salary']} LPA", 
+            "50th Percentile Compensation", 
+            COLOR_PRIMARY, 
+            icon="📊",
+            chip_text="Median Offer",
+            chip_color="#EFF6FF"
+        )
     with c3:
-        render_kpi("Mean CTC Offer", f"₹{kpis['avg_salary']} LPA", "Average Placed Package", COLOR_SECONDARY)
+        render_kpi(
+            "Average CTC Package", 
+            f"₹{kpis['avg_salary']} LPA", 
+            "Mean Placed Compensation", 
+            COLOR_SECONDARY, 
+            icon="💵",
+            chip_text="Mean Package",
+            chip_color="#CCFBF1"
+        )
     with c4:
-        render_kpi("Highest Salary Offered", f"₹{kpis['highest_salary']} LPA", "Campus High Offer", COLOR_ACCENT)
+        render_kpi(
+            "Top Campus Offer", 
+            f"₹{kpis['highest_salary']} LPA", 
+            "Highest Verified Corporate Offer", 
+            COLOR_ACCENT, 
+            icon="🏆",
+            chip_text="Peak CTC",
+            chip_color="#FEF3C7"
+        )
 
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # Row 1: Specialization Placement Rates & Salary Distribution Boxplot
+    # Section 2: Specialization Rates & Salary Distribution Boxplot
     col1, col2 = st.columns(2)
     with col1:
-        st.markdown('<div class="section-title">📊 Placement Rate by Specialization</div>', unsafe_allow_html=True)
         spec_df = compute_placement_by_specialization(df)
         fig_spec = plot_placement_by_specialization(spec_df)
         st.plotly_chart(fig_spec, use_container_width=True)
         
     with col2:
-        st.markdown('<div class="section-title">💰 Salary Package Spread (LPA)</div>', unsafe_allow_html=True)
         fig_sal = plot_salary_distribution(df)
         st.plotly_chart(fig_sal, use_container_width=True)
         
-    # Row 2: Top Recruiting Companies & Grade Band Breakdown
-    st.markdown('<div class="section-title">🏢 Corporate Hiring Insights</div>', unsafe_allow_html=True)
+    # Section 3: Corporate Hiring Insights
+    render_section_header(
+        "Corporate Recruiting Partner Intelligence",
+        "Analysis of hiring partners by placement volume, minimum package, and average offer package.",
+        "🏢"
+    )
     comp_df = compute_company_placement_stats(df)
     
     col_c1, col_c2 = st.columns([7, 5])
@@ -78,9 +122,12 @@ def render(df: pd.DataFrame) -> None:
         
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # Row 3: Skills & Certifications Impact
-    st.markdown('<div class="section-title">🎯 Technical Skill & Placement Uplift</div>', unsafe_allow_html=True)
-    st.caption("Investigating how proficiency levels in key tools relate to recruitment outcomes.")
+    # Section 4: Skills & Certifications Impact
+    render_section_header(
+        "Technical Competencies & Placement Lift",
+        "Investigating how student proficiency across Python, SQL, and Power BI correlates with placement rates.",
+        "💻"
+    )
     
     sk1, sk2, sk3 = st.columns(3)
     with sk1:
@@ -93,8 +140,12 @@ def render(df: pd.DataFrame) -> None:
         fig_bi = plot_skills_placement_impact(df, "power_bi_proficiency", "Power BI")
         st.plotly_chart(fig_bi, use_container_width=True)
         
-    # Placement by Internship Status
-    st.markdown('<div class="section-title">🚀 Internship & Certification Correlation</div>', unsafe_allow_html=True)
+    # Section 5: Experiential Learning Uplift
+    render_section_header(
+        "Experiential Learning & Industry Credentials",
+        "Measuring placement premiums associated with summer internship completion and verified certifications.",
+        "🚀"
+    )
     c_int, c_cert = st.columns(2)
     
     with c_int:
@@ -106,8 +157,16 @@ def render(df: pd.DataFrame) -> None:
             (intern_summary["Placed"] / intern_summary["Total"]) * 100.0
         ).round(1)
         
-        st.markdown("**Placement Conversion by Internship Completion:**")
-        st.dataframe(intern_summary.rename(columns={"internship_status": "Internship Status"}), hide_index=True, use_container_width=True)
+        st.markdown("**Placement Conversion by Summer Internship Completion:**")
+        st.dataframe(
+            intern_summary.rename(columns={
+                "internship_status": "Summer Internship Status",
+                "Total": "Enrolled Students",
+                "Placed": "Placed Students"
+            }), 
+            hide_index=True, 
+            use_container_width=True
+        )
         
     with c_cert:
         cert_summary = df.groupby("certifications_count").agg(
@@ -118,5 +177,15 @@ def render(df: pd.DataFrame) -> None:
             (cert_summary["Placed"] / cert_summary["Total"]) * 100.0
         ).round(1)
         
-        st.markdown("**Placement Conversion by Number of Certifications:**")
-        st.dataframe(cert_summary.rename(columns={"certifications_count": "Verified Certifications Count"}), hide_index=True, use_container_width=True)
+        st.markdown("**Placement Conversion by Count of Industry Certifications:**")
+        st.dataframe(
+            cert_summary.rename(columns={
+                "certifications_count": "Verified Certifications Count",
+                "Total": "Enrolled Students",
+                "Placed": "Placed Students"
+            }), 
+            hide_index=True, 
+            use_container_width=True
+        )
+        
+    render_footer()
