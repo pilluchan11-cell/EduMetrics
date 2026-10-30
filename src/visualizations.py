@@ -546,9 +546,219 @@ def plot_semester_comparison(df: pd.DataFrame) -> go.Figure:
     )
     fig.update_layout(showlegend=False)
     return apply_theme(fig)
-    fig.update_traces(
-        hovertemplate="Semester: <b>%{x}</b><br>Score: <b>%{y:.1f}%</b><extra></extra>",
-        marker=dict(size=3.5, opacity=0.6)
+
+
+def plot_skill_gap_comparison(gap_analysis: Dict[str, Any]) -> go.Figure:
+    """
+    Grouped bar chart comparing student skill levels against target role benchmarks (1-5 scale).
+    """
+    comparisons = gap_analysis.get("skill_comparison", [])
+    if not comparisons:
+        fig = go.Figure()
+        fig.update_layout(title="No Skill Data Available", **DEFAULT_LAYOUT)
+        return fig
+        
+    skills = [c["skill"] for c in comparisons]
+    stu_lvls = [c["student_level"] for c in comparisons]
+    target_lvls = [c["target_level"] for c in comparisons]
+    gaps = [c["gap"] for c in comparisons]
+    statuses = [c["status"] for c in comparisons]
+    
+    fig = go.Figure()
+    
+    # Trace 1: Target Benchmark
+    fig.add_trace(go.Bar(
+        name=f"Role Benchmark ({gap_analysis.get('target_role', 'Target')})",
+        x=skills,
+        y=target_lvls,
+        marker=dict(color="#CBD5E1", line=dict(color="#94A3B8", width=1.5)),
+        hovertemplate="Skill: <b>%{x}</b><br>Benchmark Level: <b>%{y} / 5</b><extra></extra>"
+    ))
+    
+    # Trace 2: Candidate Level
+    fig.add_trace(go.Bar(
+        name="Candidate Level",
+        x=skills,
+        y=stu_lvls,
+        marker=dict(color="#2563EB", line=dict(color="#1D4ED8", width=1.5)),
+        customdata=list(zip(gaps, statuses)),
+        hovertemplate="Skill: <b>%{x}</b><br>Candidate Level: <b>%{y} / 5</b><br>Variance: <b>%{customdata[0]:+d}</b> (%{customdata[1]})<extra></extra>"
+    ))
+    
+    fig.update_layout(
+        barmode="group",
+        title=f"<b>Competency Benchmark vs. {gap_analysis.get('target_role', 'Role')}</b><br><span style='font-size:11.5px; color:#64748B;'>Candidate proficiency level compared against role expectations (Scale 1-5)</span>",
+        xaxis=dict(title="Technical & Domain Competency", tickfont=dict(size=11, color="#334155")),
+        yaxis=dict(title="Proficiency Level (1-5)", range=[0, 5.5], dtick=1),
+        legend=dict(orientation="h", y=1.12, x=0),
+        margin=dict(l=28, r=20, t=65, b=30)
     )
-    fig.update_layout(showlegend=False)
+    return apply_theme(fig)
+
+
+def plot_student_competency_radar(student_skills: Dict[str, int], target_skills: Dict[str, int], target_role: str) -> go.Figure:
+    """
+    Polar radar visualization comparing student skill polygon with target role requirement polygon.
+    """
+    all_keys = list(target_skills.keys())
+    if not all_keys:
+        fig = go.Figure()
+        fig.update_layout(title="No Skills Defined", **DEFAULT_LAYOUT)
+        return fig
+        
+    stu_vals = [student_skills.get(k, 1) for k in all_keys]
+    target_vals = [target_skills.get(k, 3) for k in all_keys]
+    
+    # Close polygon
+    keys_closed = all_keys + [all_keys[0]]
+    stu_closed = stu_vals + [stu_vals[0]]
+    target_closed = target_vals + [target_vals[0]]
+    
+    fig = go.Figure()
+    
+    # Target Polygon
+    fig.add_trace(go.Scatterpolar(
+        r=target_closed,
+        theta=keys_closed,
+        fill="toself",
+        name=f"Target: {target_role}",
+        fillcolor="rgba(148, 163, 184, 0.18)",
+        line=dict(color="#94A3B8", width=1.8, dash="dot"),
+        hovertemplate="Competency: <b>%{theta}</b><br>Target: <b>%{r}/5</b><extra></extra>"
+    ))
+    
+    # Student Polygon
+    fig.add_trace(go.Scatterpolar(
+        r=stu_closed,
+        theta=keys_closed,
+        fill="toself",
+        name="Candidate Profile",
+        fillcolor="rgba(37, 99, 235, 0.22)",
+        line=dict(color="#2563EB", width=2.5),
+        hovertemplate="Competency: <b>%{theta}</b><br>Candidate: <b>%{r}/5</b><extra></extra>"
+    ))
+    
+    fig.update_layout(
+        polar=dict(
+            radialaxis=dict(
+                visible=True,
+                range=[0, 5],
+                tickvals=[1, 2, 3, 4, 5],
+                ticktext=["1", "2", "3", "4", "5"],
+                tickfont=dict(size=9.5, color="#64748B"),
+                gridcolor="#E2E8F0"
+            ),
+            angularaxis=dict(
+                tickfont=dict(size=10.5, color="#1E293B", family=DEFAULT_FONT),
+                gridcolor="#E2E8F0"
+            )
+        ),
+        title="<b>Multilateral Competency Radar Profile</b>",
+        legend=dict(
+            orientation="h",
+            yanchor="top",
+            y=-0.12,
+            xanchor="center",
+            x=0.5,
+            font=dict(size=10.5, color="#475569")
+        ),
+        margin=dict(l=30, r=30, t=50, b=45)
+    )
+    return apply_theme(fig)
+
+
+def plot_readiness_component_breakdown(readiness: Dict[str, Any]) -> go.Figure:
+    """
+    Horizontal bar chart showing the candidate's score across all 6 readiness pillars.
+    """
+    components = readiness.get("components", {})
+    if not components:
+        fig = go.Figure()
+        fig.update_layout(title="No Readiness Data", **DEFAULT_LAYOUT)
+        return fig
+        
+    names = list(components.keys())
+    scores = [components[k]["score"] for k in names]
+    weights = [components[k]["weight"] for k in names]
+    pts = [components[k]["weighted_points"] for k in names]
+    
+    # Color bars based on score bands
+    bar_colors = [
+        "#10B981" if s >= 80 else ("#2563EB" if s >= 65 else ("#F59E0B" if s >= 50 else "#EF4444"))
+        for s in scores
+    ]
+    
+    fig = go.Figure()
+    fig.add_trace(go.Bar(
+        y=names,
+        x=scores,
+        orientation="h",
+        marker=dict(color=bar_colors, line=dict(color="rgba(0,0,0,0.1)", width=1)),
+        text=[f"{s:.1f}% ({p:.1f} pts)" for s, p in zip(scores, pts)],
+        textposition="auto",
+        customdata=weights,
+        hovertemplate="Pillar: <b>%{y}</b><br>Score: <b>%{x:.1f} / 100</b><br>Weight: <b>%{customdata}%</b><extra></extra>"
+    ))
+    
+    fig.update_layout(
+        title="<b>Pillar-Level Readiness Index Breakdown</b><br><span style='font-size:11.5px; color:#64748B;'>Individual scores contributing to the overall Placement Readiness Index</span>",
+        xaxis=dict(title="Readiness Pillar Score (0-100)", range=[0, 108]),
+        yaxis=dict(title="", autorange="reversed"),
+        showlegend=False,
+        margin=dict(l=28, r=20, t=55, b=28)
+    )
+    return apply_theme(fig)
+
+
+def plot_subject_performance(subject_marks: Dict[str, float]) -> go.Figure:
+    """
+    Bar chart showing candidate's subject-level marks against 75% distinction and 60% cutoff lines.
+    """
+    if not subject_marks:
+        fig = go.Figure()
+        fig.update_layout(title="No Subject Scores Available", **DEFAULT_LAYOUT)
+        return fig
+        
+    subjects = list(subject_marks.keys())
+    marks = list(subject_marks.values())
+    
+    colors_list = [
+        "#10B981" if m >= 75 else ("#2563EB" if m >= 60 else "#EF4444")
+        for m in marks
+    ]
+    
+    fig = go.Figure()
+    fig.add_trace(go.Bar(
+        x=subjects,
+        y=marks,
+        marker=dict(color=colors_list),
+        text=[f"{m:.1f}%" for m in marks],
+        textposition="outside",
+        hovertemplate="Subject: <b>%{x}</b><br>Mark: <b>%{y:.1f}%</b><extra></extra>"
+    ))
+    
+    # 75% Distinction Line
+    fig.add_hline(
+        y=75,
+        line_dash="dot",
+        line_color="#10B981",
+        annotation_text="Distinction (75%)",
+        annotation_position="bottom right"
+    )
+    # 60% Standard Screening Cutoff
+    fig.add_hline(
+        y=60,
+        line_dash="dash",
+        line_color="#EF4444",
+        annotation_text="Corporate Cutoff (60%)",
+        annotation_position="top right"
+    )
+    
+    fig.update_layout(
+        title="<b>Subject-Wise Examination Marks</b><br><span style='font-size:11.5px; color:#64748B;'>Individual course performance relative to academic benchmarks</span>",
+        xaxis=dict(title="Subject / Course Module", tickangle=-15),
+        yaxis=dict(title="Aggregate Mark (%)", range=[0, 110]),
+        showlegend=False,
+        margin=dict(l=28, r=20, t=55, b=35)
+    )
     return apply_theme(fig)

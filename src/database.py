@@ -286,3 +286,231 @@ def query_skill_placement_comparison(conn: sqlite3.Connection, skill_name: str =
     END;
     """
     return sql, pd.read_sql_query(sql, conn)
+
+
+def ensure_assessments_table(conn: sqlite3.Connection) -> None:
+    """Creates the student_assessments table if not already present."""
+    create_sql = """
+    CREATE TABLE IF NOT EXISTS student_assessments (
+        assessment_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        student_id TEXT NOT NULL,
+        student_name TEXT NOT NULL,
+        specialization TEXT NOT NULL,
+        semester TEXT NOT NULL,
+        target_role TEXT NOT NULL,
+        academic_percentage REAL NOT NULL,
+        attendance_percentage REAL NOT NULL,
+        overall_readiness_score REAL NOT NULL,
+        tier_label TEXT NOT NULL,
+        technical_fit_percentage REAL NOT NULL,
+        certifications_count INTEGER NOT NULL DEFAULT 0,
+        internship_status TEXT NOT NULL,
+        projects_count INTEGER NOT NULL DEFAULT 0,
+        assessment_json TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    CREATE INDEX IF NOT EXISTS idx_assessment_student ON student_assessments(student_id);
+    """
+    with conn:
+        conn.executescript(create_sql)
+
+
+def save_assessment_record(assessment_result: Dict[str, Any], conn: Optional[sqlite3.Connection] = None) -> int:
+    """
+    Persists a completed student assessment into SQLite using parameterized queries.
+    Returns the newly inserted assessment_id.
+    """
+    import json
+    close_at_end = False
+    if conn is None:
+        conn = get_connection()
+        close_at_end = True
+        
+    ensure_assessments_table(conn)
+    
+    student = assessment_result.get("student_data", {})
+    target_role = assessment_result.get("target_role", "Data Analyst")
+    readiness = assessment_result.get("readiness", {})
+    gap_analysis = readiness.get("gap_analysis", {})
+    
+    # Extract scalar fields
+    student_id = str(student.get("student_id", "")).strip()
+    student_name = str(student.get("student_name", "")).strip()
+    specialization = str(student.get("specialization", "")).strip()
+    semester = str(student.get("semester", "")).strip()
+    acad_pct = float(student.get("academic_percentage", 0.0))
+    att_pct = float(student.get("attendance_percentage", 0.0))
+    overall_score = float(readiness.get("overall_score", 0.0))
+    tier_label = str(readiness.get("tier_label", "Developing"))
+    tech_fit = float(gap_analysis.get("fit_percentage", 0.0))
+    certs_count = len(student.get("certifications", []))
+    internship = str(student.get("internship_status", "Not Completed"))
+    projects_count = int(student.get("projects_count", 0))
+    
+    # Store complete serializable payload as JSON for retrieval
+    clean_payload = {
+        "student_data": student,
+        "target_role": target_role,
+        "overall_score": overall_score,
+        "tier_label": tier_label,
+        "strengths": assessment_result.get("strengths", []),
+        "weaknesses": assessment_result.get("weaknesses", []),
+        "recommendations": assessment_result.get("recommendations", [])
+    }
+    json_str = json.dumps(clean_payload, default=str)
+    
+    insert_sql = """
+    INSERT INTO student_assessments (
+        student_id, student_name, specialization, semester, target_role,
+        academic_percentage, attendance_percentage, overall_readiness_score,
+        tier_label, technical_fit_percentage, certifications_count,
+        internship_status, projects_count, assessment_json
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+    """
+    
+    with conn:
+        cursor = conn.cursor()
+        cursor.execute(insert_sql, (
+            student_id, student_name, specialization, semester, target_role,
+            acad_pct, att_pct, overall_score, tier_label, tech_fit,
+            certs_count, internship, projects_count, json_str
+        ))
+        row_id = cursor.lastrowid
+        
+    if close_at_end:
+        conn.close()
+    return int(row_id or 0)
+
+
+def load_all_assessments(conn: Optional[sqlite3.Connection] = None) -> pd.DataFrame:
+    """Reads all historical student assessments from SQLite."""
+    close_at_end = False
+    if conn is None:
+        conn = get_connection()
+        close_at_end = True
+        
+    ensure_assessments_table(conn)
+    sql = """
+    SELECT 
+        assessment_id AS "ID",
+        student_id AS "Student ID",
+        student_name AS "Student Name",
+        specialization AS "Specialization",
+        semester AS "Semester",
+        target_role AS "Target Role",
+        ROUND(academic_percentage, 1) AS "Marks (%)",
+        ROUND(attendance_percentage, 1) AS "Attendance (%)",
+        ROUND(overall_readiness_score, 1) AS "Readiness Score",
+        tier_label AS "Readiness Tier",
+        ROUND(technical_fit_percentage, 1) AS "Tech Fit (%)",
+        certifications_count AS "Certs",
+        internship_status AS "Internship",
+        projects_count AS "Projects",
+        created_at AS "Assessed At"
+    FROM student_assessments
+    ORDER BY assessment_id DESC;
+    """
+    df = pd.read_sql_query(sql, conn)
+    if close_at_end:
+        conn.close()
+    return df
+
+
+def save_single_student_to_db(student_row: Dict[str, Any], conn: Optional[sqlite3.Connection] = None) -> bool:
+    """
+    Saves or updates a single student record across all 4 normalized SQLite tables:
+    students, academic_records, skills, and placements.
+    Uses parameterized SQL and respects referential integrity.
+    """
+    close_at_end = False
+    if conn is None:
+        conn = get_connection()
+        close_at_end = True
+        
+    init_db()
+    
+    stu_id = str(student_row.get("student_id", "")).strip()
+    name = str(student_row.get("student_name", "")).strip()
+    gender = str(student_row.get("gender", "Non-Binary")).strip()
+    if gender not in ["Male", "Female", "Non-Binary"]:
+        gender = "Non-Binary"
+    spec = str(student_row.get("specialization", "Business Analytics")).strip()
+    sem = str(student_row.get("semester", "Semester 3")).strip()
+    
+    acad_pct = float(student_row.get("academic_percentage", 65.0))
+    att_pct = float(student_row.get("attendance_percentage", 75.0))
+    grade_band = "Distinction" if acad_pct >= 75 else ("First Class" if acad_pct >= 60 else ("Second Class" if acad_pct >= 50 else "Remedial"))
+    att_band = "Compliant" if att_pct >= 75 else "At-Risk"
+    
+    sql_prof = str(student_row.get("sql_proficiency", "Intermediate")).capitalize()
+    py_prof = str(student_row.get("python_proficiency", "Beginner")).capitalize()
+    bi_prof = str(student_row.get("power_bi_proficiency", "Intermediate")).capitalize()
+    certs_cnt = int(student_row.get("certifications_count", 0))
+    intern_stat = "Completed" if str(student_row.get("internship_status", "")).lower() == "completed" else "Not Completed"
+    
+    # Calculate tech score out of 10
+    mapping = {"Beginner": 1, "Basic": 1, "Intermediate": 2, "Advanced": 3, "Expert": 3}
+    total_pts = mapping.get(sql_prof, 1) + mapping.get(py_prof, 1) + mapping.get(bi_prof, 1)
+    tech_score_10 = round((total_pts / 9.0) * 10.0, 2)
+    
+    placement_stat = str(student_row.get("placement_status", "Unplaced")).capitalize()
+    if placement_stat not in ["Placed", "Unplaced"]:
+        placement_stat = "Unplaced"
+    company = student_row.get("company", None)
+    salary_lpa = student_row.get("salary_lpa", None)
+    if placement_stat == "Unplaced":
+        company = None
+        salary_lpa = None
+    elif salary_lpa is not None:
+        salary_lpa = float(salary_lpa)
+        
+    with conn:
+        cursor = conn.cursor()
+        # 1. Students
+        cursor.execute("""
+            INSERT INTO students (student_id, student_name, gender, specialization, semester)
+            VALUES (?, ?, ?, ?, ?)
+            ON CONFLICT(student_id) DO UPDATE SET
+                student_name=excluded.student_name,
+                gender=excluded.gender,
+                specialization=excluded.specialization,
+                semester=excluded.semester;
+        """, (stu_id, name, gender, spec, sem))
+        
+        # 2. Academic Records
+        cursor.execute("""
+            INSERT INTO academic_records (student_id, academic_percentage, attendance_percentage, grade_band, attendance_band)
+            VALUES (?, ?, ?, ?, ?)
+            ON CONFLICT(student_id) DO UPDATE SET
+                academic_percentage=excluded.academic_percentage,
+                attendance_percentage=excluded.attendance_percentage,
+                grade_band=excluded.grade_band,
+                attendance_band=excluded.attendance_band;
+        """, (stu_id, acad_pct, att_pct, grade_band, att_band))
+        
+        # 3. Skills
+        cursor.execute("""
+            INSERT INTO skills (student_id, sql_proficiency, python_proficiency, power_bi_proficiency, certifications_count, internship_status, technical_score_10)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(student_id) DO UPDATE SET
+                sql_proficiency=excluded.sql_proficiency,
+                python_proficiency=excluded.python_proficiency,
+                power_bi_proficiency=excluded.power_bi_proficiency,
+                certifications_count=excluded.certifications_count,
+                internship_status=excluded.internship_status,
+                technical_score_10=excluded.technical_score_10;
+        """, (stu_id, sql_prof, py_prof, bi_prof, certs_cnt, intern_stat, tech_score_10))
+        
+        # 4. Placements
+        cursor.execute("""
+            INSERT INTO placements (student_id, placement_status, company, salary_lpa)
+            VALUES (?, ?, ?, ?)
+            ON CONFLICT(student_id) DO UPDATE SET
+                placement_status=excluded.placement_status,
+                company=excluded.company,
+                salary_lpa=excluded.salary_lpa;
+        """, (stu_id, placement_stat, company, salary_lpa))
+        
+    if close_at_end:
+        conn.close()
+    return True

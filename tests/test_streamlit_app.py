@@ -22,6 +22,7 @@ def test_app_navigation_pages():
         "📚 Academic Performance",
         "💼 Placement Analytics",
         "👤 Student Analytics",
+        "📝 Student Assessment",
         "📈 Statistical Analysis",
         "🎯 Strategic Recommendations",
         "⚙️ Data Management & Upload"
@@ -48,6 +49,7 @@ def test_app_zero_records_filter_resilience():
         "📚 Academic Performance",
         "💼 Placement Analytics",
         "👤 Student Analytics",
+        "📝 Student Assessment",
         "📈 Statistical Analysis",
         "🎯 Strategic Recommendations",
         "⚙️ Data Management & Upload"

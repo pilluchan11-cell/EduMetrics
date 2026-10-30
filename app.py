@@ -28,6 +28,7 @@ from src.views import (
     academic,
     placement,
     student,
+    assessment,
     statistical,
     recommendations,
     data_mgmt
@@ -97,6 +98,7 @@ def main():
                 "📚 Academic Performance",
                 "💼 Placement Analytics",
                 "👤 Student Analytics",
+                "📝 Student Assessment",
                 "📈 Statistical Analysis",
                 "🎯 Strategic Recommendations",
                 "⚙️ Data Management & Upload"
@@ -212,6 +214,8 @@ def main():
         placement.render(filtered_df)
     elif page == "👤 Student Analytics":
         student.render(filtered_df)
+    elif page == "📝 Student Assessment":
+        assessment.render(filtered_df)
     elif page == "📈 Statistical Analysis":
         statistical.render(filtered_df)
     elif page == "🎯 Strategic Recommendations":

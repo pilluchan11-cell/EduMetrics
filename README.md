@@ -6,7 +6,7 @@
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.35%2B-FF4B4B.svg)](https://streamlit.io/)
 [![Plotly](https://img.shields.io/badge/Plotly-5.20%2B-3F4F75.svg)](https://plotly.com/)
 [![SQLite](https://img.shields.io/badge/Database-SQLite3%203NF-003B57.svg)](https://www.sqlite.org/)
-[![Testing](https://img.shields.io/badge/Tests-Pytest%20(42%20Passed)-0A9EDC.svg)](https://docs.pytest.org/)
+[![Testing](https://img.shields.io/badge/Tests-Pytest%20(50%20Passed)-0A9EDC.svg)](https://docs.pytest.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ---
@@ -69,6 +69,8 @@ EduMetrics/
 │   ├── database.py                  # Relational ingest, foreign key management, SQL queries
 │   ├── metrics.py                   # Pure analytical calculations, KPIs, hypothesis tests
 │   ├── rules_engine.py              # Explainable heuristic rules diagnostic engine
+│   ├── assessment_engine.py         # Role benchmarks, skill gap analysis, readiness scoring
+│   ├── report_generator.py          # Publication-ready PDF diagnostic report builder (ReportLab)
 │   ├── ui_components.py             # Custom CSS, KPI cards, banners, and layout helpers
 │   ├── visualizations.py            # High-contrast Plotly chart factories with tooltips
 │   └── views/                       # Modular dashboard views
@@ -76,10 +78,12 @@ EduMetrics/
 │       ├── academic.py              # Academic score distributions & attendance correlation
 │       ├── placement.py             # Placement conversion, salaries, and company analytics
 │       ├── student.py               # Individual student profiler & radar benchmarks
+│       ├── assessment.py            # Individual student assessment & career-readiness analyzer
 │       ├── statistical.py           # Hypothesis testing, p-values, OLS, and logistic regression
 │       ├── recommendations.py       # Strategic 4-pillar institutional roadmaps
 │       └── data_mgmt.py             # CSV upload audit, SQLite sync, and SQL query explorer
-├── tests/                           # 42 Automated unit and integration tests
+├── tests/                           # 50 Automated unit and integration tests
+│   ├── test_assessment.py           # Competency gap, readiness scoring, benchmarks, PDF, DB
 │   ├── test_database.py             # SQLite relational schema, joins, & 7 analytical queries
 │   ├── test_edge_cases.py           # Null handling, empty dataframes, & extreme values
 │   ├── test_metrics.py              # Statistical KPI calculations & hypothesis tests
@@ -117,13 +121,22 @@ EduMetrics/
 * **Multi-Axis Competency Radar Chart:** Spider chart indexing the student's individual marks, attendance, and technical tools directly against the **Batch Average**.
 * **Personalized Diagnostic Card:** Deterministic breakdown of student strengths, risk alerts, and next actionable steps.
 
-### 5. 📈 Statistical & Econometric Analysis
+### 5. 📝 Individual Student Assessment & Career-Readiness Analyzer
+* **Interactive Data Entry Form:** Structured evaluation form capturing basic demographics, 10th/12th/UG/CGPA scores, 5-subject marks, attendance compliance, technical tools (1-5 scale), certifications, corporate internship, project portfolio, and mock interview status.
+* **Career-Role Competency Benchmarking:** Configurable industry requirement matrices across 5 core roles: *Data Analyst*, *Business Analyst*, *Data Scientist*, *Business Intelligence Analyst*, and *Product Analyst*.
+* **Explainable Placement Readiness Index (0–100):** Weighted multi-pillar scoring model evaluating Academic Standing (15-20%), Attendance (10%), Technical Fit (25-40%), Certifications (10-15%), Practical Projects (10-20%), and Soft Skills (10-20%).
+* **Visual Competency Gap Analysis:** Grouped bar charts identifying skill surpluses and deficits against role benchmarks, multilateral polar radar profile, and pillar score breakdowns.
+* **Automated Actionable Recommendations:** Targeted, role-specific guidance (e.g. elevating SQL via window functions, publishing GitHub dashboards, or scheduling faculty advising).
+* **Publication-Ready PDF Dossier Download:** Professional executive PDF generated via ReportLab with institutional branding, tables, scorecards, and faculty sign-off blocks.
+* **Relational SQLite Persistence & Cohort Integration:** One-click options to save assessments to SQLite table `student_assessments` and append candidate records into the active cohort session dataset.
+
+### 6. 📈 Statistical & Econometric Analysis
 * **Pairwise Correlation Matrix:** Pearson correlation coefficients ($r$) with two-tailed p-values and significance notation.
 * **Inferential Hypothesis Testing:** Two-sample Welch's t-tests and Cohen's $d$ effect sizes comparing Placed vs. Unplaced students.
 * **One-Way ANOVA:** Parametric F-tests evaluating whether academic performance differs significantly across specializations.
 * **Multivariate Logistic Regression:** Demonstrates the marginal contribution of academics, attendance, and skills to placement odds ratios ($\text{OR} = e^\beta$).
 
-### 6. 🎯 Explainable Strategic Recommendations
+### 7. 🎯 Explainable Strategic Recommendations
 * **Deterministic Heuristic Rules:** Transparent business logic avoiding black-box machine-learning opacity.
 * **The 4 Pillars of Institutional Excellence:** Actionable roadmaps covering:
   1. *Academic Quality & Peer Mentorship*
@@ -131,7 +144,7 @@ EduMetrics/
   3. *Technical Tool Mastery & Project Portfolio Development*
   4. *Corporate Placement Conversion & Alumni Capstones*
 
-### 7. ⚙️ Data Management & SQL Relational Explorer
+### 8. ⚙️ Data Management & SQL Relational Explorer
 * **Custom CSV Ingestion & Audit:** Drag-and-drop custom student datasets with automated schema, duplicate, and range validation.
 * **SQLite Relational Synchronization:** Instant bi-directional sync between session memory and the 3NF SQLite database.
 * **Interactive SQL Query Runner:** Execute and inspect 7 parameterized analytical queries with raw SQL syntax highlighting and CSV exports.
