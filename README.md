@@ -81,8 +81,129 @@ EduMetrics/
 
 ### 7. ⚙️ Data Management & Relational Database Sync
 * **Custom CSV Upload:** Drag-and-drop custom student datasets with automatic schema and boundary validation.
-* **SQLite Relational Sync:** Ingest student records into normalized SQLite tables with foreign key constraints.
+* **SQLite Relational Sync & 3NF Storage:** Ingest student records into 4 normalized SQLite tables with foreign key constraints.
+* **Interactive SQL Explorer:** Run and inspect parameterized analytical SQL queries live with one-click CSV export.
 * **Filtered Export:** One-click download of the active filtered cohort in CSV format.
+
+---
+
+## 🗄️ Relational Database Architecture & SQL Analytics (SQLite 3NF)
+
+EduMetrics integrates a production-ready, normalized **SQLite 3** relational database layer (`database/edumetrics.db`) managed via `src/database.py`. The schema is normalized into **Third Normal Form (3NF)** to eliminate redundancy and enforce referential integrity.
+
+### 1. Normalized Relational Schema (`database/schema.sql`)
+
+The database decomposes student records across 4 interconnected tables with primary keys, foreign keys (`ON DELETE CASCADE`), and domain-level `CHECK` constraints:
+
+| Table | Entity Purpose | Primary Key | Foreign Key Reference | Key Attributes |
+|---|---|---|---|---|
+| **`students`** | Master demographic & enrollment identity | `student_id` (TEXT) | *None* | `student_name`, `gender`, `specialization`, `semester`, `created_at` |
+| **`academic_records`** | Examination performance & lecture attendance | `record_id` (AUTOINCREMENT) | `student_id` $\rightarrow$ `students(student_id)` | `academic_percentage`, `attendance_percentage`, `grade_band`, `attendance_band` |
+| **`skills`** | Technical proficiencies & credentials | `skill_id` (AUTOINCREMENT) | `student_id` $\rightarrow$ `students(student_id)` | `sql_proficiency`, `python_proficiency`, `power_bi_proficiency`, `certifications_count`, `internship_status`, `technical_score_10` |
+| **`placements`** | Corporate recruitment & compensation | `placement_id` (AUTOINCREMENT) | `student_id` $\rightarrow$ `students(student_id)` | `placement_status`, `company`, `salary_lpa`, `placed_at` |
+
+#### Key Database Architecture Features:
+* **ACID Transactions:** Atomic insertion across all four tables within single transactions.
+* **Cascading Deletions:** `ON DELETE CASCADE` guarantees zero orphaned records if student identity rows are purged.
+* **Performance Indexes:** 7 secondary B-tree indexes optimize high-volume queries on `specialization`, `semester`, `attendance_percentage`, and `placement_status`.
+* **Automated Database Seeding:** Automatically creates tables and seeds 500 records on first run (`ensure_database_initialized()`), requiring **zero manual SQL setup**.
+
+---
+
+### 2. Analytical SQL Query Library
+
+EduMetrics features 7 parameterized analytical queries executed directly from the application's **SQL Analytics & Relational Explorer** tab:
+
+1. **Cohort Distribution by Specialization:**
+   ```sql
+   SELECT specialization AS "Specialization", 
+          COUNT(student_id) AS "Total Students",
+          ROUND(100.0 * COUNT(student_id) / (SELECT COUNT(*) FROM students), 1) AS "Cohort Share (%)"
+   FROM students
+   GROUP BY specialization
+   ORDER BY "Total Students" DESC;
+   ```
+
+2. **Academic Performance Statistics across Specializations:**
+   ```sql
+   SELECT s.specialization AS "Specialization", 
+          ROUND(AVG(a.academic_percentage), 2) AS "Mean Marks (%)",
+          ROUND(MIN(a.academic_percentage), 2) AS "Min Marks (%)",
+          ROUND(MAX(a.academic_percentage), 2) AS "Max Marks (%)",
+          COUNT(s.student_id) AS "Students Evaluated"
+   FROM students s
+   JOIN academic_records a ON s.student_id = a.student_id
+   GROUP BY s.specialization
+   ORDER BY "Mean Marks (%)" DESC;
+   ```
+
+3. **Recruitment Placement Rate by Specialization:**
+   ```sql
+   SELECT s.specialization AS "Specialization",
+          COUNT(s.student_id) AS "Enrolled Students",
+          SUM(CASE WHEN LOWER(p.placement_status) = 'placed' THEN 1 ELSE 0 END) AS "Placed Students",
+          ROUND(100.0 * SUM(CASE WHEN LOWER(p.placement_status) = 'placed' THEN 1 ELSE 0 END) / COUNT(s.student_id), 1) AS "Placement Rate (%)"
+   FROM students s
+   JOIN placements p ON s.student_id = p.student_id
+   GROUP BY s.specialization
+   ORDER BY "Placement Rate (%)" DESC;
+   ```
+
+4. **Compensation Analysis (Average & Range CTC in LPA):**
+   ```sql
+   SELECT s.specialization AS "Specialization",
+          COUNT(p.salary_lpa) AS "Placed Students Count",
+          ROUND(AVG(p.salary_lpa), 2) AS "Average Package (₹ LPA)",
+          ROUND(MIN(p.salary_lpa), 2) AS "Min Offer (₹ LPA)",
+          ROUND(MAX(p.salary_lpa), 2) AS "Top Offer (₹ LPA)"
+   FROM students s
+   JOIN placements p ON s.student_id = p.student_id
+   WHERE LOWER(p.placement_status) = 'placed' AND p.salary_lpa IS NOT NULL
+   GROUP BY s.specialization
+   ORDER BY "Average Package (₹ LPA)" DESC;
+   ```
+
+5. **Campus-Wide Placed vs. Unplaced Cohort Counts:**
+   ```sql
+   SELECT p.placement_status AS "Placement Status",
+          COUNT(p.student_id) AS "Student Count",
+          ROUND(100.0 * COUNT(p.student_id) / (SELECT COUNT(*) FROM placements), 1) AS "Proportion (%)"
+   FROM placements p
+   GROUP BY p.placement_status;
+   ```
+
+6. **Parameterized Query — At-Risk Students Below Attendance Cutoff:**
+   ```sql
+   SELECT s.student_id AS "Student ID",
+          s.student_name AS "Student Name",
+          s.specialization AS "Specialization",
+          ROUND(a.attendance_percentage, 1) AS "Attendance (%)",
+          ROUND(a.academic_percentage, 1) AS "Marks (%)",
+          p.placement_status AS "Placement Status"
+   FROM students s
+   JOIN academic_records a ON s.student_id = a.student_id
+   JOIN placements p ON s.student_id = p.student_id
+   WHERE a.attendance_percentage < ?
+   ORDER BY a.attendance_percentage ASC;
+   ```
+
+7. **Parameterized Query — Skill Competency vs. Placement Outcomes:**
+   ```sql
+   SELECT sk.python_proficiency AS "Proficiency Level",
+          COUNT(sk.student_id) AS "Total Candidates",
+          SUM(CASE WHEN LOWER(p.placement_status) = 'placed' THEN 1 ELSE 0 END) AS "Placed Count",
+          ROUND(100.0 * SUM(CASE WHEN LOWER(p.placement_status) = 'placed' THEN 1 ELSE 0 END) / COUNT(sk.student_id), 1) AS "Placement Rate (%)",
+          ROUND(AVG(CASE WHEN LOWER(p.placement_status) = 'placed' THEN p.salary_lpa END), 2) AS "Mean Package (₹ LPA)"
+   FROM skills sk
+   JOIN placements p ON sk.student_id = p.student_id
+   GROUP BY sk.python_proficiency
+   ORDER BY CASE sk.python_proficiency 
+       WHEN 'Beginner' THEN 1 
+       WHEN 'Intermediate' THEN 2 
+       WHEN 'Advanced' THEN 3 
+       ELSE 4 
+   END;
+   ```
 
 ---
 

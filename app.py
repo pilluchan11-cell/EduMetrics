@@ -44,10 +44,15 @@ st.set_page_config(
 # Apply custom UI styling
 inject_custom_css()
 
-# Initialize active dataset in session state
+# Initialize active dataset in session state and ensure relational database is ready
 if "active_dataset" not in st.session_state:
     initial_df, report = load_cached_dataset()
     st.session_state["active_dataset"] = initial_df
+    try:
+        from src.database import ensure_database_initialized
+        ensure_database_initialized()
+    except Exception:
+        pass
 
 
 def main():
