@@ -1,8 +1,8 @@
 """
 Individual Student Assessment & Performance Analyzer View for EduMetrics.
-Enables faculty, coordinators, and placement directors to manually enter student profiles,
-benchmark against target career roles, perform competency gap analysis, and generate
-downloadable PDF/CSV diagnostic dossiers.
+Features career-specific skill benchmarking, student vs. role gap comparison,
+explainable 6-pillar readiness scoring with missing-component handling,
+and prioritized personalized learning roadmaps.
 """
 
 import streamlit as st
@@ -10,13 +10,21 @@ import pandas as pd
 from typing import Dict, Any, List
 import io
 
-from src.assessment_engine import (
+from src.benchmarks import (
     CAREER_ROLE_BENCHMARKS,
+    DEFAULT_READINESS_WEIGHTS,
+    COMPONENT_DISPLAY_NAMES,
     SKILL_LEVEL_NAMES,
+    BENCHMARK_DISCLAIMER
+)
+from src.assessment_engine import (
     calculate_skill_gaps,
     calculate_readiness_score,
+    generate_learning_roadmap,
     generate_individual_assessment,
-    get_sample_student_profile
+    get_sample_student_profile,
+    _safe_int,
+    _safe_float
 )
 from src.visualizations import (
     plot_skill_gap_comparison,
@@ -50,14 +58,13 @@ from src.config import (
 
 def render(df_active: pd.DataFrame) -> None:
     """Renders the comprehensive Student Assessment and Career-Readiness module."""
-    render_hero("Individual Student Assessment & Career-Readiness Analyzer")
+    render_hero("Career-Specific Competency Benchmarking & Student Analyzer")
     render_disclaimer()
     
     # Initialize assessment session state cache
     if "assessment_form_data" not in st.session_state:
         st.session_state["assessment_form_data"] = get_sample_student_profile("balanced")
     if "current_assessment" not in st.session_state:
-        # Pre-generate assessment for instant preview
         initial_sample = st.session_state["assessment_form_data"]
         st.session_state["current_assessment"] = generate_individual_assessment(
             initial_sample, 
@@ -65,17 +72,17 @@ def render(df_active: pd.DataFrame) -> None:
         )
 
     # -------------------------------------------------------------------------
-    # Top Control Bar: Quick Load Demonstrations & Clear
+    # Top Control Bar: Quick Load Demonstrations & Reset
     # -------------------------------------------------------------------------
     render_section_header(
-        "Candidate Profile Ingestion & Diagnostic Setup",
-        "Enter comprehensive academic, attendance, technical skill, and project details to evaluate placement readiness.",
+        "Candidate Profile Ingestion & Benchmark Setup",
+        "Enter student metrics or load calibrated sample profiles to benchmark competency gaps and placement readiness.",
         "📝"
     )
     
-    col_p1, col_p2, col_p3, col_p4 = st.columns(4)
+    col_p1, col_p2, col_p3, col_p4, col_p5 = st.columns(5)
     with col_p1:
-        if st.button("⚡ High-Achiever Sample", use_container_width=True, help="Load sample profile: distinction student, multiple certifications, internship complete"):
+        if st.button("⚡ High-Achiever Sample", use_container_width=True, help="Load distinction sample: 86% marks, multiple certs, internship completed"):
             st.session_state["assessment_form_data"] = get_sample_student_profile("high_achiever")
             st.session_state["current_assessment"] = generate_individual_assessment(
                 st.session_state["assessment_form_data"], 
@@ -83,7 +90,7 @@ def render(df_active: pd.DataFrame) -> None:
             )
             st.rerun()
     with col_p2:
-        if st.button("⚡ Balanced Cohort Sample", use_container_width=True, help="Load typical student profile: 72% marks, 79% attendance, 1 cert"):
+        if st.button("⚡ Balanced Cohort Sample", use_container_width=True, help="Load typical student: 72% marks, 79% attendance, 1 cert, 1 project"):
             st.session_state["assessment_form_data"] = get_sample_student_profile("balanced")
             st.session_state["current_assessment"] = generate_individual_assessment(
                 st.session_state["assessment_form_data"], 
@@ -91,7 +98,7 @@ def render(df_active: pd.DataFrame) -> None:
             )
             st.rerun()
     with col_p3:
-        if st.button("⚡ Support Needed Sample", use_container_width=True, help="Load at-risk sample: 58% marks, 71% attendance, skill deficits"):
+        if st.button("⚡ Support Needed Sample", use_container_width=True, help="Load at-risk student: 58% marks, 71% attendance, skill deficits"):
             st.session_state["assessment_form_data"] = get_sample_student_profile("needs_intervention")
             st.session_state["current_assessment"] = generate_individual_assessment(
                 st.session_state["assessment_form_data"], 
@@ -99,7 +106,15 @@ def render(df_active: pd.DataFrame) -> None:
             )
             st.rerun()
     with col_p4:
-        if st.button("↺ Reset Form", use_container_width=True, help="Clear form to empty defaults"):
+        if st.button("⚡ Missing Data Demo", use_container_width=True, help="Demonstrates missing component recalculation & coverage disclosure"):
+            st.session_state["assessment_form_data"] = get_sample_student_profile("missing_components")
+            st.session_state["current_assessment"] = generate_individual_assessment(
+                st.session_state["assessment_form_data"], 
+                "Data Analyst"
+            )
+            st.rerun()
+    with col_p5:
+        if st.button("↺ Reset Form", use_container_width=True, help="Clear all inputs to empty defaults"):
             st.session_state["assessment_form_data"] = {
                 "student_id": "",
                 "student_name": "",
@@ -115,14 +130,21 @@ def render(df_active: pd.DataFrame) -> None:
                 "academic_percentage": 65.0,
                 "subject_marks": {},
                 "attendance_percentage": 75.0,
-                "skills": {k: 2 for k in ["Excel", "SQL", "Python", "Power BI", "Tableau", "Statistics", "Machine Learning", "Communication"]},
+                "skills": {k: 2 for k in [
+                    "Excel", "SQL", "Python", "Power BI", "Tableau", "Statistics", 
+                    "Machine Learning", "Mathematics", "Problem-solving", "Communication", 
+                    "Data Modeling / ETL", "Product Metrics / A/B Testing"
+                ]},
                 "certifications": [],
                 "certifications_count": 0,
+                "certifications_provided": True,
                 "internship_status": "Not Completed",
+                "internship_provided": True,
                 "internship_company": "",
                 "internship_duration_months": 0,
                 "project_experience": "",
                 "projects_count": 0,
+                "projects_provided": True,
                 "resume_status": "Draft",
                 "communication_level": 3,
                 "aptitude_level": 3,
@@ -140,30 +162,52 @@ def render(df_active: pd.DataFrame) -> None:
     # -------------------------------------------------------------------------
     with st.expander("📋 Candidate Evaluation Input Form", expanded=True):
         st.markdown(
-            """
+            f"""
             <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; font-size: 12.5px; color: #475569;">
-                💡 <em>Fill in candidate metrics across all assessment dimensions. Fields marked with <strong>*</strong> are required. Optional fields may be left blank or 0 if unrecorded.</em>
+                💡 <em>{BENCHMARK_DISCLAIMER}</em>
             </div>
             """,
             unsafe_allow_html=True
         )
         
-        # ---------------- Section A: Basic Info ----------------
-        st.markdown("#### A. Basic Identification & Enrollment")
+        # ---------------- Section 1: Target Career Role Selection ----------------
+        st.markdown("#### 1. Select Target Career Direction")
+        role_options = [
+            "Business Analyst",
+            "Data Analyst",
+            "Data Scientist",
+            "Business Intelligence Analyst",
+            "Product Analyst"
+        ]
+        cur_role = current_data.get("target_role", "Data Analyst")
+        selected_role = st.selectbox(
+            "Select Candidate's Target Career Role for Benchmarking *:",
+            options=role_options,
+            index=role_options.index(cur_role) if cur_role in role_options else 1,
+            help="Candidate competencies will be benchmarked against this role's requirement matrix."
+        )
+        
+        role_meta = CAREER_ROLE_BENCHMARKS[selected_role]
+        st.info(f"🎯 **Target Role Scope ({selected_role}):** {role_meta['description']}")
+
+        st.markdown("<hr style='margin: 14px 0; border: none; border-top: 1px solid #E2E8F0;'>", unsafe_allow_html=True)
+
+        # ---------------- Section 2: Basic Identification ----------------
+        st.markdown("#### 2. Basic Identification & Academic Specialization")
         r1_c1, r1_c2, r1_c3 = st.columns(3)
         with r1_c1:
             val_id = st.text_input(
                 "Student ID *", 
                 value=str(current_data.get("student_id", "")),
                 placeholder="e.g. STU-2026-905",
-                help="Unique alphanumeric candidate code."
+                help="Unique alphanumeric student code."
             )
         with r1_c2:
             val_name = st.text_input(
                 "Student Full Name *", 
                 value=str(current_data.get("student_name", "")),
                 placeholder="e.g. Ananya Sen",
-                help="Official enrolled name."
+                help="Official enrolled student name."
             )
         with r1_c3:
             gender_options = ["Male", "Female", "Non-Binary"]
@@ -171,8 +215,7 @@ def render(df_active: pd.DataFrame) -> None:
             val_gender = st.selectbox(
                 "Gender Demographic",
                 options=gender_options,
-                index=gender_options.index(cur_gender) if cur_gender in gender_options else 2,
-                help="Fictional demographic classification."
+                index=gender_options.index(cur_gender) if cur_gender in gender_options else 2
             )
             
         r2_c1, r2_c2, r2_c3 = st.columns(3)
@@ -201,109 +244,95 @@ def render(df_active: pd.DataFrame) -> None:
             
         st.markdown("<hr style='margin: 14px 0; border: none; border-top: 1px solid #E2E8F0;'>", unsafe_allow_html=True)
 
-        # ---------------- Section B: Academic Performance ----------------
-        st.markdown("#### B. Academic Performance & Prior Records")
-        a_c1, a_c2, a_c3 = st.columns(3)
-        with a_c1:
-            val_10th = st.number_input(
-                "10th Standard Marks (%)",
-                min_value=0.0,
-                max_value=100.0,
-                value=float(current_data.get("tenth_percentage", 0.0)),
-                step=0.5,
-                help="Secondary school certificate percentage."
-            )
-        with a_c2:
-            val_12th = st.number_input(
-                "12th Standard Marks (%)",
-                min_value=0.0,
-                max_value=100.0,
-                value=float(current_data.get("twelfth_percentage", 0.0)),
-                step=0.5,
-                help="Higher secondary certificate percentage."
-            )
-        with a_c3:
-            val_grad = st.number_input(
-                "Undergraduate Degree Marks (%)",
-                min_value=0.0,
-                max_value=100.0,
-                value=float(current_data.get("grad_percentage", 0.0)),
-                step=0.5,
-                help="Bachelor's degree aggregate marks."
-            )
-            
-        g_c1, g_c2, g_c3 = st.columns(3)
-        with g_c1:
-            val_cgpa = st.number_input(
-                "Current Cumulative GPA / CGPA",
-                min_value=0.0,
-                max_value=10.0,
-                value=float(current_data.get("cgpa", 7.0)),
-                step=0.1,
-                help="Enrolled program grade point average."
-            )
-        with g_c2:
-            val_scale = st.selectbox(
-                "Grading Scale",
-                options=[10.0, 4.0],
-                index=0 if current_data.get("cgpa_scale", 10.0) == 10.0 else 1,
-                format_func=lambda x: f"{x:.1f} Point Scale"
-            )
-        with g_c3:
-            # Auto-calculate suggested aggregate from CGPA
-            suggested_acad = round((val_cgpa / val_scale) * 100.0, 1) if val_scale > 0 else 70.0
-            val_acad_pct = st.number_input(
-                "Master's Overall Academic Percentage (%) *",
-                min_value=0.0,
-                max_value=100.0,
-                value=float(current_data.get("academic_percentage", suggested_acad)),
-                step=0.5,
-                help="Primary academic metric utilized for recruiter screening eligibility."
-            )
-            
-        st.markdown("##### Subject-Level Marks Breakdown (Optional - 5 Core Modules)")
-        sub_c1, sub_c2, sub_c3 = st.columns([4, 2, 6])
-        cur_subs = current_data.get("subject_marks", {})
-        sub1_name = st.text_input("Subject 1 Name", value="Business Statistics & Analytics", key="sub1_n")
-        sub1_mark = st.number_input("Subject 1 Score (%)", min_value=0.0, max_value=100.0, value=float(cur_subs.get("Business Statistics", cur_subs.get(sub1_name, 75.0))), step=1.0, key="sub1_m")
+        # ---------------- Section 3: Academic Performance ----------------
+        st.markdown("#### 3. Academic Performance (15% Base Weight)")
+        acad_available = st.checkbox("Include Academic Marks in Assessment", value=True, help="Uncheck if academic marks are pending/unrecorded to test missing-component recalculation.")
         
-        s2_c1, s2_c2 = st.columns(2)
-        with s2_c1:
-            sub2_name = st.text_input("Subject 2 Name", value="Database & SQL Systems", key="sub2_n")
-            sub2_mark = st.number_input("Subject 2 Score (%)", min_value=0.0, max_value=100.0, value=float(cur_subs.get("SQL Querying", cur_subs.get(sub2_name, 72.0))), step=1.0, key="sub2_m")
-        with s2_c2:
-            sub3_name = st.text_input("Subject 3 Name", value="Python Programming & Data Wrangling", key="sub3_n")
-            sub3_mark = st.number_input("Subject 3 Score (%)", min_value=0.0, max_value=100.0, value=float(cur_subs.get("Python Programming", cur_subs.get(sub3_name, 70.0))), step=1.0, key="sub3_m")
+        val_acad_pct = None
+        val_cgpa = 7.0
+        val_scale = 10.0
+        sub_marks_dict = {}
+        
+        if acad_available:
+            g_c1, g_c2, g_c3 = st.columns(3)
+            with g_c1:
+                val_cgpa = st.number_input(
+                    "Current Cumulative GPA / CGPA",
+                    min_value=0.0,
+                    max_value=10.0,
+                    value=_safe_float(current_data.get("cgpa"), 7.2),
+                    step=0.1
+                )
+            with g_c2:
+                val_scale = st.selectbox(
+                    "Grading Scale",
+                    options=[10.0, 4.0],
+                    index=0 if current_data.get("cgpa_scale", 10.0) == 10.0 else 1,
+                    format_func=lambda x: f"{x:.1f} Point Scale"
+                )
+            with g_c3:
+                sug_acad = round((val_cgpa / val_scale) * 100.0, 1) if val_scale > 0 else 70.0
+                val_acad_pct = st.number_input(
+                    "Master's Overall Aggregate Percentage (%) *",
+                    min_value=0.0,
+                    max_value=100.0,
+                    value=_safe_float(current_data.get("academic_percentage"), sug_acad),
+                    step=0.5
+                )
+                
+            with st.expander("Optional: Secondary Marks & Subject Breakdown"):
+                p_c1, p_c2, p_c3 = st.columns(3)
+                with p_c1:
+                    val_10th = st.number_input("10th Standard (%)", min_value=0.0, max_value=100.0, value=_safe_float(current_data.get("tenth_percentage"), 0.0), step=0.5)
+                with p_c2:
+                    val_12th = st.number_input("12th Standard (%)", min_value=0.0, max_value=100.0, value=_safe_float(current_data.get("twelfth_percentage"), 0.0), step=0.5)
+                with p_c3:
+                    val_grad = st.number_input("Graduation Degree (%)", min_value=0.0, max_value=100.0, value=_safe_float(current_data.get("grad_percentage"), 0.0), step=0.5)
+                    
+                cur_subs = current_data.get("subject_marks", {})
+                s1_c1, s1_c2 = st.columns(2)
+                with s1_c1:
+                    s1_n = st.text_input("Subject 1 Name", value="Business Statistics", key="v_sub1_n")
+                    s1_m = st.number_input("Subject 1 Mark (%)", min_value=0.0, max_value=100.0, value=_safe_float(cur_subs.get("Business Statistics", 75.0)), step=1.0, key="v_sub1_m")
+                with s1_c2:
+                    s2_n = st.text_input("Subject 2 Name", value="Database & SQL Systems", key="v_sub2_n")
+                    s2_m = st.number_input("Subject 2 Mark (%)", min_value=0.0, max_value=100.0, value=_safe_float(cur_subs.get("SQL Querying", 72.0)), step=1.0, key="v_sub2_m")
+                if s1_n.strip():
+                    sub_marks_dict[s1_n.strip()] = s1_m
+                if s2_n.strip():
+                    sub_marks_dict[s2_n.strip()] = s2_m
+        else:
+            st.warning("⚠️ Academic marks unrecorded: This component will be excluded from the readiness score; its 15% weight will be proportionally redistributed.")
 
         st.markdown("<hr style='margin: 14px 0; border: none; border-top: 1px solid #E2E8F0;'>", unsafe_allow_html=True)
 
-        # ---------------- Section C: Attendance ----------------
-        st.markdown("#### C. Classroom Attendance Compliance")
+        # ---------------- Section 4: Classroom Attendance ----------------
+        st.markdown("#### 4. Classroom Attendance Compliance")
         att_c1, att_c2 = st.columns([2, 1])
         with att_c1:
             val_att = st.slider(
-                "Lecture & Lab Attendance Percentage (%) *",
+                "Classroom & Lab Attendance (%) *",
                 min_value=0.0,
                 max_value=100.0,
-                value=float(current_data.get("attendance_percentage", 78.0)),
+                value=_safe_float(current_data.get("attendance_percentage"), 78.0),
                 step=0.5,
                 help=f"Institutional mandatory compliance threshold is {ATTENDANCE_CRITICAL_THRESHOLD}%."
             )
         with att_c2:
             st.write(" ")
             if val_att >= ATTENDANCE_CRITICAL_THRESHOLD:
-                st.success(f"✅ Attendance Compliant ({val_att:.1f}% ≥ {ATTENDANCE_CRITICAL_THRESHOLD}%)")
+                st.success(f"✅ Compliant ({val_att:.1f}% ≥ {ATTENDANCE_CRITICAL_THRESHOLD}%)")
             else:
-                st.error(f"⚠️ Policy Violation: Below {ATTENDANCE_CRITICAL_THRESHOLD}% Cutoff ({val_att:.1f}%)")
+                st.error(f"⚠️ Policy Risk: Below {ATTENDANCE_CRITICAL_THRESHOLD}% Cutoff")
 
         st.markdown("<hr style='margin: 14px 0; border: none; border-top: 1px solid #E2E8F0;'>", unsafe_allow_html=True)
 
-        # ---------------- Section D: Technical Skills (1-5 Scale) ----------------
-        st.markdown("#### D. Technical Skills & Tools Proficiency (1 to 5 Scale)")
+        # ---------------- Section 5: Technical Skills (40% Base Weight) ----------------
+        st.markdown("#### 5. Technical & Domain Skills (40% Base Weight)")
         st.markdown(
             """
             <div style="font-size: 11.5px; color: #64748B; margin-bottom: 10px;">
-                <strong>Proficiency Scale:</strong> 1 = Beginner (Concepts) | 2 = Basic (Syntax) | 3 = Intermediate (Independent Tasks) | 4 = Advanced (Complex Queries/Models) | 5 = Expert (Production Architect)
+                <strong>Proficiency Scale (1-5):</strong> Level 1: Beginner | Level 2: Basic | Level 3: Intermediate | Level 4: Advanced | Level 5: Expert
             </div>
             """,
             unsafe_allow_html=True
@@ -311,184 +340,189 @@ def render(df_active: pd.DataFrame) -> None:
         
         cur_skills = current_data.get("skills", {})
         
-        def skill_widget(label: str, key_name: str, default_lvl: int = 2):
-            val = cur_skills.get(key_name, default_lvl)
+        def skill_input(label: str, skill_key: str, default_lvl: int = 2):
+            raw = cur_skills.get(skill_key, default_lvl)
+            val = _safe_int(raw, default_lvl)
+            val = max(1, min(5, val))
             return st.selectbox(
                 label,
                 options=[1, 2, 3, 4, 5],
-                index=int(val - 1) if 1 <= val <= 5 else 1,
-                format_func=lambda x: f"Level {x}: {SKILL_LEVEL_NAMES[x]}",
-                key=f"skill_{key_name}"
+                index=val - 1,
+                format_func=lambda x: f"L{x}: {SKILL_LEVEL_NAMES[x]}",
+                key=f"skill_inp_{skill_key}"
             )
             
-        sk_col1, sk_col2, sk_col3, sk_col4 = st.columns(4)
-        with sk_col1:
-            val_excel = skill_widget("Microsoft Excel", "Excel", 3)
-            val_sql = skill_widget("SQL Databases", "SQL", 3)
-        with sk_col2:
-            val_py = skill_widget("Python Programming", "Python", 2)
-            val_bi = skill_widget("Power BI Analytics", "Power BI", 3)
-        with sk_col3:
-            val_tab = skill_widget("Tableau Dashboards", "Tableau", 2)
-            val_stat = skill_widget("Business Statistics", "Statistics", 3)
-        with sk_col4:
-            val_ml = skill_widget("Machine Learning", "Machine Learning", 1)
-            val_comm = skill_widget("Communication & Pitching", "Communication", 3)
+        sk1_col1, sk1_col2, sk1_col3, sk1_col4 = st.columns(4)
+        with sk1_col1:
+            v_excel = skill_input("Microsoft Excel", "Excel", 4)
+            v_sql = skill_input("SQL Databases", "SQL", 3)
+            v_py = skill_input("Python Programming", "Python", 2)
+        with sk1_col2:
+            v_bi = skill_input("Power BI", "Power BI", 3)
+            v_tab = skill_input("Tableau", "Tableau", 2)
+            v_stat = skill_input("Applied Statistics", "Statistics", 3)
+        with sk1_col3:
+            v_ml = skill_input("Machine Learning", "Machine Learning", 2)
+            v_math = skill_input("Mathematics Foundations", "Mathematics", 3)
+            v_ps = skill_input("Problem-solving", "Problem-solving", 4)
+        with sk1_col4:
+            v_comm = skill_input("Business Communication", "Communication", 4)
+            v_viz = skill_input("Data Visualization", "Data Visualization", 3)
+            v_etl = skill_input("Data Modeling / ETL", "Data Modeling / ETL", 2)
 
         st.markdown("<hr style='margin: 14px 0; border: none; border-top: 1px solid #E2E8F0;'>", unsafe_allow_html=True)
 
-        # ---------------- Section E: Certifications ----------------
-        st.markdown("#### E. Professional Industry Certifications")
-        standard_certs = [
-            "Microsoft Power BI Data Analyst (PL-300)",
-            "Google Data Analytics Professional Certificate",
-            "IBM Data Analyst",
-            "SQL for Data Science",
-            "Python Data Structures & Applied Analytics",
-            "AWS Certified Cloud Practitioner"
-        ]
-        cur_certs = current_data.get("certifications", [])
-        val_certs = st.multiselect(
-            "Select Verified Completed Certifications:",
-            options=standard_certs,
-            default=[c for c in cur_certs if c in standard_certs],
-            help="Select only completed credentials with verified certificates."
-        )
-        custom_cert = st.text_input("Other / Additional Certification (Optional):", placeholder="e.g. Financial Modeling & Valuation Analyst (FMVA)")
-        if custom_cert.strip() and custom_cert.strip() not in val_certs:
-            val_certs = list(val_certs) + [custom_cert.strip()]
+        # ---------------- Section 6: Certifications (10% Base Weight) ----------------
+        st.markdown("#### 6. Industry Certifications (10% Base Weight)")
+        certs_available = st.checkbox("Certifications Evaluated for Candidate", value=bool(current_data.get("certifications_provided", True)))
+        
+        val_certs = []
+        if certs_available:
+            standard_certs = [
+                "Microsoft Power BI Data Analyst (PL-300)",
+                "Google Data Analytics Professional Certificate",
+                "IBM Data Analyst Professional Certificate",
+                "SQL for Data Science (Coursera / HackerRank)",
+                "Python Data Structures & Applied Analytics",
+                "Tableau Certified Data Analyst",
+                "AWS Certified Cloud Practitioner"
+            ]
+            cur_certs = current_data.get("certifications", [])
+            val_certs = st.multiselect(
+                "Select Verified Completed Credentials:",
+                options=standard_certs,
+                default=[c for c in cur_certs if c in standard_certs],
+                help="Only select verified completed certifications."
+            )
+        else:
+            val_certs = None
+            st.info("ℹ️ Certifications marked unrecorded/pending: Excluded from calculation and weight redistributed.")
 
         st.markdown("<hr style='margin: 14px 0; border: none; border-top: 1px solid #E2E8F0;'>", unsafe_allow_html=True)
 
-        # ---------------- Section F: Internship & Projects ----------------
-        st.markdown("#### F. Corporate Internship & Applied Project Experience")
-        exp_col1, exp_col2, exp_col3 = st.columns(3)
-        with exp_col1:
-            intern_opts = ["Not Completed", "Completed"]
-            cur_intern = current_data.get("internship_status", "Not Completed")
-            val_intern = st.selectbox(
-                "Summer Internship Status",
-                options=intern_opts,
-                index=1 if str(cur_intern).lower() == "completed" else 0
-            )
-        with exp_col2:
-            val_intern_co = st.text_input(
-                "Internship Entity / Employer",
-                value=str(current_data.get("internship_company", "")),
-                placeholder="e.g. KPMG, Amazon, HDFC Bank"
-            )
-        with exp_col3:
-            val_projects_count = st.number_input(
-                "Completed Hands-On Projects",
-                min_value=0,
-                max_value=15,
-                value=int(current_data.get("projects_count", 1)),
-                step=1,
-                help="Substantial analytics projects with documented code or dashboards."
-            )
-            
-        val_proj_desc = st.text_area(
-            "Project Portfolio Summary (Optional):",
-            value=str(current_data.get("project_experience", "")),
-            placeholder="Brief overview of domain problem, tools used, and business outcome."
-        )
+        # ---------------- Section 7: Corporate Internship (10% Base Weight) ----------------
+        st.markdown("#### 7. Corporate Internship (10% Base Weight)")
+        intern_available = st.checkbox("Internship Status Evaluated for Candidate", value=bool(current_data.get("internship_provided", True)))
+        
+        val_intern = None
+        val_intern_co = ""
+        if intern_available:
+            i_col1, i_col2 = st.columns([1, 2])
+            with i_col1:
+                intern_opts = ["Not Completed", "Completed"]
+                cur_i = str(current_data.get("internship_status", "Not Completed"))
+                val_intern = st.selectbox(
+                    "Internship Status",
+                    options=intern_opts,
+                    index=1 if "completed" in cur_i.lower() and "not" not in cur_i.lower() else 0
+                )
+            with i_col2:
+                val_intern_co = st.text_input("Employer / Entity (Optional)", value=str(current_data.get("internship_company", "")), placeholder="e.g. KPMG, Amazon, Deloitte")
+        else:
+            st.info("ℹ️ Internship marked unrecorded/pending: Excluded from calculation and weight redistributed.")
 
         st.markdown("<hr style='margin: 14px 0; border: none; border-top: 1px solid #E2E8F0;'>", unsafe_allow_html=True)
 
-        # ---------------- Section G: Placement Readiness ----------------
-        st.markdown("#### G. Placement Readiness & Soft Skills")
-        rdy_col1, rdy_col2, rdy_col3, rdy_col4 = st.columns(4)
-        with rdy_col1:
-            resume_opts = ["Not Started", "Draft", "Reviewed", "Ready / Verified"]
-            cur_res = current_data.get("resume_status", "Reviewed")
-            val_resume = st.selectbox(
-                "Resume Preparation Status",
-                options=resume_opts,
-                index=resume_opts.index(cur_res) if cur_res in resume_opts else 1
-            )
-        with rdy_col2:
+        # ---------------- Section 8: Practical Project Experience (10% Base Weight) ----------------
+        st.markdown("#### 8. Applied Portfolio Projects (10% Base Weight)")
+        proj_available = st.checkbox("Project Portfolio Evaluated for Candidate", value=bool(current_data.get("projects_provided", True)))
+        
+        val_proj_count = None
+        val_proj_desc = ""
+        if proj_available:
+            p_c1, p_c2 = st.columns([1, 2])
+            with p_c1:
+                val_proj_count = st.number_input(
+                    "Completed Analytics Projects",
+                    min_value=0,
+                    max_value=15,
+                    value=_safe_int(current_data.get("projects_count"), 1),
+                    step=1
+                )
+            with p_c2:
+                val_proj_desc = st.text_input(
+                    "Project Portfolio Summary",
+                    value=str(current_data.get("project_experience", "")),
+                    placeholder="Brief domain or tool highlights"
+                )
+        else:
+            st.info("ℹ️ Project experience marked unrecorded/pending: Excluded from calculation and weight redistributed.")
+
+        st.markdown("<hr style='margin: 14px 0; border: none; border-top: 1px solid #E2E8F0;'>", unsafe_allow_html=True)
+
+        # ---------------- Section 9: Soft Skills & Placement Status ----------------
+        st.markdown("#### 9. Soft Skills, Aptitude & Placement Status (15% Base Weight)")
+        s_c1, s_c2, s_c3, s_c4 = st.columns(4)
+        with s_c1:
             apt_opts = [1, 2, 3, 4, 5]
             val_apt = st.selectbox(
-                "Aptitude Test Preparedness",
+                "Cognitive Aptitude Level",
                 options=apt_opts,
-                index=int(current_data.get("aptitude_level", 3) - 1),
-                format_func=lambda x: f"Level {x}: {['Needs Work', 'Basic', 'Competent', 'Proficient', 'Exceptional'][x-1]}"
+                index=_safe_int(current_data.get("aptitude_level"), 3) - 1,
+                format_func=lambda x: f"L{x}: {['Needs Work', 'Basic', 'Competent', 'Proficient', 'Exceptional'][x-1]}"
             )
-        with rdy_col3:
-            mock_opts = ["Not Started", "1 Mock Interview", "Multiple Mocks Completed", "Interview Ready"]
-            cur_mock = current_data.get("interview_status", "1 Mock Interview")
+        with s_c2:
+            res_opts = ["Draft", "Reviewed", "Ready / Verified"]
+            cur_r = current_data.get("resume_status", "Reviewed")
+            val_resume = st.selectbox(
+                "Resume Review Status",
+                options=res_opts,
+                index=res_opts.index(cur_r) if cur_r in res_opts else 1
+            )
+        with s_c3:
+            mock_opts = ["Not Started", "1 Mock Interview", "Multiple Mocks Completed"]
+            cur_m = current_data.get("interview_status", "1 Mock Interview")
             val_mock = st.selectbox(
-                "Simulated Interview Experience",
+                "Mock Interview Experience",
                 options=mock_opts,
-                index=mock_opts.index(cur_mock) if cur_mock in mock_opts else 0
+                index=mock_opts.index(cur_m) if cur_m in mock_opts else 1
             )
-        with rdy_col4:
+        with s_c4:
             place_opts = ["Unplaced", "Placed", "In Process"]
-            cur_place = current_data.get("placement_status", "Unplaced")
+            cur_p = current_data.get("placement_status", "Unplaced")
             val_place = st.selectbox(
-                "Current Recruitment Status",
+                "Recruitment Status",
                 options=place_opts,
-                index=place_opts.index(cur_place) if cur_place in place_opts else 0
+                index=place_opts.index(cur_p) if cur_p in place_opts else 0
             )
 
-        st.markdown("<hr style='margin: 14px 0; border: none; border-top: 1px solid #E2E8F0;'>", unsafe_allow_html=True)
-
-        # ---------------- Section H: Target Career Direction ----------------
-        st.markdown("#### H. Target Career Role & Benchmark Mapping")
-        role_opts = list(CAREER_ROLE_BENCHMARKS.keys())
-        cur_role = current_data.get("target_role", "Data Analyst")
-        val_target_role = st.selectbox(
-            "Select Target Career Role for Competency Benchmarking:",
-            options=role_opts,
-            index=role_opts.index(cur_role) if cur_role in role_opts else 0,
-            help="Candidate skills and experience will be benchmarked against this role's industry standard."
-        )
-        
-        role_desc = CAREER_ROLE_BENCHMARKS[val_target_role]["description"]
-        st.info(f"🎯 **Target Role Scope ({val_target_role}):** {role_desc}")
-
-        # ---------------- Submit / Analyze Button ----------------
+        # ---------------- Action / Submit Button ----------------
         st.markdown("<br>", unsafe_allow_html=True)
         analyze_clicked = st.button(
-            "🚀 Analyze Student Performance & Generate Diagnostic Dossier",
+            "🚀 Benchmark Student Against Career Role & Generate Diagnostic Dossier",
             use_container_width=True,
             type="primary"
         )
         
         if analyze_clicked:
-            # Input validation
             errors = []
             if not val_id.strip():
                 errors.append("Student ID is required.")
             if not val_name.strip():
-                errors.append("Student Name is required.")
-            if val_acad_pct < 0.0 or val_acad_pct > 100.0:
-                errors.append("Academic Percentage must be between 0.0% and 100.0%.")
+                errors.append("Student Full Name is required.")
             if val_att < 0.0 or val_att > 100.0:
                 errors.append("Attendance Percentage must be between 0.0% and 100.0%.")
+            if acad_available and (val_acad_pct is not None and (val_acad_pct < 0.0 or val_acad_pct > 100.0)):
+                errors.append("Academic Percentage must be between 0.0% and 100.0%.")
                 
             if errors:
                 for err in errors:
                     st.error(f"❌ {err}")
             else:
-                # Compile comprehensive student data dictionary
-                subject_marks_dict = {}
-                if sub1_name.strip():
-                    subject_marks_dict[sub1_name.strip()] = float(sub1_mark)
-                if sub2_name.strip():
-                    subject_marks_dict[sub2_name.strip()] = float(sub2_mark)
-                if sub3_name.strip():
-                    subject_marks_dict[sub3_name.strip()] = float(sub3_mark)
-
                 compiled_skills = {
-                    "Excel": val_excel,
-                    "SQL": val_sql,
-                    "Python": val_py,
-                    "Power BI": val_bi,
-                    "Tableau": val_tab,
-                    "Statistics": val_stat,
-                    "Machine Learning": val_ml,
-                    "Communication": val_comm
+                    "Excel": v_excel,
+                    "SQL": v_sql,
+                    "Python": v_py,
+                    "Power BI": v_bi,
+                    "Tableau": v_tab,
+                    "Statistics": v_stat,
+                    "Machine Learning": v_ml,
+                    "Mathematics": v_math,
+                    "Problem-solving": v_ps,
+                    "Communication": v_comm,
+                    "Data Visualization": v_viz,
+                    "Data Modeling / ETL": v_etl,
+                    "Product Metrics / A/B Testing": 4 if selected_role == "Product Analyst" else 2
                 }
 
                 assembled_student = {
@@ -498,45 +532,47 @@ def render(df_active: pd.DataFrame) -> None:
                     "specialization": val_spec,
                     "semester": val_sem,
                     "academic_year": val_year.strip(),
-                    "tenth_percentage": float(val_10th),
-                    "twelfth_percentage": float(val_12th),
-                    "grad_percentage": float(val_grad),
-                    "cgpa": float(val_cgpa),
+                    "tenth_percentage": float(val_10th) if acad_available else 0.0,
+                    "twelfth_percentage": float(val_12th) if acad_available else 0.0,
+                    "grad_percentage": float(val_grad) if acad_available else 0.0,
+                    "cgpa": float(val_cgpa) if acad_available else 0.0,
                     "cgpa_scale": float(val_scale),
-                    "academic_percentage": float(val_acad_pct),
-                    "subject_marks": subject_marks_dict,
+                    "academic_percentage": float(val_acad_pct) if acad_available else None,
+                    "subject_marks": sub_marks_dict,
                     "attendance_percentage": float(val_att),
                     "skills": compiled_skills,
                     "certifications": val_certs,
-                    "certifications_count": len(val_certs),
+                    "certifications_count": len(val_certs) if val_certs is not None else 0,
+                    "certifications_provided": certs_available,
                     "internship_status": val_intern,
-                    "internship_company": val_intern_co.strip(),
+                    "internship_provided": intern_available,
+                    "internship_company": val_intern_co.strip() if val_intern_co else "",
                     "internship_duration_months": 2 if val_intern == "Completed" else 0,
                     "project_experience": val_proj_desc.strip(),
-                    "projects_count": int(val_projects_count),
+                    "projects_count": val_proj_count,
+                    "projects_provided": proj_available,
                     "resume_status": val_resume,
-                    "communication_level": val_comm,
+                    "communication_level": v_comm,
                     "aptitude_level": val_apt,
                     "interview_status": val_mock,
                     "placement_status": val_place,
-                    "target_role": val_target_role
+                    "target_role": selected_role
                 }
 
-                # Update session state
                 st.session_state["assessment_form_data"] = assembled_student
                 st.session_state["current_assessment"] = generate_individual_assessment(
                     assembled_student,
-                    val_target_role
+                    selected_role
                 )
-                st.success("✅ Student performance successfully assessed! Detailed diagnostic dossier generated below.")
+                st.success(f"✅ Performance benchmarked against {selected_role}! Diagnostic dossier updated below.")
                 st.rerun()
 
     # -------------------------------------------------------------------------
-    # Render Assessment Diagnostic Dossier (if assessment exists)
+    # Render Analytical Report & Decision-Support Dossier
     # -------------------------------------------------------------------------
     assessment = st.session_state.get("current_assessment")
     if not assessment:
-        st.info("💡 Fill in candidate details above and click 'Analyze Student Performance' to view the analytical dossier.")
+        st.info("💡 Complete student information above and click benchmark button to view individual dossier.")
         render_footer()
         return
 
@@ -544,76 +580,93 @@ def render(df_active: pd.DataFrame) -> None:
     target_role = assessment["target_role"]
     readiness = assessment["readiness"]
     gap_analysis = readiness["gap_analysis"]
+    roadmap = assessment["learning_roadmap"]
     strengths = assessment["strengths"]
     weaknesses = assessment["weaknesses"]
     recommendations = assessment["recommendations"]
 
     st.markdown("<br>", unsafe_allow_html=True)
     render_section_header(
-        f"Diagnostic Assessment Dossier: {student_data.get('student_name', 'Student')} ({student_data.get('student_id', 'N/A')})",
-        f"Multi-pillar evaluation benchmarked against industry standards for {target_role}.",
+        f"Diagnostic Assessment: {student_data.get('student_name', 'Student')} ({student_data.get('student_id', 'N/A')})",
+        f"Career-specific competency benchmarking and multi-pillar readiness evaluation vs. {target_role}.",
         "📊"
     )
 
-    # 1. Candidate Overview & Executive KPIs
+    # -------------------------------------------------------------------------
+    # Executive KPI Ribbon & Coverage Callout
+    # -------------------------------------------------------------------------
     k1, k2, k3, k4 = st.columns(4)
     with k1:
         score_val = readiness["overall_score"]
         tier_col = readiness["tier_color"]
         render_kpi(
-            "Readiness Index",
+            "Readiness Score",
             f"{score_val:.1f} / 100",
-            f"Tier: {readiness['tier_label']}",
+            f"Classification: {readiness['tier_label'].split('/')[0].strip()}",
             tier_col,
             icon="🎯",
             chip_text=readiness["tier_label"].split("/")[0].strip(),
             chip_color="#EFF6FF"
         )
     with k2:
-        fit_pct = gap_analysis["fit_percentage"]
+        cov_val = readiness["coverage_percentage"]
+        cov_col = COLOR_SUCCESS if cov_val >= 90.0 else (COLOR_PRIMARY if cov_val >= 70.0 else COLOR_ACCENT)
         render_kpi(
-            f"Target Role Fit ({target_role})",
-            f"{fit_pct:.1f}%",
-            f"{gap_analysis['student_matched_points']} of {gap_analysis['total_required_points']} benchmark points",
-            COLOR_PRIMARY,
-            icon="⚡",
-            chip_text="Competency Fit",
-            chip_color="#EFF6FF"
+            "Assessment Coverage",
+            f"{cov_val:.1f}%",
+            f"{readiness['available_component_count']} of {readiness['total_component_count']} Components Evaluated",
+            cov_col,
+            icon="📋",
+            chip_text="Data Coverage",
+            chip_color="#CCFBF1" if cov_val >= 90.0 else "#FEF3C7"
         )
     with k3:
-        acad_val = student_data.get("academic_percentage", 0.0)
-        band_name = "Distinction" if acad_val >= 75 else ("First Class" if acad_val >= 60 else "Remedial")
+        fit_pct = gap_analysis["fit_percentage"]
         render_kpi(
-            "Academic Standing",
-            f"{acad_val:.1f}%",
-            f"CGPA: {student_data.get('cgpa', 0.0):.1f} ({band_name})",
-            COLOR_SECONDARY,
-            icon="📚",
-            chip_text="Academic Score",
-            chip_color="#CCFBF1"
+            f"Competency Fit ({target_role})",
+            f"{fit_pct:.1f}%",
+            f"{gap_analysis['student_matched_points']} of {gap_analysis['total_required_points']} Required Benchmark Points",
+            COLOR_PRIMARY,
+            icon="⚡",
+            chip_text="Role Fit",
+            chip_color="#EFF6FF"
         )
     with k4:
-        att_val = student_data.get("attendance_percentage", 0.0)
-        att_col = COLOR_SUCCESS if att_val >= ATTENDANCE_CRITICAL_THRESHOLD else COLOR_DANGER
-        att_txt = "Compliant" if att_val >= ATTENDANCE_CRITICAL_THRESHOLD else "Policy Risk"
+        raw_ac = student_data.get("academic_percentage")
+        acad_str = f"{float(raw_ac):.1f}%" if raw_ac is not None else "Not Provided"
         render_kpi(
-            "Class Attendance",
-            f"{att_val:.1f}%",
-            f"Mandatory Cutoff: {ATTENDANCE_CRITICAL_THRESHOLD:.1f}%",
-            att_col,
-            icon="⏰",
-            chip_text=att_txt,
-            chip_color="#DCFCE7" if att_val >= ATTENDANCE_CRITICAL_THRESHOLD else "#FEE2E2"
+            "Academic Marks",
+            acad_str,
+            f"Attendance: {student_data.get('attendance_percentage', 0.0):.1f}%",
+            COLOR_SECONDARY,
+            icon="📚",
+            chip_text="Academics",
+            chip_color="#EFF6FF"
+        )
+
+    # Coverage Warning / Disclosure Banner
+    missing_items = readiness.get("missing_components", [])
+    if missing_items:
+        st.markdown(
+            f"""
+            <div style="background: #FFFBEB; border: 1px solid #FDE68A; border-left: 4px solid #F59E0B; border-radius: 8px; padding: 10px 16px; margin: 12px 0 16px 0; font-size: 13px; color: #92400E;">
+                <strong>⚠️ Data Coverage Notice ({cov_val:.1f}%):</strong> The candidate profile excludes: <em>{', '.join(missing_items)}</em>. 
+                Missing components are not penalized as zero; available weights have been proportionally recalibrated.
+            </div>
+            """,
+            unsafe_allow_html=True
         )
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # 2. Visual Diagnostics Tabs
-    tab_gap, tab_radar, tab_pillars, tab_subs = st.tabs([
-        "📊 Competency Gap Analysis",
-        "🎯 Radar Capability Profile",
-        "⚖️ Readiness Score Breakdown",
-        "📚 Subject Performance"
+    # -------------------------------------------------------------------------
+    # Visual Diagnostics Tabs
+    # -------------------------------------------------------------------------
+    tab_gap, tab_radar, tab_pillars, tab_table = st.tabs([
+        "📊 Student vs. Benchmark Chart",
+        "🎯 Radar Competency Profile",
+        "⚖️ Component Weights & Scores",
+        "📋 Full Competency Gap Table"
     ])
 
     with tab_gap:
@@ -627,9 +680,9 @@ def render(df_active: pd.DataFrame) -> None:
         
         c_s1, c_s2, c_s3 = st.columns(3)
         with c_s1:
-            st.metric("Surplus / Exceeds Benchmark", f"{surplus_cnt} Skills", delta="Competitive Edge" if surplus_cnt > 0 else None)
+            st.metric("Surplus / Exceeds Benchmark", f"{surplus_cnt} Skills", delta="Competitive Advantage" if surplus_cnt > 0 else None)
         with c_s2:
-            st.metric("Aligned to Benchmark", f"{aligned_cnt} Skills")
+            st.metric("Meets Benchmark", f"{aligned_cnt} Skills")
         with c_s3:
             st.metric("Deficit Requiring Focus", f"{deficit_cnt} Skills", delta=f"-{deficit_cnt} Gaps" if deficit_cnt > 0 else "No Deficits", delta_color="inverse")
 
@@ -642,20 +695,78 @@ def render(df_active: pd.DataFrame) -> None:
         fig_pillars = plot_readiness_component_breakdown(readiness)
         st.plotly_chart(fig_pillars, use_container_width=True)
 
-    with tab_subs:
-        subs = student_data.get("subject_marks", {})
-        if subs:
-            fig_subs = plot_subject_performance(subs)
-            st.plotly_chart(fig_subs, use_container_width=True)
-        else:
-            st.info("ℹ️ No individual subject-level scores were entered. Aggregate academic score used for evaluation.")
+    with tab_table:
+        # Full Student vs Career Benchmark Comparison Table
+        table_rows = []
+        for item in gap_analysis["skill_comparison"]:
+            meets_str = "✅ Meets / Exceeds" if item["meets_benchmark"] else f"❌ Deficit ({abs(item['gap'])} Level{'s' if abs(item['gap']) > 1 else ''})"
+            table_rows.append({
+                "Competency Dimension": item["skill"],
+                "Student Level": f"L{item['student_level']} ({item['student_name']})",
+                "Required Benchmark": f"L{item['target_level']} ({item['target_name']})",
+                "Skill Gap": f"{item['gap']:+d}",
+                "Meets Benchmark?": meets_str
+            })
+        st.dataframe(pd.DataFrame(table_rows), use_container_width=True, hide_index=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # 3. Strengths vs Development Areas
+    # -------------------------------------------------------------------------
+    # Prioritized Personalized Learning Roadmap
+    # -------------------------------------------------------------------------
     render_section_header(
-        "Candidate Profile Diagnostics & Observations",
-        "Rule-derived identification of core competitive advantages and areas needing remediation.",
+        "Prioritized Personalized Learning Roadmap",
+        f"Sequence of high-impact learning sprints and practical portfolio projects designed to close {student_data.get('student_name', 'candidate')}'s largest skill gaps.",
+        "🗺️"
+    )
+    
+    if roadmap:
+        for r_item in roadmap:
+            p_badge_col = "#EF4444" if r_item["priority"] == 1 else ("#2563EB" if r_item["priority"] == 2 else "#0D9488")
+            p_badge_bg = "#FEE2E2" if r_item["priority"] == 1 else ("#EFF6FF" if r_item["priority"] == 2 else "#CCFBF1")
+            
+            with st.container():
+                st.markdown(
+                    f"""
+                    <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 18px 22px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;">
+                            <h4 style="margin: 0; color: #0F172A; font-size: 16px; font-weight: 700;">{r_item['title']}</h4>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <span style="background: {p_badge_bg}; color: {p_badge_col}; font-weight: 700; font-size: 11px; padding: 3px 10px; border-radius: 6px;">
+                                    PRIORITY {r_item['priority']}
+                                </span>
+                                <span style="background: #F1F5F9; color: #475569; font-weight: 600; font-size: 11px; padding: 3px 10px; border-radius: 6px;">
+                                    ⏱️ {r_item['duration']}
+                                </span>
+                            </div>
+                        </div>
+                        <p style="color: #64748B; font-size: 13px; margin: 0 0 10px 0;">
+                            <strong>Current vs. Target:</strong> {r_item['current_status']} → <strong style="color: #2563EB;">{r_item['target_status']}</strong>
+                        </p>
+                        <div style="background: #F8FAFC; border-left: 4px solid {p_badge_col}; padding: 12px 16px; border-radius: 6px; font-size: 13px; color: #1E293B; margin-bottom: 10px;">
+                            <strong style="color: #0F172A;">Specific Learning Objectives:</strong>
+                            <ul style="margin: 6px 0 4px 18px; padding: 0;">
+                                {''.join(f"<li>{obj}</li>" for obj in r_item['objectives'])}
+                            </ul>
+                        </div>
+                        <div style="background: #EFF6FF; border: 1px dashed #BFDBFE; padding: 10px 14px; border-radius: 6px; font-size: 12.5px; color: #1E40AF;">
+                            <strong>🛠️ Practical Project Suggestion:</strong> {r_item['practical_project']}
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+    else:
+        st.success("🎉 Candidate profile aligns comprehensively with all benchmark requirements for this target role!")
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # -------------------------------------------------------------------------
+    # Diagnostic Observations: Strongest Areas vs. Biggest Opportunities
+    # -------------------------------------------------------------------------
+    render_section_header(
+        "Candidate Profile Diagnostics: Strengths vs. Priority Gaps",
+        "Rule-derived identification of core competitive advantages and primary areas needing intervention.",
         "🔍"
     )
     col_str, col_weak = st.columns(2)
@@ -663,7 +774,7 @@ def render(df_active: pd.DataFrame) -> None:
         st.markdown(
             """
             <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 10px; padding: 14px 18px; margin-bottom: 12px;">
-                <h4 style="margin: 0 0 8px 0; color: #166534; font-size: 15px;">🌟 Key Strengths & Competitive Assets</h4>
+                <h4 style="margin: 0 0 8px 0; color: #166534; font-size: 15px;">🌟 Strongest Competency Areas</h4>
             """,
             unsafe_allow_html=True
         )
@@ -671,14 +782,14 @@ def render(df_active: pd.DataFrame) -> None:
             for s in strengths:
                 st.markdown(f"<p style='color: #14532D; font-size: 13px; margin: 4px 0;'>• {s}</p>", unsafe_allow_html=True)
         else:
-            st.write("No distinct competitive strengths recorded yet.")
+            st.write("No distinct competitive advantages recorded yet.")
         st.markdown("</div>", unsafe_allow_html=True)
 
     with col_weak:
         st.markdown(
             """
             <div style="background: #FEF2F2; border: 1px solid #FECACA; border-radius: 10px; padding: 14px 18px; margin-bottom: 12px;">
-                <h4 style="margin: 0 0 8px 0; color: #991B1B; font-size: 15px;">⚠️ Priority Development Areas & Gaps</h4>
+                <h4 style="margin: 0 0 8px 0; color: #991B1B; font-size: 15px;">⚠️ Biggest Improvement Opportunities</h4>
             """,
             unsafe_allow_html=True
         )
@@ -691,43 +802,12 @@ def render(df_active: pd.DataFrame) -> None:
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # 4. Actionable Strategic Recommendations
-    render_section_header(
-        "Personalized Career-Development Interventions",
-        f"Concrete, role-specific action steps to elevate {student_data.get('student_name', 'candidate')} into the premier recruitment band.",
-        "🎯"
-    )
-    
-    if recommendations:
-        for rec in recommendations:
-            badge_color = "#EF4444" if rec["priority"] == "Critical" else ("#F59E0B" if rec["priority"] == "High" else "#2563EB")
-            badge_bg = "#FEE2E2" if rec["priority"] == "Critical" else ("#FEF3C7" if rec["priority"] == "High" else "#EFF6FF")
-            st.markdown(
-                f"""
-                <div class="recommendation-card">
-                    <div class="recommendation-header">
-                        <h4 style="margin: 0; color: #0F172A; font-size: 15.5px; font-weight: 700;">{rec['category']}</h4>
-                        <span style="background: {badge_bg}; color: {badge_color}; font-weight: 700; font-size: 11px; padding: 3px 10px; border-radius: 6px;">
-                            {rec['priority'].upper()} PRIORITY
-                        </span>
-                    </div>
-                    <div class="recommendation-action-box" style="border-left: 4px solid {badge_color}; margin-top: 6px;">
-                        <strong>Actionable Step:</strong> {rec['action']}<br>
-                        <span style="font-size: 12px; color: #64748B;"><em>Rationale: {rec['rationale']}</em></span>
-                    </div>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-    else:
-        st.success("🎉 Candidate profile aligns comprehensively with all benchmark requirements for this target role!")
-
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    # 5. Export, Persistence & Cohort Integration
+    # -------------------------------------------------------------------------
+    # Export, Persistence & Cohort Integration
+    # -------------------------------------------------------------------------
     render_section_header(
         "Dossier Export, Database Persistence & Cohort Integration",
-        "Download official assessment reports, persist to relational SQLite storage, or incorporate into active cohort analytics.",
+        "Download official PDF assessment dossiers, persist records to relational SQLite storage, or incorporate into active cohort analytics.",
         "📥"
     )
     
@@ -755,15 +835,16 @@ def render(df_active: pd.DataFrame) -> None:
             "Specialization": student_data.get("specialization"),
             "Semester": student_data.get("semester"),
             "Target Role": target_role,
-            "Academic Marks (%)": student_data.get("academic_percentage"),
-            "Attendance (%)": student_data.get("attendance_percentage"),
             "Readiness Score": readiness.get("overall_score"),
             "Readiness Tier": readiness.get("tier_label"),
+            "Coverage Percentage": readiness.get("coverage_percentage"),
             "Technical Fit (%)": gap_analysis.get("fit_percentage"),
-            "Certifications Count": len(student_data.get("certifications", [])),
+            "Academic Percentage": student_data.get("academic_percentage"),
+            "Attendance Percentage": student_data.get("attendance_percentage"),
+            "Certifications Count": len(student_data.get("certifications", [])) if student_data.get("certifications") is not None else "Unrecorded",
             "Internship Status": student_data.get("internship_status"),
             "Projects Count": student_data.get("projects_count"),
-            "Placement Status": student_data.get("placement_status")
+            "Top Priority Recommendation": roadmap[0]["title"] if roadmap else "N/A"
         }])
         csv_bytes = summary_df.to_csv(index=False).encode('utf-8')
         st.download_button(
@@ -785,16 +866,17 @@ def render(df_active: pd.DataFrame) -> None:
                 
     with c_btn4:
         # Incorporate into Active Cohort
-        if st.button("📥 Add to Active Session Cohort", use_container_width=True, help="Appends this student into the active dataset so all 7 other dashboards reflect this student"):
+        if st.button("📥 Add to Active Session Cohort", use_container_width=True, help="Appends this student into the active dataset so all other dashboards reflect this student"):
             try:
-                # Map skills to 3 standard categories for main schema compatibility
                 sk = student_data.get("skills", {})
                 sql_p = SKILL_LEVEL_NAMES.get(sk.get("SQL", 3), "Intermediate")
                 py_p = SKILL_LEVEL_NAMES.get(sk.get("Python", 2), "Beginner")
                 bi_p = SKILL_LEVEL_NAMES.get(sk.get("Power BI", 3), "Intermediate")
                 
-                # Constrain to 3NF schema values
                 to_main_p = lambda p: "Advanced" if p in ["Advanced", "Expert"] else ("Intermediate" if p == "Intermediate" else "Beginner")
+                
+                acad_val = student_data.get("academic_percentage")
+                acad_safe = float(acad_val) if acad_val is not None else 65.0
                 
                 new_row = {
                     "student_id": student_data["student_id"],
@@ -802,28 +884,24 @@ def render(df_active: pd.DataFrame) -> None:
                     "gender": student_data.get("gender", "Non-Binary"),
                     "specialization": student_data["specialization"],
                     "semester": student_data["semester"],
-                    "academic_percentage": student_data["academic_percentage"],
-                    "attendance_percentage": student_data["attendance_percentage"],
+                    "academic_percentage": acad_safe,
+                    "attendance_percentage": float(student_data.get("attendance_percentage", 75.0)),
                     "sql_proficiency": to_main_p(sql_p),
                     "python_proficiency": to_main_p(py_p),
                     "power_bi_proficiency": to_main_p(bi_p),
-                    "certifications_count": len(student_data.get("certifications", [])),
-                    "internship_status": student_data.get("internship_status", "Not Completed"),
+                    "certifications_count": len(student_data.get("certifications", [])) if student_data.get("certifications") is not None else 0,
+                    "internship_status": student_data.get("internship_status", "Not Completed") if student_data.get("internship_status") is not None else "Not Completed",
                     "placement_status": student_data.get("placement_status", "Unplaced"),
                     "company": student_data.get("internship_company", None) if student_data.get("placement_status") == "Placed" else None,
                     "salary_lpa": 12.0 if student_data.get("placement_status") == "Placed" else None
                 }
                 
-                # Also save to SQLite 4 normalized tables
                 save_single_student_to_db(new_row)
                 
-                # Enrich and append to session_state["active_dataset"]
                 from src.data_loader import clean_and_enrich_data
                 current_active = st.session_state["active_dataset"]
                 
-                # Check duplicate
                 if student_data["student_id"] in current_active["student_id"].values:
-                    # Update row in place
                     current_active = current_active[current_active["student_id"] != student_data["student_id"]]
                     
                 new_df = pd.DataFrame([new_row])

@@ -576,11 +576,15 @@ def plot_skill_gap_comparison(gap_analysis: Dict[str, Any]) -> go.Figure:
     ))
     
     # Trace 2: Candidate Level
+    stu_colors = [
+        "#0D9488" if g > 0 else ("#2563EB" if g == 0 else "#EF4444")
+        for g in gaps
+    ]
     fig.add_trace(go.Bar(
         name="Candidate Level",
         x=skills,
         y=stu_lvls,
-        marker=dict(color="#2563EB", line=dict(color="#1D4ED8", width=1.5)),
+        marker=dict(color=stu_colors, line=dict(color="rgba(0,0,0,0.15)", width=1)),
         customdata=list(zip(gaps, statuses)),
         hovertemplate="Skill: <b>%{x}</b><br>Candidate Level: <b>%{y} / 5</b><br>Variance: <b>%{customdata[0]:+d}</b> (%{customdata[1]})<extra></extra>"
     ))
@@ -669,7 +673,8 @@ def plot_student_competency_radar(student_skills: Dict[str, int], target_skills:
 
 def plot_readiness_component_breakdown(readiness: Dict[str, Any]) -> go.Figure:
     """
-    Horizontal bar chart showing the candidate's score across all 6 readiness pillars.
+    Horizontal bar chart showing the candidate's score across all readiness pillars.
+    Handles available and unprovided/missing components with appropriate color coding.
     """
     components = readiness.get("components", {})
     if not components:
@@ -678,15 +683,30 @@ def plot_readiness_component_breakdown(readiness: Dict[str, Any]) -> go.Figure:
         return fig
         
     names = list(components.keys())
-    scores = [components[k]["score"] for k in names]
-    weights = [components[k]["weight"] for k in names]
-    pts = [components[k]["weighted_points"] for k in names]
+    scores = [float(components[k].get("score") or 0.0) for k in names]
+    weights = [float(components[k].get("adjusted_weight_pct", components[k].get("weight", 0.0))) for k in names]
+    pts = [float(components[k].get("weighted_points", 0.0)) for k in names]
+    statuses = [str(components[k].get("status", "Available")) for k in names]
     
-    # Color bars based on score bands
-    bar_colors = [
-        "#10B981" if s >= 80 else ("#2563EB" if s >= 65 else ("#F59E0B" if s >= 50 else "#EF4444"))
-        for s in scores
-    ]
+    # Color bars based on status and score bands
+    bar_colors = []
+    text_labels = []
+    for s, p, stat in zip(scores, pts, statuses):
+        if stat != "Available":
+            bar_colors.append("#CBD5E1") # Muted grey for excluded/missing
+            text_labels.append("Not Provided (Excluded)")
+        elif s >= 80:
+            bar_colors.append("#10B981") # Green
+            text_labels.append(f"{s:.1f}% ({p:.1f} pts)")
+        elif s >= 65:
+            bar_colors.append("#2563EB") # Blue
+            text_labels.append(f"{s:.1f}% ({p:.1f} pts)")
+        elif s >= 50:
+            bar_colors.append("#F59E0B") # Amber
+            text_labels.append(f"{s:.1f}% ({p:.1f} pts)")
+        else:
+            bar_colors.append("#EF4444") # Red
+            text_labels.append(f"{s:.1f}% ({p:.1f} pts)")
     
     fig = go.Figure()
     fig.add_trace(go.Bar(
@@ -694,15 +714,15 @@ def plot_readiness_component_breakdown(readiness: Dict[str, Any]) -> go.Figure:
         x=scores,
         orientation="h",
         marker=dict(color=bar_colors, line=dict(color="rgba(0,0,0,0.1)", width=1)),
-        text=[f"{s:.1f}% ({p:.1f} pts)" for s, p in zip(scores, pts)],
+        text=text_labels,
         textposition="auto",
-        customdata=weights,
-        hovertemplate="Pillar: <b>%{y}</b><br>Score: <b>%{x:.1f} / 100</b><br>Weight: <b>%{customdata}%</b><extra></extra>"
+        customdata=list(zip(weights, statuses)),
+        hovertemplate="Component: <b>%{y}</b><br>Score: <b>%{x:.1f} / 100</b><br>Active Weight: <b>%{customdata[0]:.1f}%</b><br>Status: <b>%{customdata[1]}</b><extra></extra>"
     ))
     
     fig.update_layout(
-        title="<b>Pillar-Level Readiness Index Breakdown</b><br><span style='font-size:11.5px; color:#64748B;'>Individual scores contributing to the overall Placement Readiness Index</span>",
-        xaxis=dict(title="Readiness Pillar Score (0-100)", range=[0, 108]),
+        title="<b>Pillar-Level Readiness Index Breakdown</b><br><span style='font-size:11.5px; color:#64748B;'>Normalized component scores (0-100) and weighted points toward the Readiness Index</span>",
+        xaxis=dict(title="Pillar Score (0-100)", range=[0, 110]),
         yaxis=dict(title="", autorange="reversed"),
         showlegend=False,
         margin=dict(l=28, r=20, t=55, b=28)
