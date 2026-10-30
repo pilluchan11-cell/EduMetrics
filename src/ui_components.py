@@ -85,27 +85,27 @@ def inject_custom_css() -> None:
     /* ==================================================================== */
     /* Streamlit Column Wrapping & Responsive Grid                          */
     /* ==================================================================== */
-    /* Tablet breakpoint: Wrap 4-column blocks into clean 2x2 grids */
-    @media screen and (max-width: 1024px) and (min-width: 641px) {
-        div[data-testid="stHorizontalBlock"] {
-            flex-wrap: wrap !important;
-            gap: 12px 10px !important;
-        }
-        div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] {
-            min-width: calc(50% - 10px) !important;
-            flex: 1 1 calc(50% - 10px) !important;
-        }
+    /* Ensure all Streamlit columns can shrink below intrinsic content size */
+    div[data-testid="stColumn"] {
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+    }
+    div[data-testid="stHorizontalBlock"] {
+        width: 100% !important;
+        box-sizing: border-box !important;
+        align-items: stretch !important;
     }
 
-    /* Mobile breakpoint: Stack columns cleanly or allow full-width */
-    @media screen and (max-width: 640px) {
+    /* Tablet & Small-Screen breakpoint: Stack columns cleanly */
+    @media screen and (max-width: 768px) {
         div[data-testid="stHorizontalBlock"] {
             flex-wrap: wrap !important;
-            gap: 10px !important;
+            gap: 12px 0 !important;
         }
         div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] {
             min-width: 100% !important;
             flex: 1 1 100% !important;
+            margin-bottom: 8px !important;
         }
     }
 
@@ -170,14 +170,18 @@ def inject_custom_css() -> None:
         background: #FFFFFF;
         border: 1px solid #E2E8F0;
         border-radius: 12px;
-        padding: clamp(12px, 2vw, 18px) clamp(14px, 2vw, 20px);
+        padding: 14px 16px;
         box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
         transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        margin-bottom: 8px;
+        margin-bottom: 12px;
         position: relative;
-        overflow: hidden;
+        overflow: visible;
         box-sizing: border-box;
         width: 100%;
+        min-height: 145px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
     .kpi-card:hover {
         transform: translateY(-2px);
@@ -186,84 +190,93 @@ def inject_custom_css() -> None:
     .kpi-top-row {
         display: flex;
         justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 4px;
+        align-items: flex-start;
+        gap: 8px;
         margin-bottom: 6px;
+        width: 100%;
     }
     .kpi-title {
-        font-size: clamp(10px, 1.8vw, 11.5px);
+        font-size: 11.5px;
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.06em;
+        letter-spacing: 0.05em;
         color: #64748B;
-        line-height: 1.3;
+        line-height: 1.35;
         flex: 1 1 auto;
+        margin: 0;
+        word-break: break-word;
     }
     .kpi-icon {
-        width: clamp(26px, 4vw, 32px);
-        height: clamp(26px, 4vw, 32px);
-        border-radius: 8px;
+        width: 28px;
+        height: 28px;
+        border-radius: 7px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: clamp(13px, 2.5vw, 15px);
+        font-size: 14px;
         background: #F1F5F9;
         flex-shrink: 0;
     }
     .kpi-value {
-        font-size: clamp(20px, 3.5vw, 27px);
+        font-size: clamp(20px, 2.2vw, 26px);
         font-weight: 800;
         color: #0F172A;
         letter-spacing: -0.02em;
-        line-height: 1.15;
+        line-height: 1.25;
         word-break: break-word;
-        margin: 2px 0;
+        margin: 4px 0 8px 0;
     }
     .kpi-subtext-container {
         display: flex;
         align-items: center;
         flex-wrap: wrap;
         gap: 6px;
-        margin-top: 6px;
-        font-size: clamp(10.5px, 1.8vw, 12px);
+        font-size: 11.5px;
         color: #64748B;
-        line-height: 1.35;
+        line-height: 1.4;
+        margin-top: auto;
+        word-break: break-word;
     }
     .kpi-chip {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
         padding: 2px 7px;
         border-radius: 4px;
-        font-size: clamp(9.5px, 1.6vw, 11px);
+        font-size: 11px;
         font-weight: 600;
-        white-space: nowrap;
+        line-height: 1.3;
+        white-space: normal;
+        word-break: break-word;
     }
 
     /* ==================================================================== */
     /* Section Headings                                                     */
     /* ==================================================================== */
     .section-header-container {
-        margin-top: clamp(16px, 3vw, 24px);
-        margin-bottom: clamp(10px, 2vw, 16px);
+        margin-top: 24px;
+        margin-bottom: 14px;
+        clear: both;
+        display: block;
     }
     .section-title {
-        font-size: clamp(15.5px, 3vw, 18.5px);
+        font-size: clamp(16px, 2.5vw, 19px);
         font-weight: 700;
         color: #0F172A;
         display: flex;
         align-items: center;
         flex-wrap: wrap;
         gap: 6px 10px;
-        margin: 0;
+        margin: 0 0 4px 0;
         letter-spacing: -0.01em;
-        line-height: 1.3;
+        line-height: 1.35;
+        word-break: break-word;
     }
     .section-description {
-        font-size: clamp(11.5px, 2vw, 13px);
+        font-size: clamp(12px, 1.8vw, 13px);
         color: #64748B;
-        margin-top: 3px;
-        margin-bottom: 0px;
-        line-height: 1.45;
+        margin: 0;
+        line-height: 1.5;
+        word-break: break-word;
     }
 
     /* ==================================================================== */
@@ -475,9 +488,76 @@ def inject_custom_css() -> None:
         border-radius: 6px 6px 0 0 !important;
     }
 
-    /* Touch targets on mobile */
-    button[data-testid="baseButton-secondary"], button[data-testid="baseButton-primary"] {
-        min-height: 38px;
+    /* Streamlit Buttons: Prevent text overflow and overlap across all viewports */
+    button[data-testid="baseButton-secondary"], 
+    button[data-testid="baseButton-primary"] {
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        word-break: break-word !important;
+        height: auto !important;
+        min-height: 42px !important;
+        padding: 8px 14px !important;
+        line-height: 1.35 !important;
+        text-align: center !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Streamlit Widget Labels & Inputs */
+    label[data-testid="stWidgetLabel"],
+    div[data-testid="stWidgetLabel"] label,
+    div[data-testid="stWidgetLabel"] p {
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        color: #1E293B !important;
+        line-height: 1.4 !important;
+        margin-bottom: 5px !important;
+        white-space: normal !important;
+        word-break: break-word !important;
+        overflow-wrap: break-word !important;
+    }
+    div[data-testid="stSelectbox"],
+    div[data-testid="stTextInput"],
+    div[data-testid="stNumberInput"],
+    div[data-testid="stMultiSelect"] {
+        margin-bottom: 8px !important;
+    }
+
+    /* Streamlit Metric Boxes */
+    div[data-testid="stMetric"] {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 10px;
+        padding: 12px 14px;
+        box-sizing: border-box;
+        min-width: 0 !important;
+        word-break: break-word !important;
+    }
+    div[data-testid="stMetricLabel"] {
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        color: #64748B !important;
+        line-height: 1.35 !important;
+        white-space: normal !important;
+        word-break: break-word !important;
+    }
+    div[data-testid="stMetricValue"] {
+        font-size: clamp(18px, 2.5vw, 24px) !important;
+        font-weight: 800 !important;
+        color: #0F172A !important;
+        line-height: 1.25 !important;
+        margin: 4px 0 !important;
+    }
+
+    /* Plotly Chart Container Responsive Behavior */
+    .js-plotly-plot, .plot-container {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    .js-plotly-plot .plotly .main-svg {
+        overflow: visible !important;
     }
     </style>
     """

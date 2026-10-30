@@ -27,13 +27,13 @@ DEFAULT_LAYOUT = dict(
     paper_bgcolor="rgba(0,0,0,0)",
     plot_bgcolor="rgba(0,0,0,0)",
     font=dict(family=DEFAULT_FONT, size=11.5, color="#334155"),
-    margin=dict(l=28, r=20, t=55, b=28),
+    margin=dict(l=35, r=25, t=65, b=55),
     legend=dict(
         orientation="h",
-        yanchor="bottom",
-        y=1.04,
-        xanchor="left",
-        x=0,
+        yanchor="top",
+        y=-0.18,
+        xanchor="center",
+        x=0.5,
         font=dict(size=10.5, color="#475569")
     ),
     hoverlabel=dict(
@@ -47,7 +47,20 @@ DEFAULT_LAYOUT = dict(
 
 def apply_theme(fig: go.Figure) -> go.Figure:
     """Applies uniform minimalist styling, soft grid lines, and responsive configuration to Plotly charts."""
+    # Preserve specific properties if explicitly configured
+    custom_showlegend = fig.layout.showlegend
+    custom_legend = fig.layout.legend
+    custom_margin = fig.layout.margin
+
     fig.update_layout(**DEFAULT_LAYOUT)
+
+    if custom_showlegend is not None:
+        fig.update_layout(showlegend=custom_showlegend)
+    if custom_legend and custom_legend.yanchor == "top" and custom_legend.y is not None:
+        fig.update_layout(legend=custom_legend)
+    if custom_margin and custom_margin.t is not None and custom_margin.t >= 65:
+        fig.update_layout(margin=custom_margin)
+
     fig.update_xaxes(
         showgrid=True, 
         gridwidth=1, 
@@ -266,16 +279,6 @@ def plot_placement_by_specialization(spec_df: pd.DataFrame) -> go.Figure:
         yaxis=dict(categoryorder="total ascending")
     )
     return apply_theme(fig)
-    fig.update_traces(
-        texttemplate="<b>%{text:.1f}%</b>", 
-        textposition="outside",
-        hovertemplate="<b>%{y}</b><br>Placement Rate: <b>%{x:.1f}%</b><extra></extra>"
-    )
-    fig.update_layout(
-        coloraxis_showscale=False,
-        yaxis=dict(categoryorder="total ascending")
-    )
-    return apply_theme(fig)
 
 
 def plot_salary_distribution(df: pd.DataFrame) -> go.Figure:
@@ -479,7 +482,7 @@ def plot_student_radar_benchmark(student: pd.Series, batch_df: pd.DataFrame) -> 
             x=0.5,
             font=dict(size=10, color="#475569")
         ),
-        margin=dict(l=20, r=20, t=50, b=45),
+        margin=dict(l=25, r=25, t=65, b=50),
         autosize=True,
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
@@ -589,15 +592,27 @@ def plot_skill_gap_comparison(gap_analysis: Dict[str, Any]) -> go.Figure:
         hovertemplate="Skill: <b>%{x}</b><br>Candidate Level: <b>%{y} / 5</b><br>Variance: <b>%{customdata[0]:+d}</b> (%{customdata[1]})<extra></extra>"
     ))
     
+    fig = apply_theme(fig)
     fig.update_layout(
         barmode="group",
-        title=f"<b>Competency Benchmark vs. {gap_analysis.get('target_role', 'Role')}</b><br><span style='font-size:11.5px; color:#64748B;'>Candidate proficiency level compared against role expectations (Scale 1-5)</span>",
+        title=dict(
+            text=f"<b>Competency Benchmark vs. {gap_analysis.get('target_role', 'Role')}</b><br><span style='font-size:11.5px; color:#64748B;'>Candidate proficiency level compared against role expectations (Scale 1-5)</span>",
+            font=dict(size=14, color="#0F172A")
+        ),
         xaxis=dict(title="Technical & Domain Competency", tickfont=dict(size=11, color="#334155")),
         yaxis=dict(title="Proficiency Level (1-5)", range=[0, 5.5], dtick=1),
-        legend=dict(orientation="h", y=1.12, x=0),
-        margin=dict(l=28, r=20, t=65, b=30)
+        showlegend=True,
+        legend=dict(
+            orientation="h",
+            yanchor="top",
+            y=-0.22,
+            xanchor="center",
+            x=0.5,
+            font=dict(size=10.5, color="#475569")
+        ),
+        margin=dict(l=35, r=20, t=65, b=65)
     )
-    return apply_theme(fig)
+    return fig
 
 
 def plot_student_competency_radar(student_skills: Dict[str, int], target_skills: Dict[str, int], target_role: str) -> go.Figure:
@@ -642,6 +657,7 @@ def plot_student_competency_radar(student_skills: Dict[str, int], target_skills:
         hovertemplate="Competency: <b>%{theta}</b><br>Candidate: <b>%{r}/5</b><extra></extra>"
     ))
     
+    fig = apply_theme(fig)
     fig.update_layout(
         polar=dict(
             radialaxis=dict(
@@ -657,18 +673,22 @@ def plot_student_competency_radar(student_skills: Dict[str, int], target_skills:
                 gridcolor="#E2E8F0"
             )
         ),
-        title="<b>Multilateral Competency Radar Profile</b>",
+        title=dict(
+            text="<b>Multilateral Competency Radar Profile</b>",
+            font=dict(size=14, color="#0F172A")
+        ),
+        showlegend=True,
         legend=dict(
             orientation="h",
             yanchor="top",
-            y=-0.12,
+            y=-0.14,
             xanchor="center",
             x=0.5,
             font=dict(size=10.5, color="#475569")
         ),
-        margin=dict(l=30, r=30, t=50, b=45)
+        margin=dict(l=35, r=35, t=65, b=50)
     )
-    return apply_theme(fig)
+    return fig
 
 
 def plot_readiness_component_breakdown(readiness: Dict[str, Any]) -> go.Figure:
@@ -720,14 +740,18 @@ def plot_readiness_component_breakdown(readiness: Dict[str, Any]) -> go.Figure:
         hovertemplate="Component: <b>%{y}</b><br>Score: <b>%{x:.1f} / 100</b><br>Active Weight: <b>%{customdata[0]:.1f}%</b><br>Status: <b>%{customdata[1]}</b><extra></extra>"
     ))
     
+    fig = apply_theme(fig)
     fig.update_layout(
-        title="<b>Pillar-Level Readiness Index Breakdown</b><br><span style='font-size:11.5px; color:#64748B;'>Normalized component scores (0-100) and weighted points toward the Readiness Index</span>",
+        title=dict(
+            text="<b>Pillar-Level Readiness Index Breakdown</b><br><span style='font-size:11.5px; color:#64748B;'>Normalized component scores (0-100) and weighted points toward the Readiness Index</span>",
+            font=dict(size=14, color="#0F172A")
+        ),
         xaxis=dict(title="Pillar Score (0-100)", range=[0, 110]),
         yaxis=dict(title="", autorange="reversed"),
         showlegend=False,
-        margin=dict(l=28, r=20, t=55, b=28)
+        margin=dict(l=35, r=20, t=65, b=40)
     )
-    return apply_theme(fig)
+    return fig
 
 
 def plot_subject_performance(subject_marks: Dict[str, float]) -> go.Figure:
@@ -774,11 +798,15 @@ def plot_subject_performance(subject_marks: Dict[str, float]) -> go.Figure:
         annotation_position="top right"
     )
     
+    fig = apply_theme(fig)
     fig.update_layout(
-        title="<b>Subject-Wise Examination Marks</b><br><span style='font-size:11.5px; color:#64748B;'>Individual course performance relative to academic benchmarks</span>",
+        title=dict(
+            text="<b>Subject-Wise Examination Marks</b><br><span style='font-size:11.5px; color:#64748B;'>Individual course performance relative to academic benchmarks</span>",
+            font=dict(size=14, color="#0F172A")
+        ),
         xaxis=dict(title="Subject / Course Module", tickangle=-15),
         yaxis=dict(title="Aggregate Mark (%)", range=[0, 110]),
         showlegend=False,
-        margin=dict(l=28, r=20, t=55, b=35)
+        margin=dict(l=35, r=20, t=65, b=45)
     )
-    return apply_theme(fig)
+    return fig

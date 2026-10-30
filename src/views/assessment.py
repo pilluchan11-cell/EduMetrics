@@ -82,7 +82,7 @@ def render(df_active: pd.DataFrame) -> None:
     
     col_p1, col_p2, col_p3, col_p4, col_p5 = st.columns(5)
     with col_p1:
-        if st.button("⚡ High-Achiever Sample", use_container_width=True, help="Load distinction sample: 86% marks, multiple certs, internship completed"):
+        if st.button("⚡ High Achiever", use_container_width=True, help="Load distinction sample: 86% marks, multiple certs, internship completed"):
             st.session_state["assessment_form_data"] = get_sample_student_profile("high_achiever")
             st.session_state["current_assessment"] = generate_individual_assessment(
                 st.session_state["assessment_form_data"], 
@@ -90,7 +90,7 @@ def render(df_active: pd.DataFrame) -> None:
             )
             st.rerun()
     with col_p2:
-        if st.button("⚡ Balanced Cohort Sample", use_container_width=True, help="Load typical student: 72% marks, 79% attendance, 1 cert, 1 project"):
+        if st.button("⚡ Balanced Cohort", use_container_width=True, help="Load typical student: 72% marks, 79% attendance, 1 cert, 1 project"):
             st.session_state["assessment_form_data"] = get_sample_student_profile("balanced")
             st.session_state["current_assessment"] = generate_individual_assessment(
                 st.session_state["assessment_form_data"], 
@@ -98,7 +98,7 @@ def render(df_active: pd.DataFrame) -> None:
             )
             st.rerun()
     with col_p3:
-        if st.button("⚡ Support Needed Sample", use_container_width=True, help="Load at-risk student: 58% marks, 71% attendance, skill deficits"):
+        if st.button("⚡ Support Needed", use_container_width=True, help="Load at-risk student: 58% marks, 71% attendance, skill deficits"):
             st.session_state["assessment_form_data"] = get_sample_student_profile("needs_intervention")
             st.session_state["current_assessment"] = generate_individual_assessment(
                 st.session_state["assessment_form_data"], 
@@ -623,12 +623,12 @@ def render(df_active: pd.DataFrame) -> None:
     with k3:
         fit_pct = gap_analysis["fit_percentage"]
         render_kpi(
-            f"Competency Fit ({target_role})",
+            "Competency Fit",
             f"{fit_pct:.1f}%",
-            f"{gap_analysis['student_matched_points']} of {gap_analysis['total_required_points']} Required Benchmark Points",
+            f"Target: {target_role} ({gap_analysis['student_matched_points']}/{gap_analysis['total_required_points']} pts)",
             COLOR_PRIMARY,
             icon="⚡",
-            chip_text="Role Fit",
+            chip_text=target_role,
             chip_color="#EFF6FF"
         )
     with k4:
