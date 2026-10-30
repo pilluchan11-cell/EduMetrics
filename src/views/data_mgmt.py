@@ -210,33 +210,30 @@ def render(current_df: pd.DataFrame) -> None:
         )
         
         # Dynamic parameter controls for queries 6 and 7
-        param_col1, param_col2 = st.columns([1, 2])
         attendance_threshold = 75.0
         selected_skill = "python_proficiency"
         
         if selected_query.startswith("6."):
-            with param_col1:
-                attendance_threshold = st.slider(
-                    "Attendance Cutoff Threshold (%):",
-                    min_value=50.0,
-                    max_value=90.0,
-                    value=75.0,
-                    step=1.0,
-                    help="Parameterized SQL filter: WHERE attendance_percentage < ?"
-                )
+            attendance_threshold = st.slider(
+                "Attendance Cutoff Threshold (%):",
+                min_value=50.0,
+                max_value=90.0,
+                value=75.0,
+                step=1.0,
+                help="Parameterized SQL filter: WHERE attendance_percentage < ?"
+            )
         elif selected_query.startswith("7."):
-            with param_col1:
-                skill_map = {
-                    "python_proficiency": "Python Programming",
-                    "sql_proficiency": "SQL Database Querying",
-                    "power_bi_proficiency": "Power BI & Data Visualization"
-                }
-                selected_skill = st.selectbox(
-                    "Select Skill Competency Dimension:",
-                    options=list(skill_map.keys()),
-                    format_func=lambda x: skill_map.get(x, x),
-                    help="Group placement metrics by the selected technical skill."
-                )
+            skill_map = {
+                "python_proficiency": "Python Programming",
+                "sql_proficiency": "SQL Database Querying",
+                "power_bi_proficiency": "Power BI & Data Visualization"
+            }
+            selected_skill = st.selectbox(
+                "Select Skill Competency Dimension:",
+                options=list(skill_map.keys()),
+                format_func=lambda x: skill_map.get(x, x),
+                help="Group placement metrics by the selected technical skill."
+            )
                 
         # Execute query against SQLite database
         conn = get_connection()

@@ -23,21 +23,22 @@ from src.config import (
 DEFAULT_FONT = "Plus Jakarta Sans, Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif"
 
 DEFAULT_LAYOUT = dict(
+    autosize=True,
     paper_bgcolor="rgba(0,0,0,0)",
     plot_bgcolor="rgba(0,0,0,0)",
-    font=dict(family=DEFAULT_FONT, size=12, color="#334155"),
-    margin=dict(l=35, r=35, t=55, b=35),
+    font=dict(family=DEFAULT_FONT, size=11.5, color="#334155"),
+    margin=dict(l=28, r=20, t=55, b=28),
     legend=dict(
         orientation="h",
         yanchor="bottom",
-        y=1.02,
-        xanchor="right",
-        x=1,
-        font=dict(size=11, color="#475569")
+        y=1.04,
+        xanchor="left",
+        x=0,
+        font=dict(size=10.5, color="#475569")
     ),
     hoverlabel=dict(
         bgcolor="#0F172A",
-        font_size=12.5,
+        font_size=11.5,
         font_family=DEFAULT_FONT,
         font_color="#F8FAFC"
     )
@@ -45,23 +46,23 @@ DEFAULT_LAYOUT = dict(
 
 
 def apply_theme(fig: go.Figure) -> go.Figure:
-    """Applies uniform minimalist styling and soft grid lines to Plotly charts."""
+    """Applies uniform minimalist styling, soft grid lines, and responsive configuration to Plotly charts."""
     fig.update_layout(**DEFAULT_LAYOUT)
     fig.update_xaxes(
         showgrid=True, 
         gridwidth=1, 
         gridcolor="#F1F5F9", 
         zeroline=False,
-        tickfont=dict(color="#64748B", size=11),
-        title_font=dict(color="#334155", size=12, family=DEFAULT_FONT)
+        tickfont=dict(color="#64748B", size=10.5),
+        title_font=dict(color="#334155", size=11.5, family=DEFAULT_FONT)
     )
     fig.update_yaxes(
         showgrid=True, 
         gridwidth=1, 
         gridcolor="#F1F5F9", 
         zeroline=False,
-        tickfont=dict(color="#64748B", size=11),
-        title_font=dict(color="#334155", size=12, family=DEFAULT_FONT)
+        tickfont=dict(color="#64748B", size=10.5),
+        title_font=dict(color="#334155", size=11.5, family=DEFAULT_FONT)
     )
     return fig
 
@@ -458,19 +459,31 @@ def plot_student_radar_benchmark(student: pd.Series, batch_df: pd.DataFrame) -> 
                 range=[0, 100], 
                 showline=False, 
                 ticksuffix="%",
-                tickfont=dict(size=10, color="#94A3B8")
+                tickfont=dict(size=9.5, color="#94A3B8")
             ),
             angularaxis=dict(
-                tickfont=dict(size=11, family=DEFAULT_FONT, color="#1E293B")
+                tickfont=dict(size=10, family=DEFAULT_FONT, color="#1E293B")
             ),
             bgcolor="rgba(0,0,0,0)"
         ),
         title=dict(
-            text="<b>Multi-Axis Competency Benchmark</b><br><span style='font-size:12px; color:#64748B;'>Individual student scores indexed against the full batch benchmark</span>",
-            font=dict(size=15, color="#0F172A")
+            text="<b>Multi-Axis Competency Benchmark</b><br><span style='font-size:11.5px; color:#64748B;'>Individual student scores indexed against batch average</span>",
+            font=dict(size=14, color="#0F172A")
         ),
         showlegend=True,
-        **DEFAULT_LAYOUT
+        legend=dict(
+            orientation="h",
+            yanchor="top",
+            y=-0.12,
+            xanchor="center",
+            x=0.5,
+            font=dict(size=10, color="#475569")
+        ),
+        margin=dict(l=20, r=20, t=50, b=45),
+        autosize=True,
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        font=dict(family=DEFAULT_FONT, size=11, color="#334155")
     )
     return fig
 
@@ -498,12 +511,15 @@ def plot_correlation_heatmap(corr_df: pd.DataFrame) -> go.Figure:
         zmin=-1,
         zmax=1,
         text_auto=".2f",
-        title="<b>Pairwise Correlation Matrix</b><br><span style='font-size:12px; color:#64748B;'>Pearson correlation coefficients among key numerical attributes</span>"
+        title="<b>Pairwise Correlation Matrix</b><br><span style='font-size:11.5px; color:#64748B;'>Pearson correlation coefficients among numerical attributes</span>"
     )
     fig.update_traces(
         hovertemplate="Factor 1: <b>%{y}</b><br>Factor 2: <b>%{x}</b><br>Correlation r: <b>%{z:.3f}</b><extra></extra>"
     )
     fig.update_layout(**DEFAULT_LAYOUT)
+    fig.update_layout(margin=dict(l=20, r=15, t=50, b=25))
+    fig.update_xaxes(tickangle=-25, tickfont=dict(size=10, color="#64748B"))
+    fig.update_yaxes(tickfont=dict(size=10, color="#64748B"))
     return fig
 
 

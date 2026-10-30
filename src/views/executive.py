@@ -151,18 +151,18 @@ def render(df: pd.DataFrame) -> None:
             with target_col:
                 st.markdown(
                     f"""
-                    <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 18px 20px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03); border-top: 3px solid #2563EB;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <div class="insight-card">
+                        <div class="insight-header">
                             <span style="font-size: 11px; font-weight: 700; color: #2563EB; letter-spacing: 0.06em; text-transform: uppercase;">
                                 {item['category']}
                             </span>
-                            <span style="background: #EFF6FF; color: #1E40AF; padding: 2px 8px; border-radius: 6px; font-size: 11.5px; font-weight: 700;">
+                            <span style="background: #EFF6FF; color: #1E40AF; padding: 2px 8px; border-radius: 6px; font-size: 11.5px; font-weight: 700; white-space: nowrap;">
                                 {item['stat_callout']}
                             </span>
                         </div>
-                        <h4 style="margin: 0 0 8px 0; color: #0F172A; font-size: 15.5px; font-weight: 700;">{item['title']}</h4>
-                        <p style="margin: 0 0 10px 0; color: #334155; font-size: 13.5px; line-height: 1.5;">{item['finding']}</p>
-                        <div style="background: #F8FAFC; border-left: 3px solid #0D9488; padding: 8px 12px; border-radius: 4px; font-size: 12.5px; color: #1E293B; margin-bottom: 6px;">
+                        <h4 style="margin: 0 0 8px 0; color: #0F172A; font-size: clamp(14.5px, 2.5vw, 16px); font-weight: 700; word-break: break-word;">{item['title']}</h4>
+                        <p style="margin: 0 0 10px 0; color: #334155; font-size: 13px; line-height: 1.5; word-break: break-word;">{item['finding']}</p>
+                        <div style="background: #F8FAFC; border-left: 3px solid #0D9488; padding: 8px 12px; border-radius: 4px; font-size: 12px; color: #1E293B; margin-bottom: 6px; line-height: 1.4;">
                             <strong>Strategic Takeaway:</strong> {item['mba_takeaway']}
                         </div>
                         <div style="font-size: 11px; color: #94A3B8;">

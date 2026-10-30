@@ -26,8 +26,8 @@ def render(df: pd.DataFrame) -> None:
         
     st.markdown(
         """
-        <div style="background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 10px; padding: 16px 20px; margin-bottom: 22px;">
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+        <div class="info-callout">
+            <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 6px;">
                 <span style="font-size: 18px;">💡</span>
                 <strong style="color: #1E40AF; font-size: 14.5px;">Explainable Heuristic Methodology for Educational Leaders:</strong>
             </div>
@@ -56,15 +56,15 @@ def render(df: pd.DataFrame) -> None:
             
             st.markdown(
                 f"""
-                <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 18px 22px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <h4 style="margin: 0; color: #0F172A; font-size: 16px; font-weight: 700;">{rec['area']}</h4>
-                        <span style="background: {badge_bg}; color: {badge_color}; font-weight: 700; font-size: 11.5px; padding: 3px 10px; border-radius: 6px;">
+                <div class="recommendation-card">
+                    <div class="recommendation-header">
+                        <h4 style="margin: 0; color: #0F172A; font-size: 15.5px; font-weight: 700; word-break: break-word;">{rec['area']}</h4>
+                        <span style="background: {badge_bg}; color: {badge_color}; font-weight: 700; font-size: 11.5px; padding: 3px 10px; border-radius: 6px; white-space: nowrap;">
                             {rec['impact_type'].upper()}
                         </span>
                     </div>
-                    <p style="color: #64748B; font-size: 13px; margin: 0 0 10px 0;"><strong>Observed Signal:</strong> {rec['metric']}</p>
-                    <div style="background: #F8FAFC; border-left: 4px solid {badge_color}; padding: 12px 16px; border-radius: 6px; font-size: 13.5px; color: #1E293B;">
+                    <p style="color: #64748B; font-size: 13px; margin: 0 0 10px 0; word-break: break-word;"><strong>Observed Signal:</strong> {rec['metric']}</p>
+                    <div class="recommendation-action-box" style="border-left: 4px solid {badge_color};">
                         <strong>Recommended Strategic Action:</strong> {rec['recommendation']}
                     </div>
                 </div>

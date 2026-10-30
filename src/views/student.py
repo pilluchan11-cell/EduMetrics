@@ -88,25 +88,25 @@ def render(df: pd.DataFrame) -> None:
     status_text = "OFFER ACCEPTED" if is_placed else "IN PLACEMENT PIPELINE"
     
     banner_html = f"""
-    <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 22px 28px; margin-bottom: 22px; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
-        <div style="display: flex; align-items: center; gap: 18px;">
-            <div style="width: 54px; height: 54px; border-radius: 12px; background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%); display: flex; align-items: center; justify-content: center; font-size: 24px; color: white;">
+    <div class="student-dossier-card">
+        <div class="student-dossier-left">
+            <div class="student-dossier-avatar">
                 👤
             </div>
             <div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <h2 style="margin: 0; font-size: 22px; font-weight: 800; color: #0F172A;">{student['student_name']}</h2>
-                    <span style="background: #EFF6FF; color: #1E40AF; padding: 2px 8px; border-radius: 6px; font-size: 11.5px; font-weight: 700;">{student['student_id']}</span>
+                <div class="student-dossier-name-row">
+                    <h2 class="student-dossier-name">{student['student_name']}</h2>
+                    <span style="background: #EFF6FF; color: #1E40AF; padding: 2px 8px; border-radius: 6px; font-size: 11.5px; font-weight: 700; white-space: nowrap;">{student['student_id']}</span>
                 </div>
-                <div style="color: #64748B; font-size: 13.5px; margin-top: 4px;">
+                <div class="student-dossier-meta">
                     Major: <strong style="color: #334155;">{student['specialization']}</strong> • 
                     Semester: <strong style="color: #334155;">{student['semester']}</strong> • 
-                    Demographic Record: <strong style="color: #334155;">{student.get('gender', '-')}</strong>
+                    Demographics: <strong style="color: #334155;">{student.get('gender', '-')}</strong>
                 </div>
             </div>
         </div>
         <div>
-            <span class="{status_badge_class}" style="font-size: 13px; padding: 6px 14px; letter-spacing: 0.03em;">
+            <span class="{status_badge_class}" style="font-size: 12px; padding: 5px 12px; letter-spacing: 0.03em;">
                 {status_icon} {status_text}
             </span>
         </div>

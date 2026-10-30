@@ -170,8 +170,8 @@ def render(df: pd.DataFrame) -> None:
     if logit_res:
         st.markdown(
             f"""
-            <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 14px 18px; margin-bottom: 14px;">
-                <div style="display: flex; gap: 24px; font-size: 13.5px; color: #334155;">
+            <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: clamp(10px, 2vw, 14px) clamp(12px, 2.5vw, 18px); margin-bottom: 14px;">
+                <div class="stat-badge-row">
                     <div>Model Classification Accuracy: <strong style="color: #2563EB;">{logit_res['accuracy']}%</strong></div>
                     <div>ROC-AUC Score: <strong style="color: #0D9488;">{logit_res['roc_auc']}</strong></div>
                     <div>Sample Cohort Evaluated: <strong>{logit_res['sample_size']} Students</strong></div>

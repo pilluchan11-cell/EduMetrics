@@ -194,8 +194,8 @@ def main():
     
     st.markdown(
         f"""
-        <div style="display: flex; justify-content: flex-end; margin-top: -8px; margin-bottom: 10px;">
-            <span style="font-size: 12px; font-weight: 600; color: #1E40AF; background: #EFF6FF; border: 1px solid #DBEAFE; padding: 4px 14px; border-radius: 9999px;">
+        <div class="filter-badge-container">
+            <span style="font-size: 12px; font-weight: 600; color: #1E40AF; background: #EFF6FF; border: 1px solid #DBEAFE; padding: 4px 14px; border-radius: 9999px; line-height: 1.4;">
                 Active Filter: <strong>{current_count}</strong> of <strong>{total_raw}</strong> Students ({pct_showing}%)
             </span>
         </div>
