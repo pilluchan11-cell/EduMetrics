@@ -1,0 +1,189 @@
+﻿Diagnose log at 2026-10-30T19:17:07Z
+
+AppPath: C:\Program Files\Git\ucrt64\bin\git-credential-manager.exe
+InstallDir: C:\Program Files\Git\ucrt64\bin\
+Version: 2.9.1+6760f0ef069c994aa2bb1d703fb374986ee82a3e
+
+------------
+Diagnostic: Environment
+Skipped: False
+Success: True
+Exception: None
+Log:
+OSType: Windows
+OSVersion: 10.0 (build 26300)
+Reading environment variables... OK
+ Variables:
+OneDriveConsumer=C:\Users\harsh\OneDrive
+ProgramFiles(x86)=C:\Program Files (x86)
+MSYSTEM=UCRT64
+ProgramW6432=C:\Program Files
+PROCESSOR_IDENTIFIER=Intel64 Family 6 Model 186 Stepping 3, GenuineIntel
+TMP=C:\Users\harsh\AppData\Local\Temp
+PROCESSOR_ARCHITECTURE=AMD64
+DriverData=C:\Windows\System32\Drivers\DriverData
+Path=C:/Program Files/Git/ucrt64/libexec/git-core;C:\Program Files\Git\ucrt64\bin;C:\Program Files\Git\usr\bin;C:\Users\harsh\bin;C:\Users\harsh\AppData\Roaming\Antigravity\bin;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;C:\windows\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files (x86)\Microsoft SQL Server\170\Tools\Binn\;C:\Program Files\Microsoft SQL Server\170\Tools\Binn\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\180\Tools\Binn\;C:\Program Files\Microsoft SQL Server\170\DTS\Binn\;C:\Program Files\MySQL\MySQL Server 8.0\bin;C:\Program Files\MySQL\MySQL Shell 8.0\bin\;C:\Users\harsh\AppData\Local\Programs\Python\Python314\Scripts\;C:\Users\harsh\AppData\Local\Programs\Python\Python314\;C:\Users\harsh\AppData\Local\Microsoft\WindowsApps;C:\Users\harsh\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\harsh\AppData\Local\Programs\Microsoft VS Code\bin\copilot-shim
+AGY_BROWSER_ACTIVE_PORT_FILE=C:\Users\harsh\AppData\Roaming\Antigravity\DevToolsActivePort
+PROCESSOR_REVISION=ba03
+TEMP=C:\Users\harsh\AppData\Local\Temp
+USERPROFILE=C:\Users\harsh
+LOGONSERVER=\\DESKTOP-UE8G2R8
+TERM=xterm-256color
+USERNAME=harsh
+SystemRoot=C:\windows
+AGY_BROWSER_WS_URL=ws://127.0.0.1:61744/devtools/browser/14b493fd-1c62-4256-99ac-688e91ede503
+PLINK_PROTOCOL=ssh
+OneDrive=C:\Users\harsh\OneDrive
+CommonProgramFiles=C:\Program Files\Common Files
+ZES_ENABLE_SYSMAN=1
+ProgramData=C:\ProgramData
+LC_CTYPE=C.UTF-8
+HOMEPATH=\Users\harsh
+COMPUTERNAME=DESKTOP-UE8G2R8
+EFC_17008_344590478=1
+ALLUSERSPROFILE=C:\ProgramData
+CommonProgramW6432=C:\Program Files\Common Files
+GIT_EXEC_PATH=C:/Program Files/Git/ucrt64/libexec/git-core
+SESSIONNAME=Console
+CommonProgramFiles(x86)=C:\Program Files (x86)\Common Files
+HOMEDRIVE=C:
+windir=C:\windows
+GIT_TRACE2_PARENT_SID=3f78556a-32f8-4ce2-8438-8a9d6145a462
+SystemDrive=C:
+NUMBER_OF_PROCESSORS=12
+OS=Windows_NT
+EFC_17008_2946480783=1
+ProgramFiles=C:\Program Files
+ComSpec=C:\windows\system32\cmd.exe
+CHROME_DEVTOOLS_MCP_JS=C:\Users\harsh\AppData\Local\Programs\antigravity\resources\app.asar.unpacked\node_modules\chrome-devtools-mcp\build\src\bin\chrome-devtools-mcp.js
+PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.CPL
+HOME=C:\Users\harsh
+PSModulePath=C:\Users\harsh\OneDrive\Documents\WindowsPowerShell\Modules;C:\Program Files\WindowsPowerShell\Modules;C:\windows\system32\WindowsPowerShell\v1.0\Modules;C:\Program Files\Microsoft SQL Server\170\Tools\PowerShell\Modules\
+EFC_17008_4126798990=1
+TMPDIR=C:\Users\harsh\AppData\Local\Temp
+APPDATA=C:\Users\harsh\AppData\Roaming
+USERDOMAIN=DESKTOP-UE8G2R8
+PROCESSOR_LEVEL=6
+LOCALAPPDATA=C:\Users\harsh\AppData\Local
+USERDOMAIN_ROAMINGPROFILE=DESKTOP-UE8G2R8
+PUBLIC=C:\Users\Public
+EFC_17008_1592913036=1
+
+
+------------
+Diagnostic: File system
+Skipped: False
+Success: True
+Exception: None
+Log:
+Temporary directory is 'C:\Users\harsh\AppData\Local\Temp\'...
+Checking basic file I/O...
+Writing to temporary file 'C:\Users\harsh\AppData\Local\Temp\cc3f4aa89e89934eec6c9783'... OK
+Reading from temporary file 'C:\Users\harsh\AppData\Local\Temp\cc3f4aa89e89934eec6c9783'... OK
+Deleting temporary file 'C:\Users\harsh\AppData\Local\Temp\cc3f4aa89e89934eec6c9783'... OK
+Testing IFileSystem instance...
+UserHomePath: C:\Users\harsh
+UserDataDirectoryPath: C:\Users\harsh\.gcm
+GetCurrentDirectory(): C:\Users\harsh\Downloads\EduMetrics
+
+------------
+Diagnostic: Networking
+Skipped: False
+Success: True
+Exception: None
+Log:
+Checking networking and HTTP stack...
+Creating HTTP client... OK
+IsNetworkAvailable: True
+Sending HEAD request to http://example.com... OK
+Sending HEAD request to https://example.com... OK
+Acquiring free TCP port... OK
+Testing local HTTP loopback connections...
+Creating new HTTP listener for http://localhost:62867/... OK
+Waiting for loopback connection... OK
+Writing response... OK
+Waiting for response data... OK
+Loopback connection data OK
+
+------------
+Diagnostic: Git
+Skipped: False
+Success: True
+Exception: None
+Log:
+Getting Git version... OK
+Git version is '2.56.0.windows.3'
+Locating current repository...Git repository at 'C:/Users/harsh/Downloads/EduMetrics/.git'
+ OK
+Listing all Git configuration... OK
+Git configuration:
+file:C:/Program Files/Git/etc/gitconfig	diff.astextplain.textconv=astextplain
+file:C:/Program Files/Git/etc/gitconfig	filter.lfs.clean=git-lfs clean -- %f
+file:C:/Program Files/Git/etc/gitconfig	filter.lfs.smudge=git-lfs smudge -- %f
+file:C:/Program Files/Git/etc/gitconfig	filter.lfs.process=git-lfs filter-process
+file:C:/Program Files/Git/etc/gitconfig	filter.lfs.required=true
+file:C:/Program Files/Git/etc/gitconfig	http.sslbackend=schannel
+file:C:/Program Files/Git/etc/gitconfig	core.autocrlf=true
+file:C:/Program Files/Git/etc/gitconfig	core.fscache=true
+file:C:/Program Files/Git/etc/gitconfig	core.symlinks=false
+file:C:/Program Files/Git/etc/gitconfig	pull.rebase=false
+file:C:/Program Files/Git/etc/gitconfig	credential.helper=manager
+file:C:/Program Files/Git/etc/gitconfig	credential.https://dev.azure.com.usehttppath=true
+file:C:/Program Files/Git/etc/gitconfig	init.defaultbranch=master
+file:C:/Users/harsh/.gitconfig	user.name=harshthakur-45
+file:C:/Users/harsh/.gitconfig	user.email=harshthakur6523@gmail.com
+file:C:/Users/harsh/.gitconfig	credential.helper=manager
+file:.git/config	core.repositoryformatversion=0
+file:.git/config	core.filemode=false
+file:.git/config	core.bare=false
+file:.git/config	core.logallrefupdates=true
+file:.git/config	core.symlinks=false
+file:.git/config	core.ignorecase=true
+file:.git/config	remote.origin.url=https://github.com/harshthakur-45/EduMetrics.git
+file:.git/config	remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*
+
+
+------------
+Diagnostic: Credential storage
+Skipped: False
+Success: True
+Exception: None
+Log:
+ICredentialStore instance is of type: CredentialStore
+Writing test credential... OK
+Reading test credential... OK
+Deleting test credential... OK
+
+------------
+Diagnostic: Microsoft authentication (AAD/MSA)
+Skipped: False
+Success: True
+Exception: None
+Log:
+Broker is not enabled.
+Gathering MSAL token cache data... OK
+CacheDirectory: C:\Users\harsh\AppData\Local\.IdentityService
+CacheFileName: msal.cache
+CacheFilePath: C:\Users\harsh\AppData\Local\.IdentityService\msal.cache
+Creating cache helper... OK
+Verifying MSAL token cache persistence... OK
+
+------------
+Diagnostic: GitHub API
+Skipped: False
+Success: False
+Exception:
+System.Net.Http.HttpRequestException: Response status code does not indicate success: 403 (rate limit exceeded).
+   at System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode()
+   at GitHub.GitHubRestApi.<GetMetaInfoAsync>d__5.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at GitHub.Diagnostics.GitHubApiDiagnostic.<RunInternalAsync>d__2.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at GitCredentialManager.Diagnostics.Diagnostic.<RunAsync>d__6.MoveNext()
+Log:
+Using 'https://github.com/' as API target.
+Querying '/meta' endpoint...
