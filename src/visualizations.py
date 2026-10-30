@@ -68,6 +68,11 @@ def apply_theme(fig: go.Figure) -> go.Figure:
 
 def plot_placement_donut(df: pd.DataFrame) -> go.Figure:
     """Creates a sleek donut chart with central KPI callout showing Placed vs Unplaced proportion."""
+    if len(df) == 0 or "placement_status" not in df.columns:
+        fig = go.Figure()
+        fig.update_layout(title="No Placement Data Available", **DEFAULT_LAYOUT)
+        return fig
+        
     status_counts = df["placement_status"].value_counts().reset_index()
     status_counts.columns = ["Status", "Count"]
     
@@ -114,8 +119,14 @@ def plot_placement_donut(df: pd.DataFrame) -> go.Figure:
 
 def plot_academic_distribution(df: pd.DataFrame) -> go.Figure:
     """Plots histogram and density of student academic percentage with refined styling."""
-    mean_val = float(df["academic_percentage"].mean())
-    median_val = float(df["academic_percentage"].median())
+    valid_scores = df["academic_percentage"].dropna() if "academic_percentage" in df.columns else pd.Series(dtype=float)
+    if len(valid_scores) == 0:
+        fig = go.Figure()
+        fig.update_layout(title="No Academic Score Data Available", **DEFAULT_LAYOUT)
+        return fig
+        
+    mean_val = float(valid_scores.mean())
+    median_val = float(valid_scores.median())
     
     fig = px.histogram(
         df,
@@ -156,6 +167,11 @@ def plot_academic_distribution(df: pd.DataFrame) -> go.Figure:
 
 def plot_grade_distribution(band_counts: pd.DataFrame) -> go.Figure:
     """Bar chart of students by academic grade band with clean percentage labels."""
+    if len(band_counts) == 0:
+        fig = go.Figure()
+        fig.update_layout(title="No Grade Band Data Available", **DEFAULT_LAYOUT)
+        return fig
+        
     colors = [COLOR_SUCCESS, COLOR_PRIMARY, COLOR_ACCENT, COLOR_DANGER]
     
     fig = px.bar(
@@ -179,6 +195,11 @@ def plot_grade_distribution(band_counts: pd.DataFrame) -> go.Figure:
 
 def plot_attendance_vs_academic(df: pd.DataFrame) -> go.Figure:
     """Scatter plot correlating attendance with academic percentage, with policy threshold."""
+    if len(df) == 0 or "attendance_percentage" not in df.columns or "academic_percentage" not in df.columns or "placement_status" not in df.columns:
+        fig = go.Figure()
+        fig.update_layout(title="No Attendance/Academic Data Available", **DEFAULT_LAYOUT)
+        return fig
+        
     fig = px.scatter(
         df,
         x="attendance_percentage",
@@ -219,6 +240,11 @@ def plot_attendance_vs_academic(df: pd.DataFrame) -> go.Figure:
 
 def plot_placement_by_specialization(spec_df: pd.DataFrame) -> go.Figure:
     """Horizontal bar chart showing placement rate per specialization with clean styling."""
+    if len(spec_df) == 0:
+        fig = go.Figure()
+        fig.update_layout(title="No Specialization Data Available", **DEFAULT_LAYOUT)
+        return fig
+        
     fig = px.bar(
         spec_df,
         y="Specialization",
@@ -239,14 +265,29 @@ def plot_placement_by_specialization(spec_df: pd.DataFrame) -> go.Figure:
         yaxis=dict(categoryorder="total ascending")
     )
     return apply_theme(fig)
+    fig.update_traces(
+        texttemplate="<b>%{text:.1f}%</b>", 
+        textposition="outside",
+        hovertemplate="<b>%{y}</b><br>Placement Rate: <b>%{x:.1f}%</b><extra></extra>"
+    )
+    fig.update_layout(
+        coloraxis_showscale=False,
+        yaxis=dict(categoryorder="total ascending")
+    )
+    return apply_theme(fig)
 
 
 def plot_salary_distribution(df: pd.DataFrame) -> go.Figure:
     """Boxplot displaying salary package distribution across specializations for placed students."""
+    if len(df) == 0 or "placement_status" not in df.columns or "salary_lpa" not in df.columns:
+        fig = go.Figure()
+        fig.update_layout(title="No Placed Student Salary Data", **DEFAULT_LAYOUT)
+        return fig
+        
     placed_df = df[df["placement_status"].str.lower() == "placed"].dropna(subset=["salary_lpa"])
     if len(placed_df) == 0:
         fig = go.Figure()
-        fig.update_layout(title="No Placed Student Salary Data")
+        fig.update_layout(title="No Placed Student Salary Data", **DEFAULT_LAYOUT)
         return fig
         
     fig = px.box(
@@ -339,12 +380,15 @@ def plot_student_radar_benchmark(student: pd.Series, batch_df: pd.DataFrame) -> 
     
     prof_map = {"Beginner": 1, "Intermediate": 2, "Advanced": 3}
     
-    stu_acad = float(student.get("academic_percentage", 0))
-    stu_att = float(student.get("attendance_percentage", 0))
+    raw_acad = student.get("academic_percentage", 0)
+    stu_acad = float(raw_acad) if pd.notna(raw_acad) else 0.0
+    raw_att = student.get("attendance_percentage", 0)
+    stu_att = float(raw_att) if pd.notna(raw_att) else 0.0
     stu_sql = prof_map.get(str(student.get("sql_proficiency", "")).capitalize(), 1)
     stu_py = prof_map.get(str(student.get("python_proficiency", "")).capitalize(), 1)
     stu_bi = prof_map.get(str(student.get("power_bi_proficiency", "")).capitalize(), 1)
-    stu_certs = float(student.get("certifications_count", 0))
+    raw_certs = student.get("certifications_count", 0)
+    stu_certs = float(raw_certs) if pd.notna(raw_certs) else 0.0
     
     # Scale to 0-100 for visual uniformity
     stu_values = [
@@ -356,12 +400,21 @@ def plot_student_radar_benchmark(student: pd.Series, batch_df: pd.DataFrame) -> 
         min((stu_certs / 5.0) * 100.0, 100.0)
     ]
     
-    avg_acad = float(batch_df["academic_percentage"].mean())
-    avg_att = float(batch_df["attendance_percentage"].mean())
-    avg_sql = batch_df["sql_proficiency"].map(prof_map).mean()
-    avg_py = batch_df["python_proficiency"].map(prof_map).mean()
-    avg_bi = batch_df["power_bi_proficiency"].map(prof_map).mean()
-    avg_certs = float(batch_df["certifications_count"].mean())
+    if len(batch_df) > 0:
+        b_acad = batch_df["academic_percentage"].dropna()
+        avg_acad = float(b_acad.mean()) if len(b_acad) > 0 else 0.0
+        b_att = batch_df["attendance_percentage"].dropna()
+        avg_att = float(b_att.mean()) if len(b_att) > 0 else 0.0
+        b_sql = batch_df["sql_proficiency"].dropna().map(prof_map)
+        avg_sql = float(b_sql.mean()) if len(b_sql) > 0 else 1.0
+        b_py = batch_df["python_proficiency"].dropna().map(prof_map)
+        avg_py = float(b_py.mean()) if len(b_py) > 0 else 1.0
+        b_bi = batch_df["power_bi_proficiency"].dropna().map(prof_map)
+        avg_bi = float(b_bi.mean()) if len(b_bi) > 0 else 1.0
+        b_certs = batch_df["certifications_count"].dropna()
+        avg_certs = float(b_certs.mean()) if len(b_certs) > 0 else 0.0
+    else:
+        avg_acad, avg_att, avg_sql, avg_py, avg_bi, avg_certs = 0.0, 0.0, 1.0, 1.0, 1.0, 0.0
     
     batch_values = [
         avg_acad,
@@ -456,6 +509,11 @@ def plot_correlation_heatmap(corr_df: pd.DataFrame) -> go.Figure:
 
 def plot_semester_comparison(df: pd.DataFrame) -> go.Figure:
     """Boxplot of academic performance across semesters with jittered dots."""
+    if len(df) == 0:
+        fig = go.Figure()
+        fig.update_layout(title="No Semester Data Available", **DEFAULT_LAYOUT)
+        return fig
+        
     fig = px.box(
         df,
         x="semester",
@@ -466,6 +524,12 @@ def plot_semester_comparison(df: pd.DataFrame) -> go.Figure:
         labels={"semester": "Semester", "academic_percentage": "Academic Aggregate (%)"},
         title="<b>Semester-Level Academic Progression</b><br><span style='font-size:12px; color:#64748B;'>Distribution of marks across curriculum semesters</span>"
     )
+    fig.update_traces(
+        hovertemplate="Semester: <b>%{x}</b><br>Score: <b>%{y:.1f}%</b><extra></extra>",
+        marker=dict(size=3.5, opacity=0.6)
+    )
+    fig.update_layout(showlegend=False)
+    return apply_theme(fig)
     fig.update_traces(
         hovertemplate="Semester: <b>%{x}</b><br>Score: <b>%{y:.1f}%</b><extra></extra>",
         marker=dict(size=3.5, opacity=0.6)

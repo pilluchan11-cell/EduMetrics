@@ -68,6 +68,10 @@ def validate_dataframe(df: pd.DataFrame) -> Tuple[bool, List[str], Dict[str, Any
         "invalid_ranges": []
     }
     
+    if len(df) == 0:
+        errors.append("Dataset contains 0 records (empty dataset).")
+        return False, errors, summary
+    
     # 1. Column existence
     missing_cols = [c for c in EXPECTED_COLUMNS if c not in df.columns]
     if missing_cols:
@@ -88,18 +92,28 @@ def validate_dataframe(df: pd.DataFrame) -> Tuple[bool, List[str], Dict[str, Any
             summary["missing_values_by_col"][col] = null_count
             errors.append(f"Column '{col}' has {null_count} missing values.")
             
-    # 4. Range validation
-    invalid_academic = df[
-        (df["academic_percentage"] < 0) | (df["academic_percentage"] > 100)
-    ]
+    # 4. Range validation (safely coerced)
+    acad_num = pd.to_numeric(df["academic_percentage"], errors="coerce")
+    invalid_academic = df[(acad_num < 0) | (acad_num > 100) | acad_num.isna()]
     if len(invalid_academic) > 0:
-        summary["invalid_ranges"].append(f"{len(invalid_academic)} rows have invalid academic percentages.")
+        msg = f"{len(invalid_academic)} rows have invalid academic percentages (must be 0-100)."
+        summary["invalid_ranges"].append(msg)
+        errors.append(msg)
         
-    invalid_att = df[
-        (df["attendance_percentage"] < 0) | (df["attendance_percentage"] > 100)
-    ]
+    att_num = pd.to_numeric(df["attendance_percentage"], errors="coerce")
+    invalid_att = df[(att_num < 0) | (att_num > 100) | att_num.isna()]
     if len(invalid_att) > 0:
-        summary["invalid_ranges"].append(f"{len(invalid_att)} rows have invalid attendance percentages.")
+        msg = f"{len(invalid_att)} rows have invalid attendance percentages (must be 0-100)."
+        summary["invalid_ranges"].append(msg)
+        errors.append(msg)
+        
+    # 5. Inconsistent placement check
+    placed_mask = df["placement_status"].astype(str).str.lower() == "placed"
+    placed_inconsistent = df[
+        placed_mask & (df["salary_lpa"].isna() | df["company"].isna() | (df["company"].astype(str).str.strip() == ""))
+    ]
+    if len(placed_inconsistent) > 0:
+        errors.append(f"{len(placed_inconsistent)} placed records have missing company or salary.")
         
     is_valid = len(errors) == 0
     return is_valid, errors, summary

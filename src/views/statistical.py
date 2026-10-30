@@ -103,26 +103,29 @@ def render(df: pd.DataFrame) -> None:
         
         # Add regression line via pure NumPy
         valid_att = df.dropna(subset=["attendance_percentage", "academic_percentage"])
-        if len(valid_att) > 2:
-            x_vals = valid_att["attendance_percentage"].values
-            y_vals = valid_att["academic_percentage"].values
-            slope, intercept = np.polyfit(x_vals, y_vals, 1)
-            x_line = np.linspace(x_vals.min(), x_vals.max(), 30)
-            y_line = slope * x_line + intercept
-            fig_scatter1.add_trace(go.Scatter(
-                x=x_line,
-                y=y_line,
-                mode="lines",
-                name=f"OLS Trend (Slope: {slope:+.2f})",
-                line=dict(color="#1E3A8A", width=2.5, dash="dash")
-            ))
+        if len(valid_att) > 2 and valid_att["attendance_percentage"].min() != valid_att["attendance_percentage"].max():
+            try:
+                x_vals = valid_att["attendance_percentage"].values
+                y_vals = valid_att["academic_percentage"].values
+                slope, intercept = np.polyfit(x_vals, y_vals, 1)
+                x_line = np.linspace(x_vals.min(), x_vals.max(), 30)
+                y_line = slope * x_line + intercept
+                fig_scatter1.add_trace(go.Scatter(
+                    x=x_line,
+                    y=y_line,
+                    mode="lines",
+                    name=f"OLS Trend (Slope: {slope:+.2f})",
+                    line=dict(color="#1E3A8A", width=2.5, dash="dash")
+                ))
+            except Exception:
+                pass
             
         st.plotly_chart(fig_scatter1, use_container_width=True)
         
     with sc2:
         st.markdown("**Technical Skill Score vs. Placed Package (₹ LPA):**")
         placed_df = df[df["placement_status"].str.lower() == "placed"].dropna(subset=["salary_lpa", "technical_score_10"])
-        if len(placed_df) > 3:
+        if len(placed_df) > 3 and placed_df["technical_score_10"].min() != placed_df["technical_score_10"].max():
             fig_scatter2 = px.scatter(
                 placed_df,
                 x="technical_score_10",
@@ -134,18 +137,21 @@ def render(df: pd.DataFrame) -> None:
             fig_scatter2.update_traces(marker=dict(size=6.5, opacity=0.8))
             
             # Add regression line via pure NumPy
-            x_t = placed_df["technical_score_10"].values
-            y_t = placed_df["salary_lpa"].values
-            slope_t, intercept_t = np.polyfit(x_t, y_t, 1)
-            x_t_line = np.linspace(x_t.min(), x_t.max(), 30)
-            y_t_line = slope_t * x_t_line + intercept_t
-            fig_scatter2.add_trace(go.Scatter(
-                x=x_t_line,
-                y=y_t_line,
-                mode="lines",
-                name=f"OLS Trend (Slope: ₹{slope_t:+.2f}LPA/pt)",
-                line=dict(color="#0D9488", width=2.5, dash="dot")
-            ))
+            try:
+                x_t = placed_df["technical_score_10"].values
+                y_t = placed_df["salary_lpa"].values
+                slope_t, intercept_t = np.polyfit(x_t, y_t, 1)
+                x_t_line = np.linspace(x_t.min(), x_t.max(), 30)
+                y_t_line = slope_t * x_t_line + intercept_t
+                fig_scatter2.add_trace(go.Scatter(
+                    x=x_t_line,
+                    y=y_t_line,
+                    mode="lines",
+                    name=f"OLS Trend (Slope: ₹{slope_t:+.2f}LPA/pt)",
+                    line=dict(color="#0D9488", width=2.5, dash="dot")
+                ))
+            except Exception:
+                pass
             
             st.plotly_chart(fig_scatter2, use_container_width=True)
         else:

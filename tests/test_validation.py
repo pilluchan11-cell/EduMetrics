@@ -72,3 +72,59 @@ def test_clean_and_enrich_consistency():
     assert cleaned.iloc[0]["grade_band"] == "Distinction (>=80%)"
     assert cleaned.iloc[0]["attendance_band"] == "Critical Alert (<75%)"
     assert cleaned.iloc[0]["is_academic_at_risk"] == True
+
+
+def test_validate_empty_dataset():
+    """Checks validation rejection for 0-row datasets."""
+    empty_df = pd.DataFrame()
+    is_valid, errors, summary = validate_dataframe(empty_df)
+    assert not is_valid
+    assert any("empty" in err.lower() or "missing required columns" in err.lower() for err in errors)
+
+
+def test_validate_invalid_ranges():
+    """Checks detection of out-of-bounds percentages."""
+    invalid_range_df = pd.DataFrame([{
+        "student_id": "EDU-001",
+        "student_name": "Test Student",
+        "gender": "Male",
+        "specialization": "Finance",
+        "semester": "Semester 1",
+        "academic_percentage": 145.0,  # Invalid: > 100
+        "attendance_percentage": -15.0,  # Invalid: < 0
+        "sql_proficiency": "Beginner",
+        "python_proficiency": "Beginner",
+        "power_bi_proficiency": "Beginner",
+        "certifications_count": 0,
+        "internship_status": "Not Completed",
+        "placement_status": "Unplaced",
+        "company": None,
+        "salary_lpa": np.nan
+    }])
+    is_valid, errors, summary = validate_dataframe(invalid_range_df)
+    assert not is_valid
+    assert len(summary["invalid_ranges"]) > 0
+
+
+def test_validate_placed_inconsistency():
+    """Checks detection of placed records lacking required compensation or company."""
+    inconsistent_df = pd.DataFrame([{
+        "student_id": "EDU-001",
+        "student_name": "Placed Without Company",
+        "gender": "Female",
+        "specialization": "Marketing",
+        "semester": "Semester 2",
+        "academic_percentage": 75.0,
+        "attendance_percentage": 85.0,
+        "sql_proficiency": "Intermediate",
+        "python_proficiency": "Intermediate",
+        "power_bi_proficiency": "Intermediate",
+        "certifications_count": 1,
+        "internship_status": "Completed",
+        "placement_status": "Placed",
+        "company": None,  # Missing!
+        "salary_lpa": np.nan  # Missing!
+    }])
+    is_valid, errors, summary = validate_dataframe(inconsistent_df)
+    assert not is_valid
+    assert any("placed records have missing company or salary" in err for err in errors)

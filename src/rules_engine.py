@@ -18,67 +18,89 @@ def evaluate_student_profile(student: pd.Series) -> List[Dict[str, str]]:
     recommendations = []
     
     # 1. Attendance Evaluation
-    attendance = float(student.get("attendance_percentage", 0.0))
-    if attendance < ATTENDANCE_CRITICAL_THRESHOLD:
-        recommendations.append({
-            "category": "Attendance",
-            "status": "Critical",
-            "title": "Low Attendance Alert",
-            "message": (
-                f"Current attendance is {attendance:.1f}%, which is below the mandatory "
-                f"institutional threshold of {ATTENDANCE_CRITICAL_THRESHOLD:.1f}%."
-            ),
-            "action": "Meet with faculty mentor; attend all scheduled remediation and makeup sessions.",
-            "rationale": "Institutions and campus placement drives typically require minimum 75% attendance for drive eligibility."
-        })
-    elif attendance < 85.0:
+    raw_att = student.get("attendance_percentage")
+    if pd.isna(raw_att):
         recommendations.append({
             "category": "Attendance",
             "status": "Action Needed",
-            "title": "Attendance Improvement Opportunity",
-            "message": f"Attendance is {attendance:.1f}%. While above the 75% cutoff, maintaining >85% correlates with higher academic consistency.",
-            "action": "Ensure consistent presence in lab and practical project lectures.",
-            "rationale": "High attendance provides direct classroom engagement and continuous faculty feedback."
+            "title": "Attendance Record Pending",
+            "message": "Student has no recorded lecture attendance percentage.",
+            "action": "Coordinate with academic registry to update classroom attendance log.",
+            "rationale": "Complete attendance tracking is required for academic compliance and placement drive eligibility."
         })
     else:
-        recommendations.append({
-            "category": "Attendance",
-            "status": "Strength",
-            "title": "Excellent Attendance Record",
-            "message": f"Outstanding attendance at {attendance:.1f}%.",
-            "action": "Maintain this strong discipline through upcoming semester assessments.",
-            "rationale": "High attendance demonstrates professional consistency and reliable work habits."
-        })
+        attendance = float(raw_att)
+        if attendance < ATTENDANCE_CRITICAL_THRESHOLD:
+            recommendations.append({
+                "category": "Attendance",
+                "status": "Critical",
+                "title": "Low Attendance Alert",
+                "message": (
+                    f"Current attendance is {attendance:.1f}%, which is below the mandatory "
+                    f"institutional threshold of {ATTENDANCE_CRITICAL_THRESHOLD:.1f}%."
+                ),
+                "action": "Meet with faculty mentor; attend all scheduled remediation and makeup sessions.",
+                "rationale": "Institutions and campus placement drives typically require minimum 75% attendance for drive eligibility."
+            })
+        elif attendance < 85.0:
+            recommendations.append({
+                "category": "Attendance",
+                "status": "Action Needed",
+                "title": "Attendance Improvement Opportunity",
+                "message": f"Attendance is {attendance:.1f}%. While above the 75% cutoff, maintaining >85% correlates with higher academic consistency.",
+                "action": "Ensure consistent presence in lab and practical project lectures.",
+                "rationale": "High attendance provides direct classroom engagement and continuous faculty feedback."
+            })
+        else:
+            recommendations.append({
+                "category": "Attendance",
+                "status": "Strength",
+                "title": "Excellent Attendance Record",
+                "message": f"Outstanding attendance at {attendance:.1f}%.",
+                "action": "Maintain this strong discipline through upcoming semester assessments.",
+                "rationale": "High attendance demonstrates professional consistency and reliable work habits."
+            })
 
     # 2. Academic Score Evaluation
-    acad_score = float(student.get("academic_percentage", 0.0))
-    if acad_score < 55.0:
-        recommendations.append({
-            "category": "Academics",
-            "status": "Critical",
-            "title": "Academic Remediation Needed",
-            "message": f"Academic score is {acad_score:.1f}%, falling in the intervention band (<55%).",
-            "action": "Enroll in department tutorial sessions and peer-assisted study groups.",
-            "rationale": "Most corporate recruiters mandate a minimum benchmark of 60% aggregate for screening test shortlisting."
-        })
-    elif acad_score < 70.0:
+    raw_acad = student.get("academic_percentage")
+    if pd.isna(raw_acad):
         recommendations.append({
             "category": "Academics",
             "status": "Action Needed",
-            "title": "Target 70%+ Aggregate",
-            "message": f"Academic score is {acad_score:.1f}%. A push to 70%+ significantly expands company eligibility.",
-            "action": "Focus on core elective exams and submission assignments to elevate overall GPA.",
-            "rationale": "Tier-1 recruiters often use 70% as the threshold for early-round interview exemptions."
+            "title": "Academic Marks Pending",
+            "message": "Student has no recorded aggregate marks.",
+            "action": "Ensure all internal assessments and semester grade sheets are verified.",
+            "rationale": "Accurate grade reporting is essential to determine academic standing and screening eligibility."
         })
     else:
-        recommendations.append({
-            "category": "Academics",
-            "status": "Strength",
-            "title": "Strong Academic Standing",
-            "message": f"Academic score is {acad_score:.1f}%, in top performance tiers.",
-            "action": "Leverage academic distinction to target competitive corporate roles and consultancies.",
-            "rationale": "Consistent high grades provide a strong initial impression during campus recruitment."
-        })
+        acad_score = float(raw_acad)
+        if acad_score < 55.0:
+            recommendations.append({
+                "category": "Academics",
+                "status": "Critical",
+                "title": "Academic Remediation Needed",
+                "message": f"Academic score is {acad_score:.1f}%, falling in the intervention band (<55%).",
+                "action": "Enroll in department tutorial sessions and peer-assisted study groups.",
+                "rationale": "Most corporate recruiters mandate a minimum benchmark of 60% aggregate for screening test shortlisting."
+            })
+        elif acad_score < 70.0:
+            recommendations.append({
+                "category": "Academics",
+                "status": "Action Needed",
+                "title": "Target 70%+ Aggregate",
+                "message": f"Academic score is {acad_score:.1f}%. A push to 70%+ significantly expands company eligibility.",
+                "action": "Focus on core elective exams and submission assignments to elevate overall GPA.",
+                "rationale": "Tier-1 recruiters often use 70% as the threshold for early-round interview exemptions."
+            })
+        else:
+            recommendations.append({
+                "category": "Academics",
+                "status": "Strength",
+                "title": "Strong Academic Standing",
+                "message": f"Academic score is {acad_score:.1f}%, in top performance tiers.",
+                "action": "Leverage academic distinction to target competitive corporate roles and consultancies.",
+                "rationale": "Consistent high grades provide a strong initial impression during campus recruitment."
+            })
 
     # 3. Technical Skills Evaluation
     sql = str(student.get("sql_proficiency", "Beginner")).capitalize()
@@ -113,9 +135,12 @@ def evaluate_student_profile(student: pd.Series) -> List[Dict[str, str]]:
         })
 
     # 4. Placement & Internship Preparation
-    internship = str(student.get("internship_status", "Not Completed"))
-    certs = int(student.get("certifications_count", 0))
-    status = str(student.get("placement_status", "Unplaced"))
+    raw_intern = student.get("internship_status")
+    internship = str(raw_intern) if pd.notna(raw_intern) else "Not Completed"
+    raw_certs = student.get("certifications_count")
+    certs = int(raw_certs) if pd.notna(raw_certs) else 0
+    raw_status = student.get("placement_status")
+    status = str(raw_status) if pd.notna(raw_status) else "Unplaced"
     
     if status == "Unplaced":
         if internship != "Completed":

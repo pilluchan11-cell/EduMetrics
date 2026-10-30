@@ -32,20 +32,15 @@ def render(df: pd.DataFrame) -> None:
         "🔍"
     )
     
-    # Quick filter and selector
-    student_labels = {
-        row["student_id"]: f"{row['student_id']} - {row['student_name']} ({row['specialization']})"
-        for _, row in df.iterrows()
-    }
-    
-    col_sel1, col_sel2 = st.columns([8, 4])
-    with col_sel1:
-        selected_id = st.selectbox(
-            "Choose a student profile:",
-            options=list(student_labels.keys()),
-            format_func=lambda x: student_labels[x]
+    # Search and Cohort Slicing
+    col_search, col_filter = st.columns([7, 5])
+    with col_search:
+        search_query = st.text_input(
+            "🔎 Search Student by ID, Name, or Major:",
+            placeholder="e.g. EDU-2026-001, Priya, or Business Analytics",
+            help="Filter candidate profiles in real-time."
         )
-    with col_sel2:
+    with col_filter:
         quick_placed_filter = st.radio(
             "Cohort Quick View:",
             options=["All Students", "Placed Only", "Unplaced Only"],
@@ -58,15 +53,31 @@ def render(df: pd.DataFrame) -> None:
     elif quick_placed_filter == "Unplaced Only":
         filtered_students = filtered_students[filtered_students["placement_status"].str.lower() == "unplaced"]
         
-    if selected_id not in filtered_students["student_id"].values:
-        if len(filtered_students) > 0:
-            selected_id = filtered_students["student_id"].iloc[0]
-        else:
-            st.info("No students found in this filter.")
-            render_footer()
-            return
+    if search_query.strip():
+        q = search_query.strip().lower()
+        filtered_students = filtered_students[
+            filtered_students["student_id"].astype(str).str.lower().str.contains(q, na=False) |
+            filtered_students["student_name"].astype(str).str.lower().str.contains(q, na=False) |
+            filtered_students["specialization"].astype(str).str.lower().str.contains(q, na=False)
+        ]
+        
+    if len(filtered_students) == 0:
+        st.info("ℹ️ No students match your search criteria or placement filter. Try refining your search query.")
+        render_footer()
+        return
+        
+    student_labels = {
+        row["student_id"]: f"{row['student_id']} - {row['student_name']} ({row['specialization']}) [{row['placement_status']}]"
+        for _, row in filtered_students.iterrows()
+    }
+    
+    selected_id = st.selectbox(
+        f"Select Profile ({len(filtered_students)} candidates matching):",
+        options=list(student_labels.keys()),
+        format_func=lambda x: student_labels[x]
+    )
 
-    student = df[df["student_id"] == selected_id].iloc[0]
+    student = filtered_students[filtered_students["student_id"] == selected_id].iloc[0]
     
     st.markdown("<br>", unsafe_allow_html=True)
     

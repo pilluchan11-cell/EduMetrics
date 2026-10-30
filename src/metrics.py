@@ -17,7 +17,7 @@ def compute_executive_kpis(df: pd.DataFrame) -> Dict[str, Any]:
     Computes top-level executive KPIs for the dashboard.
     """
     total_students = len(df)
-    if total_students == 0:
+    if total_students == 0 or "placement_status" not in df.columns:
         return {
             "total_students": 0,
             "avg_academic": 0.0,
@@ -66,7 +66,7 @@ def compute_academic_summary(df: pd.DataFrame) -> Dict[str, Any]:
     """
     Computes statistical distribution metrics for academic performance.
     """
-    if len(df) == 0:
+    if len(df) == 0 or "academic_percentage" not in df.columns:
         return {
             "mean": 0.0, "median": 0.0, "std": 0.0, 
             "min": 0.0, "max": 0.0, "q25": 0.0, "q75": 0.0, 
@@ -74,6 +74,12 @@ def compute_academic_summary(df: pd.DataFrame) -> Dict[str, Any]:
         }
         
     series = df["academic_percentage"].dropna()
+    if len(series) == 0:
+        return {
+            "mean": 0.0, "median": 0.0, "std": 0.0, 
+            "min": 0.0, "max": 0.0, "q25": 0.0, "q75": 0.0, 
+            "iqr": 0.0, "skew": 0.0
+        }
     q25 = float(series.quantile(0.25))
     q75 = float(series.quantile(0.75))
     skew_val = float(stats.skew(series)) if len(series) > 2 else 0.0
@@ -81,7 +87,7 @@ def compute_academic_summary(df: pd.DataFrame) -> Dict[str, Any]:
     return {
         "mean": round(float(series.mean()), 2),
         "median": round(float(series.median()), 2),
-        "std": round(float(series.std()), 2),
+        "std": round(float(series.std()), 2) if len(series) > 1 else 0.0,
         "min": round(float(series.min()), 2),
         "max": round(float(series.max()), 2),
         "q25": round(q25, 2),
@@ -95,7 +101,7 @@ def compute_attendance_summary(df: pd.DataFrame) -> Dict[str, Any]:
     """
     Computes statistical distribution metrics for lecture attendance compliance.
     """
-    if len(df) == 0:
+    if len(df) == 0 or "attendance_percentage" not in df.columns:
         return {
             "mean": 0.0, "median": 0.0, "std": 0.0, 
             "min": 0.0, "max": 0.0, "q25": 0.0, "q75": 0.0, "iqr": 0.0,
@@ -105,6 +111,13 @@ def compute_attendance_summary(df: pd.DataFrame) -> Dict[str, Any]:
         
     series = df["attendance_percentage"].dropna()
     total = len(series)
+    if total == 0:
+        return {
+            "mean": 0.0, "median": 0.0, "std": 0.0, 
+            "min": 0.0, "max": 0.0, "q25": 0.0, "q75": 0.0, "iqr": 0.0,
+            "compliant_count": 0, "compliant_rate": 0.0,
+            "risk_count": 0, "risk_rate": 0.0
+        }
     compliant = int((series >= ATTENDANCE_CRITICAL_THRESHOLD).sum())
     risk = total - compliant
     q25 = float(series.quantile(0.25))
@@ -113,7 +126,7 @@ def compute_attendance_summary(df: pd.DataFrame) -> Dict[str, Any]:
     return {
         "mean": round(float(series.mean()), 2),
         "median": round(float(series.median()), 2),
-        "std": round(float(series.std()), 2),
+        "std": round(float(series.std()), 2) if total > 1 else 0.0,
         "min": round(float(series.min()), 2),
         "max": round(float(series.max()), 2),
         "q25": round(q25, 2),
@@ -130,6 +143,13 @@ def compute_salary_detailed_summary(df: pd.DataFrame) -> Dict[str, Any]:
     """
     Computes detailed statistical quantiles, dispersion, and skewness for placed salaries.
     """
+    if len(df) == 0 or "placement_status" not in df.columns or "salary_lpa" not in df.columns:
+        return {
+            "count": 0, "mean": 0.0, "median": 0.0, "std": 0.0,
+            "min": 0.0, "max": 0.0, "p10": 0.0, "p25": 0.0, "p75": 0.0, "p90": 0.0,
+            "iqr": 0.0, "skew": 0.0
+        }
+        
     placed_df = df[df["placement_status"].str.lower() == "placed"].dropna(subset=["salary_lpa"])
     if len(placed_df) == 0:
         return {
@@ -178,7 +198,7 @@ def compute_specialization_performance(df: pd.DataFrame) -> pd.DataFrame:
     """
     Calculates academic and attendance averages per specialization.
     """
-    if len(df) == 0:
+    if len(df) == 0 or "specialization" not in df.columns:
         return pd.DataFrame()
         
     grouped = df.groupby("specialization").agg(
@@ -201,7 +221,7 @@ def compute_placement_by_specialization(df: pd.DataFrame) -> pd.DataFrame:
     """
     Placement rates, placed counts, and average salaries across specializations.
     """
-    if len(df) == 0:
+    if len(df) == 0 or "specialization" not in df.columns or "placement_status" not in df.columns:
         return pd.DataFrame()
         
     records = []
@@ -229,7 +249,7 @@ def compute_placement_by_academic_tier(df: pd.DataFrame) -> pd.DataFrame:
     """
     Calculates placement conversion and average packages across academic grade bands.
     """
-    if len(df) == 0 or "grade_band" not in df.columns:
+    if len(df) == 0 or "grade_band" not in df.columns or "placement_status" not in df.columns:
         return pd.DataFrame()
         
     records = []
@@ -263,6 +283,9 @@ def compute_company_placement_stats(df: pd.DataFrame) -> pd.DataFrame:
     """
     Analyzes hiring distribution and compensation by company.
     """
+    if len(df) == 0 or "placement_status" not in df.columns or "company" not in df.columns:
+        return pd.DataFrame()
+        
     placed_df = df[df["placement_status"].str.lower() == "placed"]
     if len(placed_df) == 0:
         return pd.DataFrame()
@@ -384,6 +407,12 @@ def compute_group_comparisons(df: pd.DataFrame) -> Dict[str, Any]:
     """
     Performs two-sample hypothesis testing comparing Placed vs Unplaced cohorts.
     """
+    if len(df) == 0 or "placement_status" not in df.columns:
+        return {
+            "placed_vs_unplaced": pd.DataFrame(),
+            "anova_specializations": None
+        }
+        
     placed = df[df["placement_status"].str.lower() == "placed"]
     unplaced = df[df["placement_status"].str.lower() == "unplaced"]
     
@@ -446,10 +475,14 @@ def compute_placement_logistic_regression(df: pd.DataFrame) -> Optional[Dict[str
     """
     Fits an explainable Logistic Regression model to quantify multivariate placement odds ratios.
     """
-    clean_df = df.dropna(subset=[
+    required_cols = [
         "academic_percentage", "attendance_percentage", 
         "technical_score_10", "certifications_count", "internship_status", "placement_status"
-    ]).copy()
+    ]
+    if len(df) < 30 or not all(c in df.columns for c in required_cols):
+        return None
+        
+    clean_df = df.dropna(subset=required_cols).copy()
     
     if len(clean_df) < 30:
         return None
@@ -519,7 +552,7 @@ def generate_dynamic_business_insights(df: pd.DataFrame) -> List[Dict[str, Any]]
     Generates 5-8 strictly calculated, dynamic business insights derived directly
     from the loaded dataset. Zero hardcoding.
     """
-    if len(df) == 0:
+    if len(df) == 0 or "specialization" not in df.columns or "placement_status" not in df.columns:
         return []
         
     insights = []

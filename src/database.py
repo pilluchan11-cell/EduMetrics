@@ -44,6 +44,9 @@ def save_dataframe_to_db(df: pd.DataFrame, db_path: Optional[Path] = None) -> in
     4. placements
     Replaces existing records transactionally.
     """
+    if df is None or len(df) == 0:
+        return 0
+        
     init_db(db_path)
     conn = get_connection(db_path)
     
