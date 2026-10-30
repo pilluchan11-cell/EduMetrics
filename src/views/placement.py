@@ -9,7 +9,9 @@ from src.metrics import (
     compute_executive_kpis,
     compute_placement_by_specialization,
     compute_company_placement_stats,
-    compute_skill_placement_matrix
+    compute_skill_placement_matrix,
+    compute_salary_detailed_summary,
+    compute_placement_by_academic_tier
 )
 from src.visualizations import (
     plot_placement_by_specialization,
@@ -33,10 +35,11 @@ def render(df: pd.DataFrame) -> None:
     render_disclaimer()
     
     if len(df) == 0:
-        st.warning("⚠️ No student records match the active filter criteria. Adjust the sidebar filters to view data.")
+        st.warning("⚠️ No student records match the active filter criteria. Adjust sidebar filters to view data.")
         return
         
     kpis = compute_executive_kpis(df)
+    sal_stats = compute_salary_detailed_summary(df)
     
     # Section 1: Placement & Compensation KPIs
     render_section_header(
@@ -59,7 +62,7 @@ def render(df: pd.DataFrame) -> None:
         render_kpi(
             "Median CTC Package", 
             f"₹{kpis['median_salary']} LPA", 
-            "50th Percentile Compensation", 
+            f"P25: ₹{sal_stats['p25']} | P75: ₹{sal_stats['p75']} LPA", 
             COLOR_PRIMARY, 
             icon="📊",
             chip_text="Median Offer",
@@ -69,7 +72,7 @@ def render(df: pd.DataFrame) -> None:
         render_kpi(
             "Average CTC Package", 
             f"₹{kpis['avg_salary']} LPA", 
-            "Mean Placed Compensation", 
+            f"Std Dev: ₹{sal_stats['std']} LPA (Skew: {sal_stats['skew']:+.2f})", 
             COLOR_SECONDARY, 
             icon="💵",
             chip_text="Mean Package",
@@ -79,7 +82,7 @@ def render(df: pd.DataFrame) -> None:
         render_kpi(
             "Top Campus Offer", 
             f"₹{kpis['highest_salary']} LPA", 
-            "Highest Verified Corporate Offer", 
+            f"P90 Tier: ₹{sal_stats['p90']} LPA", 
             COLOR_ACCENT, 
             icon="🏆",
             chip_text="Peak CTC",
@@ -99,7 +102,23 @@ def render(df: pd.DataFrame) -> None:
         fig_sal = plot_salary_distribution(df)
         st.plotly_chart(fig_sal, use_container_width=True)
         
-    # Section 3: Corporate Hiring Insights
+    # Section 3: Placement by Academic Performance Tier
+    render_section_header(
+        "Placement Conversion by Academic Grade Band",
+        "Evaluating how academic distinction directly influences recruitment conversion rates and average packages.",
+        "🎓"
+    )
+    acad_tier_df = compute_placement_by_academic_tier(df)
+    if len(acad_tier_df) > 0:
+        st.dataframe(
+            acad_tier_df,
+            use_container_width=True,
+            hide_index=True
+        )
+        
+    st.markdown("<br>", unsafe_allow_html=True)
+        
+    # Section 4: Corporate Hiring Insights
     render_section_header(
         "Corporate Recruiting Partner Intelligence",
         "Analysis of hiring partners by placement volume, minimum package, and average offer package.",
@@ -122,7 +141,7 @@ def render(df: pd.DataFrame) -> None:
         
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # Section 4: Skills & Certifications Impact
+    # Section 5: Skills & Certifications Impact
     render_section_header(
         "Technical Competencies & Placement Lift",
         "Investigating how student proficiency across Python, SQL, and Power BI correlates with placement rates.",
@@ -140,7 +159,7 @@ def render(df: pd.DataFrame) -> None:
         fig_bi = plot_skills_placement_impact(df, "power_bi_proficiency", "Power BI")
         st.plotly_chart(fig_bi, use_container_width=True)
         
-    # Section 5: Experiential Learning Uplift
+    # Section 6: Experiential Learning Uplift
     render_section_header(
         "Experiential Learning & Industry Credentials",
         "Measuring placement premiums associated with summer internship completion and verified certifications.",

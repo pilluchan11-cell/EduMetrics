@@ -1,13 +1,14 @@
 """
 Executive Dashboard View for EduMetrics.
-Displays institutional high-level KPIs, placement funnel, and strategic overviews.
+Displays institutional high-level KPIs, dynamic business insights, placement funnel, and strategic overviews.
 """
 
 import streamlit as st
 import pandas as pd
 from src.metrics import (
     compute_executive_kpis,
-    compute_placement_by_specialization
+    compute_placement_by_specialization,
+    generate_dynamic_business_insights
 )
 from src.visualizations import (
     plot_placement_donut,
@@ -30,7 +31,7 @@ def render(df: pd.DataFrame) -> None:
     render_disclaimer()
     
     if len(df) == 0:
-        st.warning("⚠️ No student records match the active filter criteria. Adjust the sidebar filters to view data.")
+        st.warning("⚠️ No student records match the active filter criteria. Adjust sidebar filters to view data.")
         return
         
     kpis = compute_executive_kpis(df)
@@ -77,7 +78,7 @@ def render(df: pd.DataFrame) -> None:
         render_kpi(
             "Average Attendance", 
             f"{kpis['avg_attendance']}%", 
-            "Threshold Cutoff: 75%", 
+            "Threshold Benchmark: 75%", 
             att_color, 
             icon="⏰",
             chip_text="Compliance",
@@ -87,7 +88,7 @@ def render(df: pd.DataFrame) -> None:
     # Section 2: Compensation & Placement Market Performance
     render_section_header(
         "Recruitment & Market Outcomes", 
-        "Placement conversion statistics and compensation packages secured across recruiting partners.",
+        "Placement conversion statistics and compensation packages secured across corporate partners.",
         "💼"
     )
     c5, c6, c7, c8 = st.columns(4)
@@ -134,7 +135,47 @@ def render(df: pd.DataFrame) -> None:
 
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # Visual Analytics Row
+    # Section 3: Dynamically Generated Business Insights
+    render_section_header(
+        "Automated Business Insights & Cohort Intelligence",
+        "Empirical discoveries dynamically calculated from the currently loaded student records (zero hardcoded values).",
+        "💡"
+    )
+    
+    insights = generate_dynamic_business_insights(df)
+    if insights:
+        # Display insights in 2 columns
+        col_i1, col_i2 = st.columns(2)
+        for idx, item in enumerate(insights):
+            target_col = col_i1 if idx % 2 == 0 else col_i2
+            with target_col:
+                st.markdown(
+                    f"""
+                    <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 18px 20px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03); border-top: 3px solid #2563EB;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #2563EB; letter-spacing: 0.06em; text-transform: uppercase;">
+                                {item['category']}
+                            </span>
+                            <span style="background: #EFF6FF; color: #1E40AF; padding: 2px 8px; border-radius: 6px; font-size: 11.5px; font-weight: 700;">
+                                {item['stat_callout']}
+                            </span>
+                        </div>
+                        <h4 style="margin: 0 0 8px 0; color: #0F172A; font-size: 15.5px; font-weight: 700;">{item['title']}</h4>
+                        <p style="margin: 0 0 10px 0; color: #334155; font-size: 13.5px; line-height: 1.5;">{item['finding']}</p>
+                        <div style="background: #F8FAFC; border-left: 3px solid #0D9488; padding: 8px 12px; border-radius: 4px; font-size: 12.5px; color: #1E293B; margin-bottom: 6px;">
+                            <strong>Strategic Takeaway:</strong> {item['mba_takeaway']}
+                        </div>
+                        <div style="font-size: 11px; color: #94A3B8;">
+                            <em>Methodology:</em> {item['method']}
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # Section 4: Visual Analytics Row
     col_left, col_right = st.columns([5, 7])
     
     with col_left:
@@ -146,7 +187,7 @@ def render(df: pd.DataFrame) -> None:
         fig_spec = plot_placement_by_specialization(spec_df)
         st.plotly_chart(fig_spec, use_container_width=True)
         
-    # Full Width Academic Overview
+    # Full Width Academic Distribution
     render_section_header(
         "Academic Achievement Distribution",
         "Statistical curve showing how academic scores are dispersed across the entire postgraduate cohort.",
@@ -154,23 +195,5 @@ def render(df: pd.DataFrame) -> None:
     )
     fig_dist = plot_academic_distribution(df)
     st.plotly_chart(fig_dist, use_container_width=True)
-    
-    # Strategic Executive Takeaways Callout
-    st.markdown(
-        f"""
-        <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 22px 26px; margin-top: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03); border-left: 5px solid #2563EB;">
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-                <span style="font-size: 20px;">📋</span>
-                <h4 style="margin: 0; color: #0F172A; font-size: 17px; font-weight: 700;">Executive Takeaways & Management Summary</h4>
-            </div>
-            <ul style="margin: 0; padding-left: 20px; color: #334155; font-size: 14px; line-height: 1.7;">
-                <li>The active student cohort demonstrates an overall placement conversion of <strong>{kpis['placement_rate']}%</strong> with an average salary package of <strong>₹{kpis['avg_salary']} LPA</strong>.</li>
-                <li>Batch average attendance is currently <strong>{kpis['avg_attendance']}%</strong>, tracking above the mandatory 75% institutional compliance requirement.</li>
-                <li>There are <strong>{kpis['unplaced_count']} students</strong> currently in the career development pipeline who would benefit from targeted technical workshops and mentorship interventions.</li>
-            </ul>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
     
     render_footer()

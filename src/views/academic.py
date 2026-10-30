@@ -7,6 +7,7 @@ import streamlit as st
 import pandas as pd
 from src.metrics import (
     compute_academic_summary,
+    compute_attendance_summary,
     compute_grade_distribution,
     compute_specialization_performance,
     get_top_and_support_students
@@ -33,23 +34,24 @@ def render(df: pd.DataFrame) -> None:
     render_disclaimer()
     
     if len(df) == 0:
-        st.warning("⚠️ No student records match the active filter criteria. Adjust the sidebar filters to view data.")
+        st.warning("⚠️ No student records match the active filter criteria. Adjust sidebar filters to view data.")
         return
         
-    stats = compute_academic_summary(df)
+    acad_stats = compute_academic_summary(df)
+    att_stats = compute_attendance_summary(df)
     
-    # Section 1: Statistical Summary
+    # Section 1: Academic & Attendance Statistical Summaries
     render_section_header(
-        "Parametric & Non-Parametric Academic Summary",
-        "Statistical spread of marks across the cohort, measuring central tendency, dispersion, and range.",
+        "Academic & Attendance Distribution Benchmarks",
+        "Statistical measures of central tendency, dispersion, quartile ranges, and attendance compliance.",
         "📊"
     )
     c1, c2, c3, c4 = st.columns(4)
     with c1:
         render_kpi(
-            "Cohort Mean Score", 
-            f"{stats['mean']}%", 
-            f"Median: {stats['median']}%", 
+            "Academic Mean & Median", 
+            f"{acad_stats['mean']}%", 
+            f"Median: {acad_stats['median']}% | Skew: {acad_stats['skew']:+.2f}", 
             COLOR_PRIMARY, 
             icon="📐",
             chip_text="Central Value",
@@ -57,33 +59,34 @@ def render(df: pd.DataFrame) -> None:
         )
     with c2:
         render_kpi(
-            "Standard Deviation", 
-            f"{stats['std']}%", 
-            "Score Dispersion Metric", 
+            "Academic Score Spread", 
+            f"IQR: {acad_stats['iqr']}%", 
+            f"Range: {acad_stats['min']}% – {acad_stats['max']}% (Std: {acad_stats['std']}%)", 
             COLOR_ACCENT, 
             icon="⚡",
-            chip_text="Variation",
+            chip_text="Dispersion",
             chip_color="#FEF3C7"
         )
     with c3:
         render_kpi(
-            "Interquartile Range (IQR)", 
-            f"{stats['iqr']}%", 
-            f"Q25: {stats['q25']}% | Q75: {stats['q75']}%", 
+            "Attendance Compliance", 
+            f"{att_stats['compliant_rate']}%", 
+            f"{att_stats['compliant_count']} Students ≥ 75% Threshold", 
             COLOR_SUCCESS, 
-            icon="📏",
-            chip_text="Middle 50%",
+            icon="⏰",
+            chip_text="Compliant",
             chip_color="#DCFCE7"
         )
     with c4:
+        risk_color = "#EF4444" if att_stats['risk_count'] > 0 else COLOR_SUCCESS
         render_kpi(
-            "Total Score Spread", 
-            f"{stats['min']}% - {stats['max']}%", 
-            "Min to Max Range", 
-            "#64748B", 
-            icon="📊",
-            chip_text="Observed Range",
-            chip_color="#F1F5F9"
+            "Attendance Risk Exposure", 
+            f"{att_stats['risk_rate']}%", 
+            f"{att_stats['risk_count']} Students < 75% Cutoff", 
+            risk_color, 
+            icon="⚠️",
+            chip_text="Policy Risk",
+            chip_color="#FEE2E2" if att_stats['risk_count'] > 0 else "#DCFCE7"
         )
         
     st.markdown("<br>", unsafe_allow_html=True)
@@ -120,6 +123,8 @@ def render(df: pd.DataFrame) -> None:
         "specialization": "Specialization",
         "Total_Students": "Enrolled",
         "Avg_Academic": "Mean Marks (%)",
+        "Median_Academic": "Median Marks (%)",
+        "Std_Academic": "Std Dev (%)",
         "Avg_Attendance": "Mean Attendance (%)",
         "Avg_Tech_Index": "Tech Index (10)",
         "Placed_Count": "Placed",

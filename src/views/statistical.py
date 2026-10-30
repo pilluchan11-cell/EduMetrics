@@ -1,6 +1,6 @@
 """
 Statistical Analysis View for EduMetrics.
-Pairwise correlations, bivariate scatter analyses, distribution skewness, and statistical summaries.
+Pairwise correlations with p-values, hypothesis tests, logistic regression, and MBA statistical methodology.
 """
 
 import streamlit as st
@@ -8,7 +8,12 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
-from src.metrics import compute_correlation_matrix
+from src.metrics import (
+    compute_correlation_matrix,
+    compute_correlation_with_significance,
+    compute_group_comparisons,
+    compute_placement_logistic_regression
+)
 from src.visualizations import plot_correlation_heatmap
 from src.ui_components import (
     render_hero, 
@@ -21,59 +26,61 @@ from src.config import COLOR_PRIMARY, COLOR_SECONDARY, COLOR_SUCCESS
 
 def render(df: pd.DataFrame) -> None:
     """Renders the statistical analysis page."""
-    render_hero("Statistical & Correlation Analysis")
+    render_hero("Statistical & Econometric Analysis")
     render_disclaimer()
     
     if len(df) == 0:
         st.warning("⚠️ No student records match the active filter criteria. Adjust sidebar filters to view data.")
         return
         
+    # Section 1: Pairwise Correlation with Statistical Significance
     render_section_header(
-        "Pairwise Correlation Analysis",
-        "Statistical matrix evaluating linear associations between attendance, academic marks, technical score, and CTC.",
+        "Pairwise Correlation Matrix & Hypothesis Significance (p-values)",
+        "Measuring linear associations and testing null hypotheses (H0: r = 0) with two-tailed p-values.",
         "📊"
     )
     corr_df = compute_correlation_matrix(df)
     
-    col_heat, col_corr_text = st.columns([7, 5])
+    col_heat, col_corr_table = st.columns([6, 6])
     with col_heat:
         fig_heat = plot_correlation_heatmap(corr_df)
         st.plotly_chart(fig_heat, use_container_width=True)
         
-    with col_corr_text:
-        st.markdown(
-            """
-            <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
-                <h4 style="margin: 0 0 12px 0; color: #0F172A; font-size: 16px; font-weight: 700;">Executive Statistical Takeaways</h4>
-            """,
-            unsafe_allow_html=True
+    with col_corr_table:
+        st.markdown("**Bivariate Significance Tests (Pearson r):**")
+        sig_list = compute_correlation_with_significance(df)
+        if sig_list:
+            st.dataframe(pd.DataFrame(sig_list), hide_index=True, use_container_width=True)
+        st.caption("Significance levels: *** (p < 0.001), ** (p < 0.01), * (p < 0.05), ns (not significant).")
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # Section 2: Group Comparisons & Hypothesis Testing (Placed vs Unplaced)
+    render_section_header(
+        "Cohort Group Comparisons & Inferential Hypothesis Tests",
+        "Two-sample Welch's t-tests and Cohen's d effect sizes comparing placed vs unplaced student profiles.",
+        "⚖️"
+    )
+    group_comp = compute_group_comparisons(df)
+    if len(group_comp["placed_vs_unplaced"]) > 0:
+        st.dataframe(
+            group_comp["placed_vs_unplaced"],
+            hide_index=True,
+            use_container_width=True
         )
-        if "academic_percentage" in corr_df and "attendance_percentage" in corr_df:
-            r_att = corr_df.loc["academic_percentage", "attendance_percentage"]
-            st.markdown(f"• **Academic Score vs. Attendance:** $r = {r_att:+.3f}$<br><span style='font-size:12px; color:#64748B;'>Moderate positive association; consistent classroom presence aligns with higher exam scores.</span>", unsafe_allow_html=True)
-            
-        if "technical_score_10" in corr_df and "salary_lpa" in corr_df:
-            r_tech_sal = corr_df.loc["technical_score_10", "salary_lpa"]
-            st.markdown(f"<br>• **Tech Skill Index vs. Salary Package:** $r = {r_tech_sal:+.3f}$<br><span style='font-size:12px; color:#64748B;'>Positive association; technical proficiency in SQL, Python, and Power BI commands premium offers.</span>", unsafe_allow_html=True)
-            
-        if "certifications_count" in corr_df and "salary_lpa" in corr_df:
-            r_cert_sal = corr_df.loc["certifications_count", "salary_lpa"]
-            st.markdown(f"<br>• **Certifications vs. Salary:** $r = {r_cert_sal:+.3f}$<br><span style='font-size:12px; color:#64748B;'>Incremental credential verification correlates with higher compensation shortlisting.</span>", unsafe_allow_html=True)
-            
-        st.markdown(
-            """
-                <hr style="margin: 16px 0; border: none; border-top: 1px solid #E2E8F0;">
-                <div style="font-size: 11.5px; color: #64748B; line-height: 1.4;">
-                    <em>Methodology Note:</em> Pearson correlation measures mathematical linear association within this research benchmark and does not establish direct causality.
-                </div>
-            </div>
-            """,
-            unsafe_allow_html=True
+        
+    if group_comp.get("anova_specializations"):
+        anova = group_comp["anova_specializations"]
+        sig_text = "statistically significant (p < 0.05)" if anova["is_significant"] else "not statistically significant"
+        st.info(
+            f"🏛️ **One-Way ANOVA Across Specializations (Academic Marks):** "
+            f"F-Statistic = **{anova['f_statistic']}**, p-value = **{anova['p_value']}** ({sig_text}). "
+            f"Indicates whether academic score differences between majors are attributable to systematic department variation or random sampling."
         )
 
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # Bivariate Scatter Analysis with Pure NumPy Trendlines
+    # Section 3: Bivariate Scatter Analysis with Trendlines
     render_section_header(
         "Bivariate Regressions & Trendline Modeling",
         "Ordinary Least Squares (OLS) regression models highlighting statistical patterns across cohort variables.",
@@ -94,7 +101,7 @@ def render(df: pd.DataFrame) -> None:
         fig_scatter1.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
         fig_scatter1.update_traces(marker=dict(size=6.5, opacity=0.75))
         
-        # Add regression line via NumPy
+        # Add regression line via pure NumPy
         valid_att = df.dropna(subset=["attendance_percentage", "academic_percentage"])
         if len(valid_att) > 2:
             x_vals = valid_att["attendance_percentage"].values
@@ -126,7 +133,7 @@ def render(df: pd.DataFrame) -> None:
             fig_scatter2.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
             fig_scatter2.update_traces(marker=dict(size=6.5, opacity=0.8))
             
-            # Add regression line via NumPy
+            # Add regression line via pure NumPy
             x_t = placed_df["technical_score_10"].values
             y_t = placed_df["salary_lpa"].values
             slope_t, intercept_t = np.polyfit(x_t, y_t, 1)
@@ -143,33 +150,65 @@ def render(df: pd.DataFrame) -> None:
             st.plotly_chart(fig_scatter2, use_container_width=True)
         else:
             st.info("Insufficient placed data points in this filtered view for trendline calculation.")
-            
+
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # Statistical Distribution Summary Table
+    # Section 4: Multivariate Logistic Regression for Placement Outcomes
     render_section_header(
-        "Complete Parametric & Percentile Distribution Summary",
-        "Detailed quantiles (P10 through P90), standard deviations, and quartile ranges across numerical attributes.",
-        "📑"
+        "Multivariate Econometric Demonstration: Logistic Regression",
+        "Quantifying the marginal contribution of academics, attendance, and skills to placement odds.",
+        "🤖"
     )
-    num_cols = ["academic_percentage", "attendance_percentage", "technical_score_10", "certifications_count"]
-    if "salary_lpa" in df.columns:
-        num_cols.append("salary_lpa")
+    
+    logit_res = compute_placement_logistic_regression(df)
+    if logit_res:
+        st.markdown(
+            f"""
+            <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 14px 18px; margin-bottom: 14px;">
+                <div style="display: flex; gap: 24px; font-size: 13.5px; color: #334155;">
+                    <div>Model Classification Accuracy: <strong style="color: #2563EB;">{logit_res['accuracy']}%</strong></div>
+                    <div>ROC-AUC Score: <strong style="color: #0D9488;">{logit_res['roc_auc']}</strong></div>
+                    <div>Sample Cohort Evaluated: <strong>{logit_res['sample_size']} Students</strong></div>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+        st.dataframe(logit_res["coefficients_table"], hide_index=True, use_container_width=True)
+        st.caption(
+            "Odds Ratio (e^β) interpretation: Values > 1.0 indicate an increase in placement odds per unit increase in the predictor, holding other variables constant. Note: Synthetic benchmark demonstration only."
+        )
+    else:
+        st.info("A minimum of 30 records with both placed and unplaced outcomes is required for logistic regression.")
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # Section 5: MBA Presentation Statistical Methods Guide
+    render_section_header(
+        "Executive Methodology Guide for MBA Presentation",
+        "Key statistical concepts used throughout this dashboard to explain to faculty and executive panels.",
+        "📖"
+    )
+    
+    with st.expander("📚 View Statistical Concepts & Defense Guide", expanded=False):
+        st.markdown(
+            r"""
+            ### 1. Why Median vs. Mean for Compensation?
+            * **Problem with Mean:** Corporate compensation distributions are heavily right-skewed by a few exceptionally high packages (e.g. 24 LPA vs cohort baseline of 8 LPA).
+            * **Methodological Defense:** The **Median (50th percentile)** represents the true typical student package and is resistant to extreme outliers, while the **Interquartile Range (IQR = P75 - P25)** accurately captures the core 50% spread.
+            
+            ### 2. Pearson Correlation Coefficient ($r$) & p-Values
+            * **Correlation ($r$):** Measures the linear association between continuous variables ($-1 \le r \le +1$).
+            * **p-Value Significance:** A $p < 0.05$ indicates that the probability of observing such an association purely by random sampling chance is less than 5%.
+            
+            ### 3. Welch's Two-Sample t-Test & Cohen's $d$
+            * **Welch's t-Test:** Tests whether the observed difference between Placed and Unplaced students (e.g. in marks or attendance) is statistically significant without assuming equal cohort variances.
+            * **Cohen's $d$ (Effect Size):** Quantifies practical significance ($d \approx 0.2$ is small, $d \approx 0.5$ is moderate, $d \ge 0.8$ is large).
+            
+            ### 4. Logistic Regression Odds Ratios ($\text{OR} = e^\beta$)
+            * **Concept:** In binary classification (Placed vs. Unplaced), the logistic link function models log-odds $\ln(\frac{p}{1-p})$.
+            * **Odds Ratio ($\text{OR}$):** Exponentiating coefficients yields direct business interpretations: an $\text{OR} = 1.35$ means each unit increase increases placement odds by 35%, controlling for other variables.
+            """
+        )
         
-    desc_df = df[num_cols].describe(percentiles=[0.10, 0.25, 0.50, 0.75, 0.90]).T
-    desc_df = desc_df.rename(columns={
-        "count": "Sample Count",
-        "mean": "Arithmetic Mean",
-        "std": "Standard Deviation",
-        "min": "Minimum",
-        "10%": "10th Percentile (P10)",
-        "25%": "Lower Quartile (P25)",
-        "50%": "Median (P50)",
-        "75%": "Upper Quartile (P75)",
-        "90%": "90th Percentile (P90)",
-        "max": "Maximum"
-    }).round(2)
-    
-    st.dataframe(desc_df, use_container_width=True)
-    
     render_footer()
