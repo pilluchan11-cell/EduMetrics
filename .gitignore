@@ -1,13 +1,19 @@
-# Python
+# Python bytecode & cache
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
+
+# Virtual environments
 env/
 venv/
 .venv/
 ENV/
+env.bak/
+venv.bak/
+
+# Packaging & Distribution
 build/
 develop-eggs/
 dist/
@@ -24,16 +30,48 @@ wheels/
 .installed.cfg
 *.egg
 
-# Testing
+# Testing & Coverage
 .pytest_cache/
 .coverage
+.coverage.*
 htmlcov/
+.cache
+nosetests.xml
+coverage.xml
 
-# Streamlit
+# Streamlit secrets & local state
 .streamlit/secrets.toml
 
-# Databases and OS
+# Databases, SQLite binary files, and WAL logs
 *.db
+*.sqlite
 *.sqlite3
+*.db-journal
+*.db-wal
+*.db-shm
+
+# IDEs & Editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.project
+.pydevproject
+.settings/
+
+# OS specific files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
+[Dd]esktop.ini
+
+# Environment variables & secrets
+.env
+.env.*
+*.env
+*.pem
+*.key
