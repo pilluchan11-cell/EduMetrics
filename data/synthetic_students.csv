@@ -1,0 +1,501 @@
+student_id,student_name,gender,specialization,semester,academic_percentage,attendance_percentage,sql_proficiency,python_proficiency,power_bi_proficiency,certifications_count,internship_status,placement_status,company,salary_lpa
+EDU-2026-001,Zoya Chatterjee,Female,Marketing,Semester 4,61.62,96.36,Beginner,Intermediate,Intermediate,0,Completed,Placed,Zenith Retail Technologies,9.27
+EDU-2026-002,Vaidehi Mehta,Female,Business Analytics,Semester 2,48.18,82.87,Intermediate,Intermediate,Beginner,1,Completed,Placed,Horizon FinTech,9.49
+EDU-2026-003,Alex Patel,Non-Binary,Human Resources,Semester 3,67.3,87.63,Beginner,Intermediate,Intermediate,0,Completed,Placed,Nexus Global Consulting,8.2
+EDU-2026-004,Navya Deshmukh,Female,Operations & Supply Chain,Semester 2,80.02,84.21,Beginner,Beginner,Beginner,1,Completed,Placed,Pinnacle Logistics,13.99
+EDU-2026-005,Zoya Sharma,Female,Business Analytics,Semester 4,66.57,84.59,Beginner,Advanced,Advanced,2,Completed,Placed,Horizon FinTech,14.76
+EDU-2026-006,Rhea Mehta,Female,Marketing,Semester 3,77.35,67.77,Intermediate,Advanced,Advanced,2,Completed,Placed,Titan Capital Partners,14.64
+EDU-2026-007,Pooja Sharma,Female,Operations & Supply Chain,Semester 3,65.57,82.75,Intermediate,Intermediate,Beginner,5,Completed,Placed,Quantum Insights,12.49
+EDU-2026-008,Samar Rao,Male,Finance,Semester 1,79.88,80.55,Intermediate,Intermediate,Beginner,1,Completed,Placed,Apex Analytics,20.94
+EDU-2026-009,Vaidehi Chopra,Female,Marketing,Semester 2,90.92,86.96,Intermediate,Advanced,Advanced,1,Completed,Placed,Zenith Retail Technologies,23.09
+EDU-2026-010,Kritika Sharma,Female,Business Analytics,Semester 2,72.67,70.98,Advanced,Intermediate,Intermediate,2,Completed,Placed,Apex Analytics,16.5
+EDU-2026-011,Trisha Nair,Female,Human Resources,Semester 4,62.58,72.6,Intermediate,Advanced,Intermediate,0,Not Completed,Placed,Starlight Media & Tech,6.69
+EDU-2026-012,Vaidehi Gupta,Female,Business Analytics,Semester 2,90.79,88.82,Intermediate,Beginner,Advanced,1,Not Completed,Placed,Horizon FinTech,15.35
+EDU-2026-013,Isha Patel,Female,Marketing,Semester 4,81.75,81.26,Advanced,Advanced,Intermediate,2,Not Completed,Placed,Titan Capital Partners,10.11
+EDU-2026-014,Pranav Iyer,Male,Business Analytics,Semester 1,60.36,77.63,Intermediate,Advanced,Advanced,2,Completed,Placed,Zenith Retail Technologies,8.98
+EDU-2026-015,Navya Chopra,Female,Marketing,Semester 3,85.35,72.67,Intermediate,Advanced,Beginner,3,Not Completed,Placed,Zenith Retail Technologies,13.95
+EDU-2026-016,Saanvi Mehta,Female,Human Resources,Semester 3,68.7,86.53,Intermediate,Advanced,Intermediate,1,Not Completed,Placed,Starlight Media & Tech,16.16
+EDU-2026-017,Sneha Nair,Female,Finance,Semester 2,63.26,68.51,Advanced,Beginner,Advanced,1,Completed,Placed,BlueCrest Healthcare,8.58
+EDU-2026-018,Kavya Malhotra,Female,Operations & Supply Chain,Semester 3,82.06,88.8,Advanced,Intermediate,Intermediate,0,Completed,Placed,Zenith Retail Technologies,11.6
+EDU-2026-019,Kabir Sharma,Male,Operations & Supply Chain,Semester 1,76.37,65.86,Intermediate,Advanced,Beginner,3,Completed,Placed,Nexus Global Consulting,14.56
+EDU-2026-020,Varun Patel,Male,Business Analytics,Semester 3,88.13,81.09,Intermediate,Beginner,Beginner,2,Completed,Placed,Zenith Retail Technologies,12.72
+EDU-2026-021,Neil Malhotra,Male,Human Resources,Semester 3,93.28,88.0,Intermediate,Intermediate,Beginner,1,Completed,Placed,Apex Analytics,13.29
+EDU-2026-022,Aaliyah Iyer,Female,Human Resources,Semester 3,72.82,73.03,Intermediate,Beginner,Intermediate,2,Completed,Placed,BlueCrest Healthcare,9.33
+EDU-2026-023,Neil Mehta,Male,Human Resources,Semester 2,74.89,76.37,Beginner,Intermediate,Advanced,2,Completed,Placed,Titan Capital Partners,12.88
+EDU-2026-024,Neil Deshmukh,Male,Marketing,Semester 2,68.38,81.61,Intermediate,Advanced,Beginner,2,Completed,Placed,Quantum Insights,12.62
+EDU-2026-025,Zoya Gupta,Female,Operations & Supply Chain,Semester 2,80.1,87.96,Advanced,Intermediate,Intermediate,4,Completed,Placed,Apex Analytics,15.65
+EDU-2026-026,Dhruv Rao,Male,Business Analytics,Semester 2,70.73,87.69,Beginner,Advanced,Beginner,4,Completed,Placed,Vanguard Strategic Advisors,10.47
+EDU-2026-027,Manav Rao,Male,Business Analytics,Semester 1,76.08,96.01,Advanced,Advanced,Intermediate,4,Completed,Placed,Starlight Media & Tech,15.05
+EDU-2026-028,Ananya Nair,Female,Operations & Supply Chain,Semester 2,74.77,88.46,Intermediate,Intermediate,Intermediate,2,Completed,Placed,Nexus Global Consulting,11.78
+EDU-2026-029,Tara Iyer,Female,Operations & Supply Chain,Semester 4,78.27,88.55,Intermediate,Beginner,Intermediate,1,Completed,Placed,Vanguard Strategic Advisors,11.53
+EDU-2026-030,Meera Bose,Female,Operations & Supply Chain,Semester 1,77.5,82.59,Intermediate,Intermediate,Intermediate,3,Completed,Placed,Vanguard Strategic Advisors,16.25
+EDU-2026-031,Vaidehi Iyer,Female,Finance,Semester 3,65.81,71.76,Intermediate,Intermediate,Intermediate,0,Completed,Placed,Titan Capital Partners,7.97
+EDU-2026-032,Aditya Patel,Male,Human Resources,Semester 3,79.65,81.54,Advanced,Beginner,Beginner,3,Completed,Placed,Apex Analytics,13.29
+EDU-2026-033,Aditya Gupta,Male,Marketing,Semester 1,76.25,98.06,Intermediate,Advanced,Intermediate,3,Completed,Placed,Quantum Insights,11.72
+EDU-2026-034,Ananya Chopra,Female,Finance,Semester 3,76.16,75.43,Intermediate,Advanced,Intermediate,4,Completed,Placed,Titan Capital Partners,16.94
+EDU-2026-035,Yash Kulkarni,Male,Finance,Semester 3,56.56,89.17,Intermediate,Advanced,Intermediate,2,Completed,Placed,Starlight Media & Tech,10.8
+EDU-2026-036,Navya Mehta,Female,Finance,Semester 2,60.61,83.59,Beginner,Beginner,Beginner,0,Completed,Unplaced,,
+EDU-2026-037,Isha Rao,Female,Marketing,Semester 3,77.63,82.8,Beginner,Advanced,Intermediate,1,Completed,Placed,Vanguard Strategic Advisors,9.62
+EDU-2026-038,Aaliyah Deshmukh,Female,Human Resources,Semester 2,71.18,80.19,Intermediate,Intermediate,Beginner,1,Not Completed,Unplaced,,
+EDU-2026-039,Isha Malhotra,Female,Operations & Supply Chain,Semester 2,70.39,60.78,Intermediate,Intermediate,Intermediate,1,Completed,Placed,Nexus Global Consulting,12.25
+EDU-2026-040,Isha Patel,Female,Business Analytics,Semester 4,75.47,70.64,Advanced,Beginner,Intermediate,1,Completed,Placed,Nexus Global Consulting,9.63
+EDU-2026-041,Sneha Nair,Female,Finance,Semester 3,87.05,99.5,Intermediate,Intermediate,Advanced,1,Completed,Placed,Vanguard Strategic Advisors,13.49
+EDU-2026-042,Navya Nair,Female,Operations & Supply Chain,Semester 4,74.65,89.13,Advanced,Beginner,Advanced,4,Completed,Placed,BlueCrest Healthcare,15.61
+EDU-2026-043,Isha Iyer,Female,Business Analytics,Semester 4,90.55,87.65,Advanced,Beginner,Intermediate,3,Completed,Placed,Nexus Global Consulting,21.72
+EDU-2026-044,Diya Iyer,Female,Business Analytics,Semester 1,95.7,81.54,Advanced,Beginner,Advanced,4,Completed,Placed,Starlight Media & Tech,17.91
+EDU-2026-045,Ishaan Kapoor,Male,Operations & Supply Chain,Semester 2,76.75,78.36,Intermediate,Intermediate,Intermediate,3,Completed,Placed,Horizon FinTech,12.71
+EDU-2026-046,Ananya Gupta,Female,Business Analytics,Semester 4,80.88,64.18,Advanced,Intermediate,Beginner,3,Completed,Placed,Horizon FinTech,21.13
+EDU-2026-047,Utkarsh Nair,Male,Business Analytics,Semester 2,80.89,75.7,Beginner,Intermediate,Advanced,3,Completed,Placed,Starlight Media & Tech,11.77
+EDU-2026-048,Sneha Iyer,Female,Operations & Supply Chain,Semester 4,73.26,79.92,Intermediate,Intermediate,Intermediate,3,Completed,Placed,BlueCrest Healthcare,10.02
+EDU-2026-049,Varun Verma,Male,Business Analytics,Semester 2,79.11,95.83,Beginner,Advanced,Advanced,0,Completed,Placed,Pinnacle Logistics,15.69
+EDU-2026-050,Zoya Kapoor,Female,Business Analytics,Semester 4,63.6,77.58,Advanced,Advanced,Beginner,4,Completed,Placed,Vanguard Strategic Advisors,11.66
+EDU-2026-051,Arjun Chatterjee,Male,Operations & Supply Chain,Semester 3,70.82,85.79,Intermediate,Intermediate,Intermediate,1,Completed,Placed,Zenith Retail Technologies,9.17
+EDU-2026-052,Ananya Sharma,Female,Human Resources,Semester 3,63.34,82.98,Advanced,Beginner,Intermediate,0,Not Completed,Placed,Horizon FinTech,10.24
+EDU-2026-053,Rhea Patel,Female,Human Resources,Semester 3,83.32,80.23,Intermediate,Beginner,Intermediate,2,Completed,Placed,Starlight Media & Tech,13.93
+EDU-2026-054,Manav Patel,Male,Finance,Semester 2,62.45,93.26,Beginner,Beginner,Advanced,1,Completed,Placed,Starlight Media & Tech,8.36
+EDU-2026-055,Sneha Mehta,Female,Marketing,Semester 4,89.31,88.83,Advanced,Advanced,Intermediate,3,Completed,Placed,BlueCrest Healthcare,15.11
+EDU-2026-056,Pooja Mehta,Female,Marketing,Semester 1,76.14,89.18,Intermediate,Advanced,Intermediate,2,Completed,Placed,Pinnacle Logistics,15.92
+EDU-2026-057,Vaidehi Patel,Female,Operations & Supply Chain,Semester 4,69.63,82.35,Intermediate,Advanced,Intermediate,1,Completed,Placed,Pinnacle Logistics,14.37
+EDU-2026-058,Navya Nair,Female,Marketing,Semester 3,83.48,93.41,Advanced,Intermediate,Advanced,1,Completed,Placed,Vanguard Strategic Advisors,13.88
+EDU-2026-059,Meera Bose,Female,Business Analytics,Semester 2,64.39,86.02,Intermediate,Intermediate,Intermediate,3,Completed,Placed,Vanguard Strategic Advisors,11.59
+EDU-2026-060,Samar Rao,Male,Operations & Supply Chain,Semester 4,78.45,67.46,Intermediate,Intermediate,Advanced,1,Completed,Placed,Apex Analytics,9.84
+EDU-2026-061,Utkarsh Bose,Male,Finance,Semester 3,52.87,72.98,Intermediate,Intermediate,Advanced,2,Completed,Placed,Apex Analytics,9.4
+EDU-2026-062,Tara Gupta,Female,Business Analytics,Semester 2,83.11,84.54,Advanced,Advanced,Intermediate,2,Completed,Placed,Horizon FinTech,15.04
+EDU-2026-063,Kabir Deshmukh,Male,Human Resources,Semester 4,71.17,79.23,Intermediate,Intermediate,Intermediate,0,Completed,Placed,Starlight Media & Tech,11.77
+EDU-2026-064,Vaidehi Malhotra,Female,Finance,Semester 4,48.97,86.03,Intermediate,Intermediate,Advanced,3,Completed,Placed,Titan Capital Partners,12.68
+EDU-2026-065,Varun Bose,Male,Human Resources,Semester 3,68.09,91.75,Intermediate,Intermediate,Advanced,3,Completed,Placed,Starlight Media & Tech,12.25
+EDU-2026-066,Kavya Verma,Female,Human Resources,Semester 1,54.63,66.14,Intermediate,Beginner,Advanced,1,Completed,Placed,Pinnacle Logistics,8.6
+EDU-2026-067,Dhruv Bose,Male,Operations & Supply Chain,Semester 4,78.87,78.19,Beginner,Beginner,Intermediate,0,Not Completed,Placed,Zenith Retail Technologies,12.3
+EDU-2026-068,Alex Gupta,Non-Binary,Marketing,Semester 3,56.86,78.47,Intermediate,Intermediate,Advanced,4,Not Completed,Placed,Starlight Media & Tech,14.87
+EDU-2026-069,Vaidehi Malhotra,Female,Business Analytics,Semester 1,77.81,80.5,Advanced,Intermediate,Intermediate,0,Completed,Placed,Vanguard Strategic Advisors,10.94
+EDU-2026-070,Zoya Kulkarni,Female,Human Resources,Semester 4,81.62,83.46,Intermediate,Intermediate,Intermediate,4,Completed,Placed,Pinnacle Logistics,12.41
+EDU-2026-071,Dhruv Chatterjee,Male,Marketing,Semester 4,71.41,81.85,Intermediate,Intermediate,Beginner,3,Completed,Placed,Apex Analytics,12.62
+EDU-2026-072,Diya Kulkarni,Female,Human Resources,Semester 4,75.53,78.22,Intermediate,Advanced,Intermediate,2,Not Completed,Placed,Apex Analytics,13.65
+EDU-2026-073,Aarav Deshmukh,Male,Business Analytics,Semester 1,92.19,79.51,Intermediate,Intermediate,Beginner,3,Completed,Placed,Quantum Insights,12.04
+EDU-2026-074,Zoya Gupta,Female,Human Resources,Semester 3,83.66,94.8,Beginner,Advanced,Beginner,3,Completed,Placed,Nexus Global Consulting,13.47
+EDU-2026-075,Kritika Sharma,Female,Business Analytics,Semester 4,61.95,99.5,Intermediate,Beginner,Intermediate,0,Completed,Placed,Horizon FinTech,6.13
+EDU-2026-076,Yash Kulkarni,Male,Human Resources,Semester 4,88.56,97.65,Beginner,Intermediate,Beginner,0,Completed,Placed,Starlight Media & Tech,9.09
+EDU-2026-077,Zoya Sharma,Female,Human Resources,Semester 1,68.7,59.32,Intermediate,Beginner,Intermediate,2,Completed,Placed,Pinnacle Logistics,10.78
+EDU-2026-078,Vivaan Rao,Male,Operations & Supply Chain,Semester 4,70.9,80.7,Intermediate,Intermediate,Beginner,1,Completed,Placed,Horizon FinTech,10.7
+EDU-2026-079,Tara Verma,Female,Finance,Semester 1,76.34,82.96,Beginner,Advanced,Intermediate,2,Not Completed,Placed,Quantum Insights,14.17
+EDU-2026-080,Trisha Chatterjee,Female,Marketing,Semester 4,85.52,85.81,Intermediate,Intermediate,Intermediate,1,Completed,Placed,Titan Capital Partners,12.28
+EDU-2026-081,Pooja Kapoor,Female,Operations & Supply Chain,Semester 4,71.23,89.42,Beginner,Beginner,Beginner,2,Completed,Placed,Zenith Retail Technologies,9.69
+EDU-2026-082,Ananya Reddy,Female,Operations & Supply Chain,Semester 2,72.13,85.06,Advanced,Intermediate,Intermediate,3,Completed,Placed,Quantum Insights,12.51
+EDU-2026-083,Aditya Iyer,Male,Finance,Semester 4,64.56,67.3,Intermediate,Intermediate,Advanced,2,Completed,Placed,Nexus Global Consulting,15.39
+EDU-2026-084,Meera Nair,Female,Human Resources,Semester 3,71.1,73.32,Intermediate,Intermediate,Intermediate,0,Completed,Placed,Titan Capital Partners,8.26
+EDU-2026-085,Vivaan Sharma,Male,Operations & Supply Chain,Semester 1,72.55,84.94,Beginner,Beginner,Beginner,2,Completed,Placed,Apex Analytics,8.77
+EDU-2026-086,Navya Iyer,Female,Operations & Supply Chain,Semester 1,81.05,93.4,Intermediate,Advanced,Advanced,2,Completed,Placed,Vanguard Strategic Advisors,14.14
+EDU-2026-087,Utkarsh Sharma,Male,Marketing,Semester 3,71.2,84.36,Intermediate,Beginner,Beginner,2,Not Completed,Placed,Starlight Media & Tech,12.24
+EDU-2026-088,Aditya Reddy,Male,Operations & Supply Chain,Semester 3,66.04,83.56,Beginner,Intermediate,Beginner,2,Completed,Placed,Nexus Global Consulting,11.27
+EDU-2026-089,Tara Chopra,Female,Business Analytics,Semester 1,74.88,85.29,Intermediate,Beginner,Intermediate,2,Completed,Placed,Pinnacle Logistics,13.08
+EDU-2026-090,Sneha Gupta,Female,Marketing,Semester 4,56.99,69.06,Intermediate,Advanced,Intermediate,3,Completed,Placed,Vanguard Strategic Advisors,8.6
+EDU-2026-091,Zoya Gupta,Female,Business Analytics,Semester 2,60.72,72.82,Beginner,Intermediate,Intermediate,2,Not Completed,Unplaced,,
+EDU-2026-092,Tara Gupta,Female,Operations & Supply Chain,Semester 1,94.76,72.58,Intermediate,Intermediate,Intermediate,4,Completed,Placed,Vanguard Strategic Advisors,15.58
+EDU-2026-093,Vivaan Iyer,Male,Human Resources,Semester 3,76.72,77.96,Intermediate,Intermediate,Intermediate,3,Completed,Placed,Nexus Global Consulting,12.15
+EDU-2026-094,Trisha Reddy,Female,Operations & Supply Chain,Semester 2,57.93,92.93,Beginner,Intermediate,Beginner,4,Completed,Placed,Horizon FinTech,11.61
+EDU-2026-095,Rohan Gupta,Male,Finance,Semester 2,94.38,92.63,Advanced,Intermediate,Intermediate,3,Completed,Placed,Titan Capital Partners,13.81
+EDU-2026-096,Vivaan Sharma,Male,Marketing,Semester 4,93.38,99.5,Beginner,Intermediate,Beginner,1,Completed,Placed,Pinnacle Logistics,14.35
+EDU-2026-097,Meera Verma,Female,Marketing,Semester 3,72.98,95.52,Beginner,Intermediate,Advanced,3,Completed,Placed,Vanguard Strategic Advisors,10.74
+EDU-2026-098,Kavya Malhotra,Female,Business Analytics,Semester 4,66.24,74.88,Intermediate,Intermediate,Intermediate,1,Completed,Placed,Zenith Retail Technologies,12.56
+EDU-2026-099,Varun Iyer,Male,Operations & Supply Chain,Semester 1,91.49,86.56,Intermediate,Beginner,Intermediate,2,Completed,Placed,Starlight Media & Tech,13.01
+EDU-2026-100,Meera Iyer,Female,Operations & Supply Chain,Semester 2,59.63,72.14,Beginner,Intermediate,Advanced,2,Completed,Placed,Quantum Insights,8.98
+EDU-2026-101,Meera Verma,Female,Marketing,Semester 2,64.55,90.02,Beginner,Advanced,Advanced,0,Completed,Placed,Zenith Retail Technologies,7.45
+EDU-2026-102,Aarav Deshmukh,Male,Finance,Semester 3,84.57,87.06,Advanced,Beginner,Intermediate,2,Completed,Placed,Titan Capital Partners,13.95
+EDU-2026-103,Pranav Verma,Male,Business Analytics,Semester 3,72.91,88.73,Beginner,Advanced,Advanced,4,Completed,Placed,Quantum Insights,15.42
+EDU-2026-104,Zoya Chatterjee,Female,Operations & Supply Chain,Semester 3,73.51,83.54,Beginner,Intermediate,Intermediate,0,Completed,Placed,Titan Capital Partners,9.91
+EDU-2026-105,Aditya Malhotra,Male,Business Analytics,Semester 3,67.28,73.54,Beginner,Intermediate,Intermediate,1,Completed,Placed,Quantum Insights,11.82
+EDU-2026-106,Aditya Chatterjee,Male,Human Resources,Semester 4,63.23,66.94,Intermediate,Intermediate,Advanced,2,Completed,Placed,Vanguard Strategic Advisors,10.61
+EDU-2026-107,Aarav Malhotra,Male,Human Resources,Semester 4,76.72,71.78,Beginner,Beginner,Intermediate,2,Completed,Placed,Vanguard Strategic Advisors,9.81
+EDU-2026-108,Vaidehi Verma,Female,Marketing,Semester 3,72.62,73.47,Intermediate,Advanced,Advanced,3,Completed,Placed,BlueCrest Healthcare,13.61
+EDU-2026-109,Tanay Bose,Male,Finance,Semester 3,74.45,68.53,Advanced,Intermediate,Advanced,0,Not Completed,Placed,Horizon FinTech,11.75
+EDU-2026-110,Trisha Sharma,Female,Human Resources,Semester 4,73.86,60.53,Intermediate,Advanced,Advanced,3,Completed,Placed,Zenith Retail Technologies,12.14
+EDU-2026-111,Kritika Rao,Female,Operations & Supply Chain,Semester 4,81.36,77.28,Advanced,Intermediate,Beginner,1,Completed,Placed,Pinnacle Logistics,11.61
+EDU-2026-112,Sam Iyer,Non-Binary,Operations & Supply Chain,Semester 3,73.37,80.78,Advanced,Intermediate,Intermediate,0,Completed,Placed,Apex Analytics,9.72
+EDU-2026-113,Saanvi Verma,Female,Operations & Supply Chain,Semester 2,54.32,74.45,Advanced,Intermediate,Beginner,4,Completed,Placed,Vanguard Strategic Advisors,9.07
+EDU-2026-114,Kritika Nair,Female,Marketing,Semester 2,75.22,96.26,Beginner,Intermediate,Beginner,2,Completed,Placed,Zenith Retail Technologies,18.13
+EDU-2026-115,Vivaan Nair,Male,Marketing,Semester 2,83.22,84.94,Advanced,Intermediate,Beginner,4,Completed,Placed,BlueCrest Healthcare,11.82
+EDU-2026-116,Varun Reddy,Male,Marketing,Semester 2,83.24,93.73,Intermediate,Beginner,Intermediate,0,Completed,Placed,Pinnacle Logistics,11.87
+EDU-2026-117,Isha Chatterjee,Female,Marketing,Semester 4,76.99,75.05,Intermediate,Advanced,Intermediate,1,Completed,Placed,Vanguard Strategic Advisors,11.84
+EDU-2026-118,Pooja Iyer,Female,Human Resources,Semester 3,61.78,79.27,Intermediate,Intermediate,Intermediate,2,Not Completed,Placed,Apex Analytics,9.32
+EDU-2026-119,Tanay Kapoor,Male,Finance,Semester 4,76.67,82.67,Intermediate,Beginner,Intermediate,1,Completed,Placed,Pinnacle Logistics,12.36
+EDU-2026-120,Kavya Iyer,Female,Marketing,Semester 3,78.48,84.95,Advanced,Beginner,Intermediate,5,Completed,Placed,BlueCrest Healthcare,16.4
+EDU-2026-121,Meera Iyer,Female,Finance,Semester 1,67.94,79.5,Intermediate,Advanced,Advanced,0,Completed,Placed,Pinnacle Logistics,13.16
+EDU-2026-122,Varun Chopra,Male,Operations & Supply Chain,Semester 1,84.66,91.45,Advanced,Intermediate,Intermediate,2,Completed,Placed,Quantum Insights,17.26
+EDU-2026-123,Diya Sharma,Female,Marketing,Semester 2,92.32,87.93,Intermediate,Advanced,Beginner,1,Completed,Placed,BlueCrest Healthcare,12.22
+EDU-2026-124,Isha Gupta,Female,Human Resources,Semester 3,78.8,75.58,Beginner,Beginner,Beginner,3,Completed,Placed,BlueCrest Healthcare,16.35
+EDU-2026-125,Aditya Nair,Male,Finance,Semester 3,74.99,85.21,Intermediate,Intermediate,Intermediate,1,Completed,Placed,BlueCrest Healthcare,8.26
+EDU-2026-126,Rohan Chatterjee,Male,Operations & Supply Chain,Semester 4,72.65,68.62,Advanced,Advanced,Advanced,1,Not Completed,Placed,BlueCrest Healthcare,18.09
+EDU-2026-127,Isha Chopra,Female,Operations & Supply Chain,Semester 3,92.18,77.52,Intermediate,Advanced,Intermediate,2,Completed,Placed,Starlight Media & Tech,19.09
+EDU-2026-128,Rhea Reddy,Female,Business Analytics,Semester 3,66.28,79.9,Beginner,Intermediate,Advanced,3,Not Completed,Placed,Apex Analytics,11.38
+EDU-2026-129,Kritika Kulkarni,Female,Marketing,Semester 2,73.85,73.91,Advanced,Intermediate,Beginner,4,Completed,Placed,Vanguard Strategic Advisors,17.08
+EDU-2026-130,Aditya Deshmukh,Male,Human Resources,Semester 4,97.6,76.45,Advanced,Beginner,Intermediate,4,Completed,Placed,BlueCrest Healthcare,15.33
+EDU-2026-131,Ananya Mehta,Female,Marketing,Semester 1,70.13,74.65,Intermediate,Intermediate,Intermediate,2,Not Completed,Unplaced,,
+EDU-2026-132,Dhruv Malhotra,Male,Finance,Semester 2,68.59,81.61,Beginner,Advanced,Intermediate,2,Completed,Placed,Vanguard Strategic Advisors,12.24
+EDU-2026-133,Meera Mehta,Female,Operations & Supply Chain,Semester 4,76.33,85.99,Intermediate,Intermediate,Beginner,3,Completed,Placed,Starlight Media & Tech,12.82
+EDU-2026-134,Isha Kapoor,Female,Marketing,Semester 3,70.89,84.06,Advanced,Beginner,Advanced,2,Not Completed,Placed,Horizon FinTech,15.36
+EDU-2026-135,Arjun Chatterjee,Male,Operations & Supply Chain,Semester 1,76.49,97.5,Beginner,Beginner,Beginner,1,Completed,Placed,Pinnacle Logistics,9.2
+EDU-2026-136,Kavya Kulkarni,Female,Finance,Semester 3,81.57,84.97,Beginner,Beginner,Intermediate,1,Completed,Placed,Quantum Insights,12.22
+EDU-2026-137,Vaidehi Sharma,Female,Human Resources,Semester 1,75.52,87.09,Advanced,Advanced,Intermediate,2,Completed,Placed,BlueCrest Healthcare,17.38
+EDU-2026-138,Navya Chopra,Female,Human Resources,Semester 3,88.58,91.2,Beginner,Intermediate,Beginner,2,Not Completed,Placed,Apex Analytics,15.16
+EDU-2026-139,Navya Nair,Female,Business Analytics,Semester 1,74.01,77.26,Advanced,Intermediate,Intermediate,2,Completed,Placed,Apex Analytics,8.1
+EDU-2026-140,Kabir Sharma,Male,Business Analytics,Semester 2,83.3,78.67,Intermediate,Intermediate,Intermediate,2,Completed,Placed,Horizon FinTech,11.9
+EDU-2026-141,Manav Malhotra,Male,Marketing,Semester 1,80.2,82.06,Beginner,Intermediate,Intermediate,2,Completed,Placed,BlueCrest Healthcare,10.87
+EDU-2026-142,Pranav Bose,Male,Human Resources,Semester 4,80.78,72.7,Advanced,Intermediate,Beginner,3,Completed,Placed,Pinnacle Logistics,18.39
+EDU-2026-143,Arjun Bose,Male,Human Resources,Semester 1,79.73,84.66,Intermediate,Advanced,Intermediate,0,Not Completed,Placed,Starlight Media & Tech,10.92
+EDU-2026-144,Pranav Kapoor,Male,Operations & Supply Chain,Semester 2,98.44,83.23,Beginner,Beginner,Intermediate,2,Completed,Placed,Titan Capital Partners,20.33
+EDU-2026-145,Saanvi Mehta,Female,Finance,Semester 3,67.66,68.37,Intermediate,Intermediate,Advanced,0,Not Completed,Placed,Starlight Media & Tech,10.38
+EDU-2026-146,Rhea Kulkarni,Female,Human Resources,Semester 3,71.53,84.29,Intermediate,Intermediate,Beginner,3,Completed,Placed,Starlight Media & Tech,12.78
+EDU-2026-147,Alex Chatterjee,Non-Binary,Operations & Supply Chain,Semester 2,73.27,84.62,Beginner,Beginner,Beginner,2,Completed,Placed,BlueCrest Healthcare,9.19
+EDU-2026-148,Utkarsh Mehta,Male,Finance,Semester 3,48.07,64.39,Advanced,Intermediate,Beginner,1,Completed,Placed,Nexus Global Consulting,9.56
+EDU-2026-149,Meera Bose,Female,Marketing,Semester 3,78.16,89.5,Beginner,Intermediate,Intermediate,2,Completed,Placed,Quantum Insights,11.93
+EDU-2026-150,Ananya Patel,Female,Operations & Supply Chain,Semester 2,83.12,78.14,Intermediate,Intermediate,Beginner,3,Completed,Placed,Zenith Retail Technologies,17.1
+EDU-2026-151,Trisha Reddy,Female,Operations & Supply Chain,Semester 1,69.56,96.87,Beginner,Advanced,Advanced,1,Completed,Placed,Quantum Insights,11.7
+EDU-2026-152,Ananya Kapoor,Female,Marketing,Semester 3,98.5,85.08,Advanced,Advanced,Intermediate,4,Completed,Placed,Apex Analytics,21.5
+EDU-2026-153,Rhea Patel,Female,Marketing,Semester 3,95.17,88.18,Advanced,Beginner,Intermediate,3,Completed,Placed,Starlight Media & Tech,14.32
+EDU-2026-154,Varun Gupta,Male,Marketing,Semester 4,82.05,87.62,Beginner,Beginner,Intermediate,2,Completed,Placed,Apex Analytics,15.84
+EDU-2026-155,Aditya Chatterjee,Male,Business Analytics,Semester 4,82.14,73.7,Beginner,Intermediate,Intermediate,3,Completed,Placed,Apex Analytics,15.92
+EDU-2026-156,Rohan Kulkarni,Male,Operations & Supply Chain,Semester 1,82.32,93.83,Beginner,Advanced,Intermediate,1,Completed,Placed,Horizon FinTech,12.24
+EDU-2026-157,Saanvi Kapoor,Female,Human Resources,Semester 1,69.14,68.28,Intermediate,Beginner,Intermediate,4,Completed,Placed,Vanguard Strategic Advisors,12.35
+EDU-2026-158,Kabir Kapoor,Male,Operations & Supply Chain,Semester 1,65.98,86.81,Intermediate,Beginner,Beginner,1,Completed,Placed,Zenith Retail Technologies,10.3
+EDU-2026-159,Manav Chopra,Male,Finance,Semester 3,77.56,80.66,Beginner,Advanced,Advanced,0,Completed,Placed,Nexus Global Consulting,14.8
+EDU-2026-160,Utkarsh Patel,Male,Business Analytics,Semester 3,74.76,85.35,Beginner,Beginner,Intermediate,3,Completed,Placed,Starlight Media & Tech,12.98
+EDU-2026-161,Aarav Iyer,Male,Business Analytics,Semester 2,74.93,79.06,Intermediate,Beginner,Intermediate,3,Completed,Placed,Horizon FinTech,10.02
+EDU-2026-162,Aditya Mehta,Male,Human Resources,Semester 3,65.1,91.07,Advanced,Intermediate,Intermediate,2,Completed,Placed,Zenith Retail Technologies,11.23
+EDU-2026-163,Kavya Mehta,Female,Operations & Supply Chain,Semester 1,82.52,87.78,Intermediate,Intermediate,Beginner,2,Completed,Placed,Titan Capital Partners,13.44
+EDU-2026-164,Vivaan Nair,Male,Business Analytics,Semester 4,81.68,75.11,Advanced,Beginner,Intermediate,2,Completed,Placed,Pinnacle Logistics,13.87
+EDU-2026-165,Navya Reddy,Female,Human Resources,Semester 2,64.96,85.2,Intermediate,Intermediate,Intermediate,4,Not Completed,Unplaced,,
+EDU-2026-166,Trisha Iyer,Female,Marketing,Semester 4,80.5,84.15,Intermediate,Beginner,Intermediate,2,Completed,Placed,Quantum Insights,14.32
+EDU-2026-167,Saanvi Sharma,Female,Marketing,Semester 4,73.49,88.2,Advanced,Intermediate,Beginner,3,Completed,Placed,Apex Analytics,14.75
+EDU-2026-168,Vaidehi Gupta,Female,Business Analytics,Semester 3,70.75,84.26,Intermediate,Intermediate,Beginner,1,Completed,Placed,BlueCrest Healthcare,10.21
+EDU-2026-169,Navya Kapoor,Female,Finance,Semester 3,75.13,80.09,Intermediate,Advanced,Intermediate,2,Not Completed,Placed,Nexus Global Consulting,12.16
+EDU-2026-170,Kiran Iyer,Non-Binary,Marketing,Semester 3,78.59,87.04,Intermediate,Beginner,Intermediate,1,Completed,Placed,Nexus Global Consulting,13.15
+EDU-2026-171,Utkarsh Deshmukh,Male,Operations & Supply Chain,Semester 2,73.18,92.88,Beginner,Intermediate,Intermediate,1,Completed,Placed,Vanguard Strategic Advisors,13.54
+EDU-2026-172,Ishaan Chopra,Male,Finance,Semester 2,52.89,79.96,Beginner,Intermediate,Beginner,2,Completed,Placed,Starlight Media & Tech,17.45
+EDU-2026-173,Arjun Iyer,Male,Operations & Supply Chain,Semester 4,59.1,61.66,Intermediate,Beginner,Intermediate,2,Completed,Placed,Quantum Insights,10.46
+EDU-2026-174,Saanvi Mehta,Female,Finance,Semester 4,63.94,82.49,Intermediate,Intermediate,Advanced,2,Not Completed,Placed,Horizon FinTech,11.4
+EDU-2026-175,Rohan Iyer,Male,Finance,Semester 2,81.76,72.54,Intermediate,Advanced,Intermediate,0,Completed,Placed,Titan Capital Partners,7.97
+EDU-2026-176,Neil Chatterjee,Male,Human Resources,Semester 4,74.89,75.92,Advanced,Intermediate,Intermediate,0,Completed,Placed,Vanguard Strategic Advisors,14.14
+EDU-2026-177,Utkarsh Gupta,Male,Operations & Supply Chain,Semester 3,52.03,69.54,Intermediate,Beginner,Beginner,2,Completed,Placed,Pinnacle Logistics,8.79
+EDU-2026-178,Aaliyah Mehta,Female,Business Analytics,Semester 2,83.77,78.45,Intermediate,Advanced,Intermediate,2,Completed,Placed,Horizon FinTech,19.61
+EDU-2026-179,Sneha Kapoor,Female,Business Analytics,Semester 2,76.64,79.15,Intermediate,Advanced,Intermediate,0,Completed,Placed,Apex Analytics,17.36
+EDU-2026-180,Saanvi Chatterjee,Female,Finance,Semester 3,98.5,84.65,Advanced,Intermediate,Advanced,3,Completed,Placed,Zenith Retail Technologies,14.29
+EDU-2026-181,Ananya Kulkarni,Female,Human Resources,Semester 4,77.31,61.75,Beginner,Intermediate,Intermediate,1,Completed,Placed,Starlight Media & Tech,13.12
+EDU-2026-182,Manav Iyer,Male,Marketing,Semester 3,84.86,86.57,Intermediate,Intermediate,Intermediate,1,Not Completed,Placed,Titan Capital Partners,13.77
+EDU-2026-183,Tanay Reddy,Male,Finance,Semester 4,75.18,90.56,Intermediate,Intermediate,Intermediate,2,Completed,Placed,Apex Analytics,9.26
+EDU-2026-184,Trisha Kulkarni,Female,Business Analytics,Semester 4,76.88,90.55,Intermediate,Intermediate,Intermediate,0,Completed,Placed,Zenith Retail Technologies,10.88
+EDU-2026-185,Kavya Sharma,Female,Human Resources,Semester 4,71.45,75.86,Intermediate,Intermediate,Intermediate,4,Completed,Placed,BlueCrest Healthcare,12.96
+EDU-2026-186,Rohan Iyer,Male,Business Analytics,Semester 2,64.22,72.03,Intermediate,Intermediate,Advanced,3,Completed,Placed,Zenith Retail Technologies,12.17
+EDU-2026-187,Arjun Iyer,Male,Marketing,Semester 3,66.13,89.4,Intermediate,Intermediate,Beginner,3,Completed,Placed,Zenith Retail Technologies,13.23
+EDU-2026-188,Zoya Kulkarni,Female,Business Analytics,Semester 1,85.35,71.07,Intermediate,Advanced,Intermediate,1,Completed,Placed,Zenith Retail Technologies,11.78
+EDU-2026-189,Vivaan Gupta,Male,Operations & Supply Chain,Semester 4,71.66,81.12,Intermediate,Advanced,Beginner,3,Completed,Placed,Vanguard Strategic Advisors,13.8
+EDU-2026-190,Sneha Sharma,Female,Business Analytics,Semester 1,78.4,74.08,Intermediate,Intermediate,Intermediate,1,Completed,Placed,Titan Capital Partners,9.03
+EDU-2026-191,Arjun Deshmukh,Male,Business Analytics,Semester 2,72.48,77.52,Intermediate,Advanced,Intermediate,3,Completed,Placed,Nexus Global Consulting,10.55
+EDU-2026-192,Rohan Chopra,Male,Operations & Supply Chain,Semester 3,79.58,85.9,Intermediate,Intermediate,Intermediate,1,Completed,Placed,Horizon FinTech,12.65
+EDU-2026-193,Vivaan Sharma,Male,Marketing,Semester 3,66.45,68.68,Beginner,Beginner,Beginner,1,Not Completed,Placed,Quantum Insights,12.7
+EDU-2026-194,Vaidehi Kulkarni,Female,Marketing,Semester 3,70.73,62.2,Intermediate,Advanced,Intermediate,3,Completed,Placed,BlueCrest Healthcare,11.23
+EDU-2026-195,Zoya Gupta,Female,Marketing,Semester 4,65.71,81.8,Intermediate,Advanced,Intermediate,2,Completed,Placed,Vanguard Strategic Advisors,16.0
+EDU-2026-196,Kritika Reddy,Female,Human Resources,Semester 2,66.93,80.44,Beginner,Beginner,Beginner,1,Completed,Placed,BlueCrest Healthcare,12.23
+EDU-2026-197,Tara Kulkarni,Female,Marketing,Semester 2,90.42,84.11,Beginner,Beginner,Advanced,2,Completed,Placed,Titan Capital Partners,12.19
+EDU-2026-198,Utkarsh Verma,Male,Finance,Semester 3,89.34,87.87,Intermediate,Beginner,Intermediate,0,Completed,Placed,Starlight Media & Tech,10.75
+EDU-2026-199,Ananya Patel,Female,Finance,Semester 3,79.19,80.0,Advanced,Beginner,Intermediate,3,Completed,Placed,Pinnacle Logistics,17.31
+EDU-2026-200,Yash Gupta,Male,Marketing,Semester 1,74.25,83.58,Intermediate,Advanced,Intermediate,1,Completed,Placed,Pinnacle Logistics,11.83
+EDU-2026-201,Dhruv Chatterjee,Male,Operations & Supply Chain,Semester 3,81.94,82.92,Intermediate,Advanced,Beginner,1,Completed,Placed,Titan Capital Partners,10.35
+EDU-2026-202,Aaliyah Iyer,Female,Marketing,Semester 3,59.03,76.4,Advanced,Intermediate,Advanced,3,Completed,Placed,Pinnacle Logistics,9.04
+EDU-2026-203,Yash Malhotra,Male,Finance,Semester 4,90.29,78.51,Intermediate,Intermediate,Intermediate,0,Completed,Placed,Titan Capital Partners,17.41
+EDU-2026-204,Ishaan Nair,Male,Finance,Semester 2,69.6,94.09,Intermediate,Intermediate,Beginner,5,Completed,Placed,Nexus Global Consulting,16.62
+EDU-2026-205,Yash Sharma,Male,Business Analytics,Semester 2,69.0,81.46,Intermediate,Intermediate,Beginner,1,Completed,Placed,Zenith Retail Technologies,10.72
+EDU-2026-206,Kiran Iyer,Non-Binary,Finance,Semester 3,85.43,75.53,Beginner,Intermediate,Beginner,2,Completed,Placed,Nexus Global Consulting,12.39
+EDU-2026-207,Rhea Chopra,Female,Human Resources,Semester 3,86.49,78.68,Intermediate,Advanced,Intermediate,5,Completed,Placed,Apex Analytics,15.46
+EDU-2026-208,Vaidehi Rao,Female,Human Resources,Semester 2,83.44,94.96,Beginner,Advanced,Intermediate,4,Not Completed,Placed,Titan Capital Partners,20.55
+EDU-2026-209,Kavya Rao,Female,Marketing,Semester 4,68.32,67.19,Intermediate,Intermediate,Intermediate,3,Not Completed,Placed,Nexus Global Consulting,14.84
+EDU-2026-210,Trisha Mehta,Female,Operations & Supply Chain,Semester 3,69.63,89.62,Intermediate,Beginner,Beginner,2,Completed,Placed,Zenith Retail Technologies,8.92
+EDU-2026-211,Aditya Iyer,Male,Finance,Semester 4,94.24,99.5,Advanced,Advanced,Advanced,2,Completed,Placed,Vanguard Strategic Advisors,17.56
+EDU-2026-212,Trisha Chopra,Female,Operations & Supply Chain,Semester 3,82.89,76.61,Intermediate,Advanced,Advanced,1,Completed,Placed,Starlight Media & Tech,15.52
+EDU-2026-213,Sneha Gupta,Female,Marketing,Semester 2,65.36,84.94,Intermediate,Intermediate,Advanced,1,Completed,Placed,Vanguard Strategic Advisors,10.95
+EDU-2026-214,Vaidehi Deshmukh,Female,Finance,Semester 3,65.91,78.28,Intermediate,Advanced,Beginner,0,Completed,Placed,Horizon FinTech,9.35
+EDU-2026-215,Aaliyah Chopra,Female,Operations & Supply Chain,Semester 4,82.99,71.47,Intermediate,Advanced,Beginner,2,Not Completed,Placed,Starlight Media & Tech,13.62
+EDU-2026-216,Vaidehi Kapoor,Female,Human Resources,Semester 3,64.94,72.99,Intermediate,Beginner,Beginner,3,Completed,Placed,Vanguard Strategic Advisors,9.17
+EDU-2026-217,Yash Verma,Male,Marketing,Semester 4,50.94,66.31,Beginner,Beginner,Intermediate,2,Completed,Placed,Pinnacle Logistics,5.5
+EDU-2026-218,Manav Gupta,Male,Marketing,Semester 4,59.05,80.69,Intermediate,Intermediate,Advanced,4,Not Completed,Placed,Zenith Retail Technologies,13.09
+EDU-2026-219,Kritika Bose,Female,Operations & Supply Chain,Semester 2,58.59,77.14,Intermediate,Advanced,Intermediate,2,Completed,Placed,Titan Capital Partners,13.94
+EDU-2026-220,Ishaan Kapoor,Male,Operations & Supply Chain,Semester 3,64.67,73.12,Advanced,Beginner,Beginner,0,Not Completed,Unplaced,,
+EDU-2026-221,Dhruv Iyer,Male,Human Resources,Semester 2,76.66,67.76,Beginner,Beginner,Beginner,5,Completed,Placed,Zenith Retail Technologies,17.83
+EDU-2026-222,Ananya Kapoor,Female,Human Resources,Semester 4,84.13,80.68,Beginner,Beginner,Beginner,2,Completed,Placed,Horizon FinTech,25.67
+EDU-2026-223,Varun Sharma,Male,Business Analytics,Semester 3,70.27,82.76,Beginner,Intermediate,Intermediate,0,Completed,Placed,Starlight Media & Tech,9.01
+EDU-2026-224,Tanay Sharma,Male,Marketing,Semester 4,86.58,79.17,Beginner,Intermediate,Beginner,3,Completed,Placed,Titan Capital Partners,14.3
+EDU-2026-225,Rhea Sharma,Female,Human Resources,Semester 4,77.8,83.87,Beginner,Intermediate,Intermediate,5,Completed,Placed,Horizon FinTech,17.46
+EDU-2026-226,Isha Deshmukh,Female,Operations & Supply Chain,Semester 2,71.97,73.95,Beginner,Intermediate,Advanced,2,Not Completed,Placed,Starlight Media & Tech,10.06
+EDU-2026-227,Zoya Gupta,Female,Finance,Semester 2,75.51,87.79,Intermediate,Beginner,Intermediate,0,Not Completed,Placed,Pinnacle Logistics,14.62
+EDU-2026-228,Rohan Chatterjee,Male,Finance,Semester 4,85.08,78.01,Intermediate,Intermediate,Beginner,4,Completed,Placed,Quantum Insights,11.67
+EDU-2026-229,Sneha Deshmukh,Female,Finance,Semester 1,80.37,94.5,Intermediate,Intermediate,Intermediate,0,Completed,Placed,Vanguard Strategic Advisors,11.63
+EDU-2026-230,Kabir Chopra,Male,Marketing,Semester 3,79.31,83.35,Beginner,Beginner,Intermediate,0,Completed,Placed,Zenith Retail Technologies,10.78
+EDU-2026-231,Saanvi Bose,Female,Finance,Semester 4,73.68,79.37,Intermediate,Beginner,Beginner,2,Completed,Placed,Nexus Global Consulting,12.79
+EDU-2026-232,Kavya Gupta,Female,Operations & Supply Chain,Semester 3,62.77,80.32,Intermediate,Advanced,Intermediate,0,Not Completed,Placed,Apex Analytics,11.28
+EDU-2026-233,Tara Malhotra,Female,Business Analytics,Semester 4,79.62,80.62,Intermediate,Beginner,Beginner,3,Completed,Placed,Nexus Global Consulting,11.44
+EDU-2026-234,Meera Deshmukh,Female,Operations & Supply Chain,Semester 2,84.28,96.87,Intermediate,Advanced,Advanced,1,Completed,Placed,Quantum Insights,17.87
+EDU-2026-235,Yash Deshmukh,Male,Operations & Supply Chain,Semester 4,58.17,89.02,Beginner,Beginner,Intermediate,3,Completed,Placed,Quantum Insights,9.89
+EDU-2026-236,Vaidehi Rao,Female,Human Resources,Semester 4,70.29,74.96,Advanced,Beginner,Intermediate,1,Completed,Placed,Titan Capital Partners,9.67
+EDU-2026-237,Navya Verma,Female,Finance,Semester 3,88.45,80.59,Advanced,Beginner,Advanced,3,Completed,Placed,Starlight Media & Tech,14.08
+EDU-2026-238,Pranav Mehta,Male,Finance,Semester 3,70.86,79.74,Intermediate,Beginner,Advanced,3,Completed,Placed,BlueCrest Healthcare,11.79
+EDU-2026-239,Vaidehi Kulkarni,Female,Business Analytics,Semester 3,63.85,73.41,Beginner,Advanced,Intermediate,3,Completed,Placed,BlueCrest Healthcare,11.43
+EDU-2026-240,Tara Kapoor,Female,Business Analytics,Semester 1,68.63,71.81,Beginner,Intermediate,Advanced,2,Completed,Placed,Titan Capital Partners,11.91
+EDU-2026-241,Tara Rao,Female,Business Analytics,Semester 4,72.15,80.47,Intermediate,Intermediate,Advanced,1,Completed,Placed,Horizon FinTech,11.61
+EDU-2026-242,Neil Kulkarni,Male,Operations & Supply Chain,Semester 3,68.55,75.07,Intermediate,Beginner,Beginner,0,Completed,Placed,Vanguard Strategic Advisors,9.12
+EDU-2026-243,Kritika Kapoor,Female,Finance,Semester 3,76.45,86.28,Advanced,Intermediate,Intermediate,1,Completed,Placed,Quantum Insights,12.11
+EDU-2026-244,Vivaan Iyer,Male,Finance,Semester 3,69.3,81.42,Beginner,Intermediate,Intermediate,1,Completed,Placed,Titan Capital Partners,9.66
+EDU-2026-245,Dhruv Chatterjee,Male,Business Analytics,Semester 1,63.94,79.67,Beginner,Intermediate,Intermediate,0,Completed,Placed,Quantum Insights,5.77
+EDU-2026-246,Arya Chatterjee,Non-Binary,Marketing,Semester 3,69.11,86.08,Intermediate,Intermediate,Intermediate,1,Completed,Placed,Vanguard Strategic Advisors,12.36
+EDU-2026-247,Rhea Sharma,Female,Marketing,Semester 3,63.95,72.98,Intermediate,Beginner,Advanced,0,Completed,Placed,BlueCrest Healthcare,11.99
+EDU-2026-248,Kabir Verma,Male,Business Analytics,Semester 3,56.66,92.45,Intermediate,Advanced,Intermediate,1,Completed,Placed,Vanguard Strategic Advisors,11.73
+EDU-2026-249,Utkarsh Nair,Male,Business Analytics,Semester 4,70.28,62.34,Advanced,Intermediate,Intermediate,0,Completed,Placed,Quantum Insights,16.02
+EDU-2026-250,Trisha Verma,Female,Business Analytics,Semester 4,88.41,99.5,Intermediate,Beginner,Beginner,3,Completed,Placed,Quantum Insights,17.07
+EDU-2026-251,Yash Sharma,Male,Human Resources,Semester 3,71.9,82.87,Beginner,Beginner,Beginner,3,Completed,Placed,Horizon FinTech,9.43
+EDU-2026-252,Sneha Kulkarni,Female,Business Analytics,Semester 4,75.2,87.04,Beginner,Intermediate,Advanced,1,Completed,Placed,Titan Capital Partners,15.52
+EDU-2026-253,Aaliyah Reddy,Female,Human Resources,Semester 4,78.78,99.5,Beginner,Intermediate,Intermediate,2,Completed,Placed,Horizon FinTech,12.15
+EDU-2026-254,Kiran Bose,Non-Binary,Human Resources,Semester 1,54.35,72.98,Intermediate,Intermediate,Intermediate,3,Completed,Placed,Quantum Insights,11.55
+EDU-2026-255,Pranav Reddy,Male,Operations & Supply Chain,Semester 3,79.46,91.94,Intermediate,Intermediate,Intermediate,2,Completed,Placed,Horizon FinTech,13.74
+EDU-2026-256,Tanay Gupta,Male,Operations & Supply Chain,Semester 3,65.87,78.84,Beginner,Beginner,Advanced,1,Completed,Placed,Apex Analytics,12.96
+EDU-2026-257,Kiran Bose,Non-Binary,Operations & Supply Chain,Semester 4,86.3,72.92,Intermediate,Beginner,Intermediate,3,Completed,Placed,Zenith Retail Technologies,17.84
+EDU-2026-258,Yash Sharma,Male,Finance,Semester 3,75.07,73.2,Advanced,Intermediate,Beginner,2,Completed,Placed,Starlight Media & Tech,9.4
+EDU-2026-259,Arya Deshmukh,Non-Binary,Marketing,Semester 3,91.93,79.11,Beginner,Advanced,Advanced,2,Completed,Placed,Zenith Retail Technologies,20.98
+EDU-2026-260,Aarav Sharma,Male,Operations & Supply Chain,Semester 3,77.81,76.01,Beginner,Beginner,Intermediate,3,Completed,Placed,Pinnacle Logistics,13.07
+EDU-2026-261,Vaidehi Malhotra,Female,Marketing,Semester 2,91.74,73.9,Beginner,Advanced,Intermediate,2,Completed,Placed,Nexus Global Consulting,15.94
+EDU-2026-262,Sneha Reddy,Female,Human Resources,Semester 1,78.32,75.41,Beginner,Intermediate,Intermediate,4,Not Completed,Placed,Nexus Global Consulting,12.97
+EDU-2026-263,Ishaan Kulkarni,Male,Finance,Semester 3,70.77,87.31,Intermediate,Intermediate,Beginner,3,Completed,Placed,Zenith Retail Technologies,12.92
+EDU-2026-264,Pooja Gupta,Female,Human Resources,Semester 3,73.49,86.03,Intermediate,Beginner,Intermediate,1,Completed,Placed,BlueCrest Healthcare,12.78
+EDU-2026-265,Rohan Chatterjee,Male,Human Resources,Semester 1,77.1,76.62,Beginner,Intermediate,Intermediate,4,Completed,Placed,Titan Capital Partners,22.64
+EDU-2026-266,Tanay Kapoor,Male,Human Resources,Semester 1,47.83,86.2,Intermediate,Intermediate,Intermediate,5,Completed,Placed,Pinnacle Logistics,13.31
+EDU-2026-267,Zoya Bose,Female,Operations & Supply Chain,Semester 1,62.42,93.4,Intermediate,Intermediate,Beginner,1,Completed,Placed,Starlight Media & Tech,11.21
+EDU-2026-268,Aaliyah Malhotra,Female,Human Resources,Semester 2,74.31,76.84,Beginner,Intermediate,Beginner,2,Completed,Placed,Horizon FinTech,12.82
+EDU-2026-269,Aaliyah Kapoor,Female,Human Resources,Semester 2,58.49,62.9,Advanced,Beginner,Intermediate,2,Completed,Placed,Apex Analytics,11.71
+EDU-2026-270,Arjun Verma,Male,Marketing,Semester 3,82.84,96.51,Intermediate,Beginner,Intermediate,2,Completed,Placed,Vanguard Strategic Advisors,18.65
+EDU-2026-271,Alex Nair,Non-Binary,Marketing,Semester 3,48.04,70.33,Intermediate,Intermediate,Intermediate,0,Completed,Placed,Nexus Global Consulting,11.06
+EDU-2026-272,Sneha Chopra,Female,Marketing,Semester 3,76.14,94.12,Beginner,Intermediate,Intermediate,4,Completed,Placed,Pinnacle Logistics,10.49
+EDU-2026-273,Tara Verma,Female,Business Analytics,Semester 3,82.44,75.64,Beginner,Intermediate,Advanced,1,Completed,Placed,Starlight Media & Tech,19.08
+EDU-2026-274,Varun Sharma,Male,Operations & Supply Chain,Semester 2,62.97,78.36,Intermediate,Intermediate,Intermediate,2,Completed,Placed,Starlight Media & Tech,10.34
+EDU-2026-275,Diya Gupta,Female,Human Resources,Semester 3,66.46,80.58,Advanced,Beginner,Intermediate,3,Completed,Placed,Starlight Media & Tech,16.07
+EDU-2026-276,Pranav Deshmukh,Male,Operations & Supply Chain,Semester 2,79.29,66.18,Intermediate,Intermediate,Advanced,2,Completed,Placed,Titan Capital Partners,12.88
+EDU-2026-277,Aaliyah Rao,Female,Business Analytics,Semester 1,55.77,67.7,Advanced,Beginner,Intermediate,4,Completed,Placed,Pinnacle Logistics,11.05
+EDU-2026-278,Kavya Kulkarni,Female,Business Analytics,Semester 2,72.29,84.95,Intermediate,Advanced,Intermediate,0,Completed,Placed,Zenith Retail Technologies,8.98
+EDU-2026-279,Isha Kapoor,Female,Business Analytics,Semester 3,77.0,84.27,Advanced,Beginner,Advanced,1,Completed,Placed,Starlight Media & Tech,12.68
+EDU-2026-280,Kritika Iyer,Female,Marketing,Semester 4,80.44,79.19,Advanced,Intermediate,Beginner,3,Completed,Placed,Titan Capital Partners,20.83
+EDU-2026-281,Vaidehi Patel,Female,Marketing,Semester 4,84.33,73.14,Intermediate,Advanced,Advanced,2,Completed,Placed,Quantum Insights,18.0
+EDU-2026-282,Arjun Nair,Male,Human Resources,Semester 1,71.06,95.87,Advanced,Intermediate,Beginner,2,Completed,Placed,Titan Capital Partners,12.86
+EDU-2026-283,Yash Rao,Male,Marketing,Semester 4,84.57,92.88,Intermediate,Advanced,Intermediate,0,Completed,Placed,Quantum Insights,13.52
+EDU-2026-284,Sneha Patel,Female,Human Resources,Semester 2,68.02,91.25,Beginner,Beginner,Intermediate,2,Completed,Placed,Horizon FinTech,13.17
+EDU-2026-285,Utkarsh Gupta,Male,Marketing,Semester 2,75.04,76.74,Intermediate,Intermediate,Intermediate,1,Completed,Placed,Apex Analytics,16.87
+EDU-2026-286,Pooja Verma,Female,Operations & Supply Chain,Semester 3,81.52,68.92,Advanced,Intermediate,Advanced,1,Completed,Placed,Pinnacle Logistics,12.72
+EDU-2026-287,Kabir Rao,Male,Finance,Semester 2,76.06,83.19,Intermediate,Beginner,Intermediate,1,Completed,Placed,Quantum Insights,12.6
+EDU-2026-288,Varun Rao,Male,Finance,Semester 1,84.9,80.17,Intermediate,Intermediate,Intermediate,3,Completed,Placed,Starlight Media & Tech,14.46
+EDU-2026-289,Pooja Chopra,Female,Finance,Semester 3,75.74,76.9,Intermediate,Beginner,Intermediate,2,Completed,Placed,Horizon FinTech,10.84
+EDU-2026-290,Sneha Gupta,Female,Operations & Supply Chain,Semester 3,81.74,80.62,Advanced,Intermediate,Intermediate,0,Not Completed,Placed,Apex Analytics,12.0
+EDU-2026-291,Pooja Gupta,Female,Marketing,Semester 3,74.72,92.51,Beginner,Advanced,Beginner,1,Completed,Placed,Apex Analytics,11.04
+EDU-2026-292,Yash Bose,Male,Business Analytics,Semester 4,71.44,82.41,Intermediate,Intermediate,Intermediate,2,Completed,Placed,Vanguard Strategic Advisors,10.47
+EDU-2026-293,Kabir Rao,Male,Business Analytics,Semester 3,74.55,71.23,Beginner,Intermediate,Intermediate,0,Completed,Placed,Horizon FinTech,10.85
+EDU-2026-294,Saanvi Mehta,Female,Human Resources,Semester 3,73.3,92.06,Intermediate,Intermediate,Intermediate,3,Completed,Placed,Nexus Global Consulting,14.48
+EDU-2026-295,Pranav Sharma,Male,Human Resources,Semester 2,59.68,88.89,Beginner,Intermediate,Advanced,1,Completed,Placed,Starlight Media & Tech,8.56
+EDU-2026-296,Yash Chatterjee,Male,Marketing,Semester 4,71.77,68.92,Intermediate,Intermediate,Intermediate,1,Completed,Placed,BlueCrest Healthcare,10.28
+EDU-2026-297,Yash Bose,Male,Human Resources,Semester 3,67.91,77.48,Advanced,Beginner,Intermediate,0,Completed,Placed,Horizon FinTech,14.39
+EDU-2026-298,Tara Malhotra,Female,Business Analytics,Semester 2,62.58,65.84,Advanced,Intermediate,Advanced,3,Completed,Placed,Titan Capital Partners,12.18
+EDU-2026-299,Tara Gupta,Female,Finance,Semester 2,72.39,85.41,Intermediate,Intermediate,Advanced,3,Completed,Placed,Quantum Insights,16.06
+EDU-2026-300,Kabir Reddy,Male,Operations & Supply Chain,Semester 4,69.84,89.51,Beginner,Intermediate,Intermediate,2,Completed,Placed,BlueCrest Healthcare,10.27
+EDU-2026-301,Pooja Sharma,Female,Finance,Semester 1,64.98,76.82,Intermediate,Intermediate,Intermediate,3,Completed,Placed,Vanguard Strategic Advisors,15.16
+EDU-2026-302,Kavya Chopra,Female,Finance,Semester 1,59.86,67.68,Intermediate,Beginner,Advanced,5,Completed,Placed,Quantum Insights,14.51
+EDU-2026-303,Vaidehi Iyer,Female,Marketing,Semester 3,63.28,73.66,Intermediate,Intermediate,Beginner,1,Completed,Placed,Titan Capital Partners,12.21
+EDU-2026-304,Pooja Mehta,Female,Human Resources,Semester 1,68.9,73.79,Intermediate,Intermediate,Advanced,3,Completed,Placed,Horizon FinTech,14.49
+EDU-2026-305,Saanvi Deshmukh,Female,Finance,Semester 1,78.51,87.0,Intermediate,Beginner,Beginner,4,Completed,Placed,Titan Capital Partners,15.08
+EDU-2026-306,Pranav Chatterjee,Male,Operations & Supply Chain,Semester 3,53.45,79.14,Intermediate,Beginner,Advanced,1,Completed,Placed,Vanguard Strategic Advisors,13.52
+EDU-2026-307,Tanay Verma,Male,Operations & Supply Chain,Semester 4,53.38,76.34,Intermediate,Beginner,Intermediate,2,Completed,Placed,BlueCrest Healthcare,13.25
+EDU-2026-308,Ishaan Chopra,Male,Human Resources,Semester 2,58.47,54.96,Intermediate,Intermediate,Intermediate,1,Completed,Placed,BlueCrest Healthcare,12.42
+EDU-2026-309,Samar Reddy,Male,Finance,Semester 3,54.9,66.1,Advanced,Intermediate,Advanced,1,Completed,Placed,Zenith Retail Technologies,11.13
+EDU-2026-310,Varun Chopra,Male,Human Resources,Semester 4,68.22,67.81,Advanced,Advanced,Intermediate,1,Completed,Placed,Titan Capital Partners,14.12
+EDU-2026-311,Trisha Nair,Female,Business Analytics,Semester 1,63.97,77.05,Beginner,Intermediate,Beginner,0,Completed,Placed,BlueCrest Healthcare,7.17
+EDU-2026-312,Tanay Verma,Male,Marketing,Semester 4,83.75,84.56,Intermediate,Beginner,Intermediate,2,Completed,Placed,Vanguard Strategic Advisors,14.42
+EDU-2026-313,Kavya Malhotra,Female,Business Analytics,Semester 1,63.58,73.27,Advanced,Advanced,Intermediate,1,Completed,Placed,BlueCrest Healthcare,11.24
+EDU-2026-314,Manav Malhotra,Male,Human Resources,Semester 3,69.31,77.48,Beginner,Intermediate,Intermediate,1,Completed,Placed,Apex Analytics,10.62
+EDU-2026-315,Vaidehi Mehta,Female,Operations & Supply Chain,Semester 3,71.29,81.95,Advanced,Intermediate,Advanced,3,Completed,Placed,Titan Capital Partners,15.7
+EDU-2026-316,Saanvi Chatterjee,Female,Human Resources,Semester 3,65.96,73.76,Advanced,Advanced,Beginner,1,Completed,Placed,Vanguard Strategic Advisors,14.53
+EDU-2026-317,Isha Kapoor,Female,Business Analytics,Semester 2,67.41,91.66,Intermediate,Intermediate,Advanced,1,Completed,Placed,BlueCrest Healthcare,11.41
+EDU-2026-318,Trisha Bose,Female,Marketing,Semester 3,83.49,78.51,Beginner,Beginner,Intermediate,2,Completed,Placed,Titan Capital Partners,13.1
+EDU-2026-319,Manav Chopra,Male,Business Analytics,Semester 4,85.71,87.31,Advanced,Intermediate,Intermediate,3,Completed,Placed,Horizon FinTech,14.91
+EDU-2026-320,Kavya Chatterjee,Female,Operations & Supply Chain,Semester 2,75.12,92.26,Beginner,Advanced,Intermediate,1,Completed,Placed,Quantum Insights,10.9
+EDU-2026-321,Kavya Patel,Female,Human Resources,Semester 2,83.85,79.95,Beginner,Intermediate,Intermediate,0,Completed,Placed,Titan Capital Partners,9.7
+EDU-2026-322,Aarav Kulkarni,Male,Business Analytics,Semester 2,72.07,71.35,Intermediate,Intermediate,Beginner,1,Completed,Placed,Apex Analytics,13.48
+EDU-2026-323,Taylor Deshmukh,Non-Binary,Business Analytics,Semester 4,83.42,70.3,Advanced,Advanced,Intermediate,1,Not Completed,Placed,Zenith Retail Technologies,11.44
+EDU-2026-324,Arjun Rao,Male,Business Analytics,Semester 4,74.05,75.94,Beginner,Beginner,Intermediate,1,Completed,Placed,Horizon FinTech,10.2
+EDU-2026-325,Kabir Patel,Male,Human Resources,Semester 3,73.43,85.85,Beginner,Beginner,Intermediate,3,Completed,Placed,Quantum Insights,14.4
+EDU-2026-326,Sam Kapoor,Non-Binary,Operations & Supply Chain,Semester 4,72.27,79.56,Beginner,Beginner,Beginner,1,Completed,Placed,Titan Capital Partners,7.29
+EDU-2026-327,Kavya Sharma,Female,Human Resources,Semester 2,56.69,77.2,Beginner,Intermediate,Intermediate,4,Completed,Placed,Nexus Global Consulting,13.67
+EDU-2026-328,Diya Kulkarni,Female,Marketing,Semester 3,69.38,84.74,Advanced,Advanced,Beginner,3,Completed,Placed,Horizon FinTech,13.7
+EDU-2026-329,Zoya Nair,Female,Operations & Supply Chain,Semester 4,76.92,76.86,Beginner,Advanced,Intermediate,0,Completed,Placed,BlueCrest Healthcare,11.93
+EDU-2026-330,Manav Kapoor,Male,Business Analytics,Semester 4,65.6,80.88,Intermediate,Beginner,Intermediate,1,Not Completed,Placed,Zenith Retail Technologies,10.23
+EDU-2026-331,Arjun Patel,Male,Human Resources,Semester 2,84.46,70.88,Intermediate,Beginner,Beginner,1,Completed,Placed,Titan Capital Partners,14.18
+EDU-2026-332,Navya Iyer,Female,Marketing,Semester 3,55.71,72.3,Intermediate,Intermediate,Beginner,1,Completed,Placed,Apex Analytics,8.37
+EDU-2026-333,Pranav Malhotra,Male,Operations & Supply Chain,Semester 2,75.13,79.85,Intermediate,Beginner,Advanced,4,Completed,Placed,BlueCrest Healthcare,21.87
+EDU-2026-334,Rhea Nair,Female,Human Resources,Semester 1,74.24,66.79,Intermediate,Beginner,Intermediate,2,Completed,Placed,Quantum Insights,11.84
+EDU-2026-335,Diya Rao,Female,Business Analytics,Semester 3,69.13,64.45,Beginner,Intermediate,Intermediate,3,Completed,Placed,Apex Analytics,12.23
+EDU-2026-336,Sneha Mehta,Female,Finance,Semester 3,71.81,73.86,Intermediate,Intermediate,Beginner,2,Completed,Placed,Vanguard Strategic Advisors,17.28
+EDU-2026-337,Ishaan Reddy,Male,Human Resources,Semester 4,59.9,86.83,Intermediate,Beginner,Intermediate,1,Completed,Placed,Titan Capital Partners,5.74
+EDU-2026-338,Utkarsh Nair,Male,Human Resources,Semester 2,59.95,57.23,Intermediate,Intermediate,Intermediate,1,Completed,Unplaced,,
+EDU-2026-339,Kavya Bose,Female,Finance,Semester 4,63.0,99.5,Intermediate,Advanced,Advanced,1,Completed,Placed,BlueCrest Healthcare,11.26
+EDU-2026-340,Zoya Chatterjee,Female,Finance,Semester 2,66.97,85.23,Intermediate,Advanced,Advanced,4,Completed,Placed,Vanguard Strategic Advisors,14.64
+EDU-2026-341,Meera Patel,Female,Operations & Supply Chain,Semester 4,64.98,88.35,Intermediate,Intermediate,Intermediate,0,Not Completed,Placed,Starlight Media & Tech,10.93
+EDU-2026-342,Meera Chopra,Female,Marketing,Semester 3,58.0,98.2,Intermediate,Intermediate,Intermediate,4,Completed,Placed,Horizon FinTech,14.63
+EDU-2026-343,Vaidehi Rao,Female,Human Resources,Semester 2,75.82,91.01,Beginner,Beginner,Intermediate,4,Completed,Placed,BlueCrest Healthcare,14.2
+EDU-2026-344,Aarav Reddy,Male,Finance,Semester 3,65.35,68.1,Intermediate,Intermediate,Advanced,0,Completed,Placed,Nexus Global Consulting,9.91
+EDU-2026-345,Aarav Bose,Male,Business Analytics,Semester 1,80.19,88.37,Intermediate,Intermediate,Beginner,1,Not Completed,Placed,Starlight Media & Tech,14.49
+EDU-2026-346,Ananya Patel,Female,Business Analytics,Semester 3,73.01,80.79,Advanced,Advanced,Beginner,0,Not Completed,Placed,Pinnacle Logistics,13.66
+EDU-2026-347,Isha Kulkarni,Female,Business Analytics,Semester 4,54.42,78.85,Advanced,Beginner,Advanced,3,Completed,Placed,Zenith Retail Technologies,13.08
+EDU-2026-348,Arjun Sharma,Male,Human Resources,Semester 1,55.53,79.59,Beginner,Beginner,Beginner,4,Completed,Placed,Horizon FinTech,9.95
+EDU-2026-349,Arjun Gupta,Male,Business Analytics,Semester 2,61.23,87.33,Advanced,Advanced,Intermediate,2,Completed,Placed,Vanguard Strategic Advisors,11.41
+EDU-2026-350,Varun Reddy,Male,Operations & Supply Chain,Semester 2,85.47,87.26,Beginner,Beginner,Beginner,3,Completed,Placed,Quantum Insights,11.2
+EDU-2026-351,Yash Bose,Male,Marketing,Semester 3,76.42,74.24,Beginner,Advanced,Beginner,3,Completed,Placed,Quantum Insights,13.13
+EDU-2026-352,Kabir Mehta,Male,Human Resources,Semester 4,81.16,78.73,Beginner,Beginner,Advanced,1,Completed,Placed,Titan Capital Partners,10.1
+EDU-2026-353,Vaidehi Patel,Female,Business Analytics,Semester 1,90.3,88.76,Advanced,Advanced,Intermediate,1,Completed,Placed,BlueCrest Healthcare,12.84
+EDU-2026-354,Meera Kapoor,Female,Marketing,Semester 4,78.2,93.74,Intermediate,Intermediate,Intermediate,3,Completed,Placed,Vanguard Strategic Advisors,12.99
+EDU-2026-355,Ishaan Bose,Male,Finance,Semester 2,73.77,84.75,Advanced,Advanced,Beginner,2,Completed,Placed,Titan Capital Partners,10.51
+EDU-2026-356,Rohan Malhotra,Male,Operations & Supply Chain,Semester 4,94.6,99.5,Beginner,Advanced,Intermediate,1,Completed,Placed,Vanguard Strategic Advisors,20.16
+EDU-2026-357,Tanay Sharma,Male,Marketing,Semester 3,86.98,72.2,Intermediate,Intermediate,Advanced,2,Completed,Placed,Nexus Global Consulting,19.95
+EDU-2026-358,Neil Kulkarni,Male,Finance,Semester 1,69.29,74.08,Advanced,Intermediate,Intermediate,4,Not Completed,Placed,Vanguard Strategic Advisors,17.81
+EDU-2026-359,Sneha Iyer,Female,Finance,Semester 4,70.31,77.82,Beginner,Advanced,Intermediate,3,Not Completed,Placed,Titan Capital Partners,14.81
+EDU-2026-360,Samar Kulkarni,Male,Human Resources,Semester 4,63.85,76.75,Beginner,Advanced,Intermediate,2,Completed,Placed,Zenith Retail Technologies,10.99
+EDU-2026-361,Kritika Rao,Female,Marketing,Semester 2,79.15,80.04,Beginner,Intermediate,Intermediate,0,Completed,Placed,BlueCrest Healthcare,12.18
+EDU-2026-362,Ananya Mehta,Female,Marketing,Semester 4,80.69,94.88,Intermediate,Advanced,Advanced,0,Not Completed,Placed,Horizon FinTech,11.65
+EDU-2026-363,Varun Mehta,Male,Business Analytics,Semester 4,78.63,84.74,Intermediate,Advanced,Intermediate,3,Completed,Placed,Starlight Media & Tech,16.12
+EDU-2026-364,Ishaan Deshmukh,Male,Human Resources,Semester 4,74.06,83.67,Advanced,Intermediate,Beginner,1,Completed,Placed,Titan Capital Partners,9.96
+EDU-2026-365,Tanay Rao,Male,Business Analytics,Semester 1,77.5,92.83,Intermediate,Intermediate,Beginner,0,Completed,Placed,Quantum Insights,6.55
+EDU-2026-366,Neil Chopra,Male,Finance,Semester 3,74.22,76.33,Intermediate,Beginner,Advanced,2,Completed,Placed,Starlight Media & Tech,11.48
+EDU-2026-367,Samar Rao,Male,Finance,Semester 3,75.8,79.37,Intermediate,Advanced,Advanced,1,Completed,Placed,Horizon FinTech,10.51
+EDU-2026-368,Manav Mehta,Male,Business Analytics,Semester 1,70.6,79.43,Intermediate,Intermediate,Intermediate,2,Completed,Placed,Apex Analytics,11.48
+EDU-2026-369,Zoya Nair,Female,Business Analytics,Semester 4,84.08,85.51,Intermediate,Intermediate,Advanced,1,Completed,Placed,Apex Analytics,13.49
+EDU-2026-370,Neil Kapoor,Male,Operations & Supply Chain,Semester 2,71.7,70.5,Beginner,Beginner,Intermediate,2,Completed,Placed,Zenith Retail Technologies,14.95
+EDU-2026-371,Ananya Mehta,Female,Human Resources,Semester 4,69.02,82.62,Intermediate,Intermediate,Intermediate,1,Completed,Placed,Starlight Media & Tech,10.49
+EDU-2026-372,Sneha Nair,Female,Marketing,Semester 3,69.87,80.93,Beginner,Intermediate,Intermediate,3,Completed,Placed,Titan Capital Partners,15.02
+EDU-2026-373,Manav Iyer,Male,Marketing,Semester 2,69.39,73.0,Intermediate,Intermediate,Beginner,0,Completed,Placed,Quantum Insights,9.3
+EDU-2026-374,Arjun Bose,Male,Operations & Supply Chain,Semester 3,76.21,77.03,Intermediate,Intermediate,Intermediate,3,Completed,Placed,Horizon FinTech,15.15
+EDU-2026-375,Kiran Nair,Non-Binary,Human Resources,Semester 2,65.53,70.24,Intermediate,Beginner,Intermediate,2,Completed,Placed,Apex Analytics,8.16
+EDU-2026-376,Sneha Verma,Female,Marketing,Semester 4,69.96,64.56,Intermediate,Intermediate,Intermediate,0,Completed,Placed,Apex Analytics,10.5
+EDU-2026-377,Rhea Chopra,Female,Finance,Semester 4,69.44,80.57,Intermediate,Advanced,Advanced,1,Completed,Placed,Starlight Media & Tech,10.11
+EDU-2026-378,Trisha Iyer,Female,Human Resources,Semester 1,72.91,82.26,Intermediate,Beginner,Intermediate,1,Completed,Placed,Horizon FinTech,12.06
+EDU-2026-379,Kavya Deshmukh,Female,Finance,Semester 3,65.18,52.0,Beginner,Intermediate,Intermediate,1,Completed,Placed,Starlight Media & Tech,14.25
+EDU-2026-380,Aditya Gupta,Male,Human Resources,Semester 4,75.9,77.91,Intermediate,Beginner,Intermediate,0,Completed,Placed,Titan Capital Partners,11.11
+EDU-2026-381,Ishaan Gupta,Male,Finance,Semester 4,82.75,86.75,Beginner,Intermediate,Intermediate,2,Completed,Placed,Nexus Global Consulting,17.07
+EDU-2026-382,Vivaan Chopra,Male,Human Resources,Semester 3,88.17,91.51,Beginner,Intermediate,Advanced,3,Completed,Placed,Horizon FinTech,12.29
+EDU-2026-383,Varun Chopra,Male,Finance,Semester 2,82.84,80.96,Intermediate,Advanced,Intermediate,2,Completed,Placed,Apex Analytics,13.96
+EDU-2026-384,Utkarsh Gupta,Male,Business Analytics,Semester 4,82.51,88.18,Intermediate,Beginner,Intermediate,2,Completed,Placed,BlueCrest Healthcare,10.62
+EDU-2026-385,Rohan Gupta,Male,Business Analytics,Semester 1,83.67,86.32,Intermediate,Intermediate,Advanced,1,Completed,Placed,Starlight Media & Tech,14.34
+EDU-2026-386,Manav Iyer,Male,Operations & Supply Chain,Semester 1,66.27,92.9,Beginner,Intermediate,Beginner,4,Not Completed,Placed,Horizon FinTech,13.19
+EDU-2026-387,Aditya Malhotra,Male,Human Resources,Semester 2,69.22,84.48,Intermediate,Beginner,Advanced,1,Completed,Placed,Pinnacle Logistics,11.93
+EDU-2026-388,Pranav Patel,Male,Marketing,Semester 4,81.56,83.67,Advanced,Beginner,Advanced,3,Completed,Placed,Starlight Media & Tech,17.76
+EDU-2026-389,Samar Kapoor,Male,Human Resources,Semester 3,71.23,81.45,Intermediate,Beginner,Intermediate,2,Completed,Placed,Horizon FinTech,9.46
+EDU-2026-390,Vaidehi Rao,Female,Business Analytics,Semester 4,68.83,74.4,Advanced,Beginner,Intermediate,1,Completed,Placed,Starlight Media & Tech,11.32
+EDU-2026-391,Sneha Bose,Female,Finance,Semester 4,87.26,97.69,Intermediate,Intermediate,Beginner,0,Completed,Placed,Zenith Retail Technologies,12.81
+EDU-2026-392,Samar Nair,Male,Business Analytics,Semester 1,68.97,90.23,Advanced,Intermediate,Intermediate,2,Completed,Placed,Zenith Retail Technologies,14.08
+EDU-2026-393,Arjun Iyer,Male,Finance,Semester 4,76.34,70.68,Advanced,Advanced,Intermediate,3,Completed,Placed,Apex Analytics,14.47
+EDU-2026-394,Isha Patel,Female,Finance,Semester 3,63.26,81.95,Beginner,Intermediate,Intermediate,1,Completed,Placed,BlueCrest Healthcare,8.63
+EDU-2026-395,Meera Mehta,Female,Operations & Supply Chain,Semester 3,80.49,77.34,Beginner,Intermediate,Beginner,0,Completed,Placed,Quantum Insights,8.39
+EDU-2026-396,Meera Reddy,Female,Business Analytics,Semester 4,77.38,82.44,Intermediate,Advanced,Advanced,1,Completed,Placed,Nexus Global Consulting,13.41
+EDU-2026-397,Ishaan Kulkarni,Male,Operations & Supply Chain,Semester 4,75.2,90.34,Intermediate,Advanced,Advanced,0,Completed,Placed,Horizon FinTech,12.33
+EDU-2026-398,Diya Patel,Female,Operations & Supply Chain,Semester 2,83.52,83.3,Beginner,Intermediate,Intermediate,0,Completed,Placed,Apex Analytics,11.78
+EDU-2026-399,Isha Verma,Female,Business Analytics,Semester 4,54.05,71.98,Advanced,Advanced,Intermediate,1,Completed,Placed,Vanguard Strategic Advisors,11.36
+EDU-2026-400,Navya Mehta,Female,Business Analytics,Semester 4,68.46,63.31,Beginner,Intermediate,Advanced,1,Completed,Placed,Starlight Media & Tech,13.57
+EDU-2026-401,Vivaan Nair,Male,Operations & Supply Chain,Semester 3,74.7,65.06,Intermediate,Beginner,Beginner,1,Completed,Placed,Titan Capital Partners,12.24
+EDU-2026-402,Aaliyah Kulkarni,Female,Operations & Supply Chain,Semester 4,78.89,81.44,Intermediate,Advanced,Beginner,2,Completed,Placed,Quantum Insights,12.79
+EDU-2026-403,Rohan Gupta,Male,Human Resources,Semester 1,76.79,84.96,Intermediate,Intermediate,Intermediate,1,Completed,Placed,Zenith Retail Technologies,20.95
+EDU-2026-404,Dhruv Deshmukh,Male,Operations & Supply Chain,Semester 1,62.8,89.11,Intermediate,Advanced,Intermediate,2,Completed,Placed,Horizon FinTech,10.52
+EDU-2026-405,Vivaan Patel,Male,Marketing,Semester 3,58.69,74.87,Intermediate,Advanced,Advanced,2,Not Completed,Placed,Quantum Insights,8.84
+EDU-2026-406,Samar Deshmukh,Male,Finance,Semester 4,54.86,59.44,Advanced,Intermediate,Advanced,1,Not Completed,Placed,Quantum Insights,12.77
+EDU-2026-407,Rhea Kulkarni,Female,Human Resources,Semester 3,67.79,88.79,Beginner,Beginner,Advanced,1,Completed,Placed,Apex Analytics,12.14
+EDU-2026-408,Trisha Deshmukh,Female,Operations & Supply Chain,Semester 3,53.24,78.42,Intermediate,Intermediate,Intermediate,2,Completed,Placed,Quantum Insights,9.28
+EDU-2026-409,Aarav Gupta,Male,Operations & Supply Chain,Semester 3,59.67,83.59,Beginner,Beginner,Intermediate,3,Completed,Placed,Horizon FinTech,16.58
+EDU-2026-410,Manav Patel,Male,Human Resources,Semester 1,65.08,90.92,Beginner,Intermediate,Advanced,1,Completed,Placed,BlueCrest Healthcare,9.17
+EDU-2026-411,Pranav Malhotra,Male,Finance,Semester 4,68.71,70.39,Advanced,Advanced,Intermediate,5,Completed,Placed,Pinnacle Logistics,11.7
+EDU-2026-412,Morgan Gupta,Non-Binary,Finance,Semester 4,76.09,73.22,Beginner,Beginner,Intermediate,3,Not Completed,Placed,BlueCrest Healthcare,12.91
+EDU-2026-413,Yash Nair,Male,Operations & Supply Chain,Semester 3,55.48,85.12,Intermediate,Advanced,Beginner,2,Completed,Placed,Quantum Insights,11.18
+EDU-2026-414,Utkarsh Deshmukh,Male,Operations & Supply Chain,Semester 3,76.37,78.88,Beginner,Advanced,Intermediate,0,Completed,Placed,BlueCrest Healthcare,12.97
+EDU-2026-415,Aarav Chatterjee,Male,Business Analytics,Semester 3,52.23,65.25,Advanced,Beginner,Beginner,2,Completed,Placed,Zenith Retail Technologies,9.87
+EDU-2026-416,Tanay Deshmukh,Male,Finance,Semester 4,79.23,78.1,Intermediate,Intermediate,Intermediate,1,Completed,Placed,Starlight Media & Tech,12.23
+EDU-2026-417,Navya Bose,Female,Marketing,Semester 2,78.49,79.35,Intermediate,Intermediate,Beginner,3,Completed,Placed,Pinnacle Logistics,13.95
+EDU-2026-418,Navya Gupta,Female,Marketing,Semester 4,79.96,76.76,Intermediate,Intermediate,Intermediate,0,Completed,Placed,Pinnacle Logistics,12.59
+EDU-2026-419,Rhea Bose,Female,Business Analytics,Semester 3,66.13,78.77,Advanced,Beginner,Beginner,0,Completed,Placed,BlueCrest Healthcare,14.77
+EDU-2026-420,Utkarsh Verma,Male,Operations & Supply Chain,Semester 3,70.83,88.65,Advanced,Beginner,Intermediate,1,Completed,Placed,Starlight Media & Tech,9.18
+EDU-2026-421,Ananya Iyer,Female,Business Analytics,Semester 4,80.54,89.6,Beginner,Beginner,Advanced,3,Completed,Placed,Zenith Retail Technologies,15.38
+EDU-2026-422,Meera Iyer,Female,Operations & Supply Chain,Semester 4,71.69,97.79,Intermediate,Beginner,Intermediate,3,Completed,Placed,Apex Analytics,8.79
+EDU-2026-423,Rohan Kapoor,Male,Human Resources,Semester 4,70.45,83.67,Beginner,Intermediate,Intermediate,0,Completed,Placed,Nexus Global Consulting,11.22
+EDU-2026-424,Zoya Kulkarni,Female,Operations & Supply Chain,Semester 3,71.09,97.18,Intermediate,Advanced,Intermediate,3,Completed,Placed,Apex Analytics,12.62
+EDU-2026-425,Tara Kapoor,Female,Business Analytics,Semester 3,83.54,97.08,Advanced,Advanced,Beginner,1,Not Completed,Placed,Pinnacle Logistics,12.42
+EDU-2026-426,Saanvi Chopra,Female,Human Resources,Semester 4,81.0,76.31,Beginner,Advanced,Intermediate,3,Completed,Placed,Apex Analytics,18.23
+EDU-2026-427,Sneha Patel,Female,Human Resources,Semester 1,63.51,68.89,Beginner,Beginner,Intermediate,1,Completed,Placed,Titan Capital Partners,9.56
+EDU-2026-428,Aditya Chatterjee,Male,Marketing,Semester 4,76.25,80.45,Beginner,Advanced,Intermediate,0,Completed,Placed,BlueCrest Healthcare,13.39
+EDU-2026-429,Trisha Kulkarni,Female,Finance,Semester 4,60.27,82.92,Intermediate,Beginner,Advanced,0,Completed,Placed,Apex Analytics,9.1
+EDU-2026-430,Meera Mehta,Female,Business Analytics,Semester 4,76.02,66.12,Beginner,Advanced,Intermediate,5,Completed,Placed,Titan Capital Partners,11.41
+EDU-2026-431,Manav Sharma,Male,Operations & Supply Chain,Semester 1,67.25,78.08,Beginner,Intermediate,Intermediate,1,Completed,Placed,Zenith Retail Technologies,9.79
+EDU-2026-432,Kavya Rao,Female,Operations & Supply Chain,Semester 3,70.59,79.74,Intermediate,Advanced,Intermediate,2,Not Completed,Placed,Horizon FinTech,9.71
+EDU-2026-433,Tara Gupta,Female,Finance,Semester 3,79.53,80.56,Advanced,Beginner,Advanced,1,Completed,Placed,Horizon FinTech,15.75
+EDU-2026-434,Aaliyah Sharma,Female,Business Analytics,Semester 3,73.89,85.74,Advanced,Intermediate,Intermediate,1,Not Completed,Placed,Pinnacle Logistics,13.98
+EDU-2026-435,Sneha Iyer,Female,Finance,Semester 4,84.2,91.9,Intermediate,Intermediate,Intermediate,1,Not Completed,Placed,Zenith Retail Technologies,14.04
+EDU-2026-436,Varun Chatterjee,Male,Operations & Supply Chain,Semester 2,84.78,81.93,Advanced,Intermediate,Intermediate,2,Completed,Placed,BlueCrest Healthcare,14.02
+EDU-2026-437,Arjun Mehta,Male,Marketing,Semester 3,57.61,72.12,Intermediate,Intermediate,Advanced,0,Completed,Placed,Quantum Insights,7.2
+EDU-2026-438,Rohan Chopra,Male,Marketing,Semester 1,85.67,90.94,Advanced,Advanced,Beginner,1,Completed,Placed,Titan Capital Partners,11.63
+EDU-2026-439,Varun Sharma,Male,Business Analytics,Semester 2,69.75,55.91,Advanced,Intermediate,Advanced,2,Not Completed,Unplaced,,
+EDU-2026-440,Samar Bose,Male,Human Resources,Semester 4,69.2,73.72,Advanced,Advanced,Advanced,0,Not Completed,Placed,Horizon FinTech,11.95
+EDU-2026-441,Saanvi Bose,Female,Operations & Supply Chain,Semester 3,82.25,85.85,Intermediate,Intermediate,Advanced,1,Completed,Placed,BlueCrest Healthcare,14.39
+EDU-2026-442,Kavya Malhotra,Female,Business Analytics,Semester 4,77.28,79.84,Intermediate,Intermediate,Beginner,0,Completed,Placed,Zenith Retail Technologies,10.68
+EDU-2026-443,Kabir Malhotra,Male,Human Resources,Semester 2,69.96,59.8,Intermediate,Intermediate,Advanced,1,Completed,Placed,Apex Analytics,13.56
+EDU-2026-444,Alex Nair,Non-Binary,Business Analytics,Semester 1,76.21,73.37,Intermediate,Intermediate,Intermediate,3,Completed,Placed,BlueCrest Healthcare,11.31
+EDU-2026-445,Alex Patel,Non-Binary,Operations & Supply Chain,Semester 2,59.41,85.26,Intermediate,Intermediate,Beginner,2,Completed,Placed,Apex Analytics,8.5
+EDU-2026-446,Pooja Iyer,Female,Human Resources,Semester 4,64.11,81.01,Intermediate,Advanced,Beginner,2,Completed,Placed,Pinnacle Logistics,14.24
+EDU-2026-447,Isha Mehta,Female,Human Resources,Semester 3,81.07,72.18,Intermediate,Advanced,Intermediate,3,Completed,Placed,Titan Capital Partners,13.79
+EDU-2026-448,Varun Sharma,Male,Marketing,Semester 3,61.06,79.45,Intermediate,Advanced,Advanced,2,Completed,Placed,Apex Analytics,12.13
+EDU-2026-449,Ishaan Malhotra,Male,Business Analytics,Semester 3,83.48,95.88,Beginner,Intermediate,Beginner,0,Completed,Placed,Pinnacle Logistics,8.66
+EDU-2026-450,Kabir Chopra,Male,Finance,Semester 4,90.64,96.0,Intermediate,Advanced,Beginner,2,Completed,Placed,Vanguard Strategic Advisors,21.16
+EDU-2026-451,Isha Sharma,Female,Marketing,Semester 1,62.36,87.43,Intermediate,Beginner,Intermediate,2,Completed,Placed,Horizon FinTech,10.43
+EDU-2026-452,Pooja Malhotra,Female,Operations & Supply Chain,Semester 3,83.32,73.99,Advanced,Beginner,Beginner,0,Completed,Placed,Vanguard Strategic Advisors,11.63
+EDU-2026-453,Meera Iyer,Female,Business Analytics,Semester 4,63.73,84.61,Beginner,Intermediate,Advanced,3,Completed,Placed,Apex Analytics,12.33
+EDU-2026-454,Trisha Sharma,Female,Marketing,Semester 4,66.84,83.79,Advanced,Beginner,Advanced,2,Completed,Placed,Apex Analytics,12.58
+EDU-2026-455,Aarav Gupta,Male,Marketing,Semester 3,59.71,64.75,Advanced,Intermediate,Intermediate,2,Not Completed,Unplaced,,
+EDU-2026-456,Rohan Chopra,Male,Finance,Semester 3,75.97,81.97,Beginner,Advanced,Intermediate,5,Completed,Placed,Starlight Media & Tech,14.88
+EDU-2026-457,Utkarsh Chopra,Male,Operations & Supply Chain,Semester 3,96.82,81.49,Intermediate,Beginner,Advanced,1,Completed,Placed,Horizon FinTech,10.08
+EDU-2026-458,Aarav Deshmukh,Male,Business Analytics,Semester 1,71.55,81.51,Intermediate,Advanced,Intermediate,3,Completed,Placed,Vanguard Strategic Advisors,12.63
+EDU-2026-459,Yash Rao,Male,Human Resources,Semester 4,69.16,70.7,Intermediate,Beginner,Beginner,2,Completed,Placed,Pinnacle Logistics,12.77
+EDU-2026-460,Arjun Verma,Male,Finance,Semester 3,67.99,80.6,Intermediate,Intermediate,Intermediate,1,Completed,Placed,Titan Capital Partners,8.7
+EDU-2026-461,Zoya Kulkarni,Female,Marketing,Semester 4,84.96,83.07,Intermediate,Beginner,Intermediate,0,Completed,Placed,Quantum Insights,10.76
+EDU-2026-462,Pranav Gupta,Male,Marketing,Semester 3,86.17,77.23,Intermediate,Intermediate,Beginner,1,Completed,Placed,Nexus Global Consulting,12.01
+EDU-2026-463,Tara Mehta,Female,Marketing,Semester 2,84.15,91.13,Intermediate,Intermediate,Beginner,2,Completed,Placed,Pinnacle Logistics,13.21
+EDU-2026-464,Zoya Rao,Female,Operations & Supply Chain,Semester 4,84.69,83.42,Advanced,Intermediate,Beginner,4,Completed,Placed,Horizon FinTech,13.73
+EDU-2026-465,Varun Patel,Male,Human Resources,Semester 3,73.84,80.27,Intermediate,Beginner,Beginner,1,Completed,Placed,Vanguard Strategic Advisors,12.28
+EDU-2026-466,Dhruv Sharma,Male,Business Analytics,Semester 3,64.54,80.31,Advanced,Advanced,Beginner,0,Completed,Placed,Pinnacle Logistics,10.01
+EDU-2026-467,Ishaan Mehta,Male,Business Analytics,Semester 2,74.04,80.5,Advanced,Advanced,Intermediate,1,Completed,Placed,Starlight Media & Tech,17.58
+EDU-2026-468,Vivaan Sharma,Male,Human Resources,Semester 2,98.5,89.64,Beginner,Intermediate,Intermediate,2,Completed,Placed,Zenith Retail Technologies,16.69
+EDU-2026-469,Vivaan Patel,Male,Marketing,Semester 3,88.97,86.56,Intermediate,Intermediate,Intermediate,3,Completed,Placed,Quantum Insights,13.48
+EDU-2026-470,Aaliyah Patel,Female,Business Analytics,Semester 1,83.53,72.61,Intermediate,Beginner,Advanced,2,Not Completed,Placed,Nexus Global Consulting,11.06
+EDU-2026-471,Kritika Malhotra,Female,Finance,Semester 1,69.69,78.79,Advanced,Intermediate,Intermediate,0,Completed,Placed,BlueCrest Healthcare,13.12
+EDU-2026-472,Rohan Bose,Male,Marketing,Semester 3,69.64,81.69,Beginner,Intermediate,Intermediate,2,Completed,Placed,Nexus Global Consulting,14.83
+EDU-2026-473,Kabir Sharma,Male,Finance,Semester 4,70.85,85.15,Advanced,Beginner,Intermediate,0,Completed,Placed,Pinnacle Logistics,11.08
+EDU-2026-474,Arjun Gupta,Male,Human Resources,Semester 4,76.49,97.75,Beginner,Intermediate,Intermediate,0,Completed,Placed,Horizon FinTech,10.54
+EDU-2026-475,Kabir Chopra,Male,Operations & Supply Chain,Semester 4,88.02,66.57,Advanced,Beginner,Intermediate,1,Completed,Placed,Titan Capital Partners,11.47
+EDU-2026-476,Sneha Chopra,Female,Human Resources,Semester 4,78.4,76.25,Beginner,Intermediate,Advanced,1,Completed,Placed,Apex Analytics,11.69
+EDU-2026-477,Sneha Mehta,Female,Marketing,Semester 2,95.62,70.17,Intermediate,Intermediate,Intermediate,3,Completed,Placed,Pinnacle Logistics,13.24
+EDU-2026-478,Kabir Nair,Male,Human Resources,Semester 2,70.63,99.43,Intermediate,Intermediate,Advanced,2,Completed,Placed,Titan Capital Partners,10.01
+EDU-2026-479,Arjun Bose,Male,Human Resources,Semester 3,80.08,70.61,Beginner,Beginner,Beginner,1,Completed,Placed,Zenith Retail Technologies,9.41
+EDU-2026-480,Kavya Chatterjee,Female,Business Analytics,Semester 1,68.68,99.4,Intermediate,Intermediate,Intermediate,0,Completed,Placed,BlueCrest Healthcare,12.86
+EDU-2026-481,Navya Patel,Female,Marketing,Semester 4,74.2,99.5,Advanced,Beginner,Beginner,4,Completed,Placed,Titan Capital Partners,10.4
+EDU-2026-482,Zoya Chatterjee,Female,Operations & Supply Chain,Semester 1,76.74,72.45,Advanced,Beginner,Advanced,3,Completed,Placed,Pinnacle Logistics,12.16
+EDU-2026-483,Kavya Nair,Female,Business Analytics,Semester 3,76.42,72.13,Intermediate,Beginner,Intermediate,0,Completed,Placed,Quantum Insights,12.39
+EDU-2026-484,Navya Sharma,Female,Marketing,Semester 3,86.36,69.01,Intermediate,Intermediate,Intermediate,1,Completed,Placed,BlueCrest Healthcare,13.12
+EDU-2026-485,Manav Deshmukh,Male,Marketing,Semester 4,75.93,85.81,Beginner,Advanced,Advanced,0,Completed,Placed,BlueCrest Healthcare,11.61
+EDU-2026-486,Tara Bose,Female,Human Resources,Semester 3,69.71,77.78,Beginner,Advanced,Intermediate,2,Completed,Placed,Titan Capital Partners,14.51
+EDU-2026-487,Aaliyah Nair,Female,Human Resources,Semester 2,60.86,71.82,Beginner,Beginner,Intermediate,1,Completed,Placed,BlueCrest Healthcare,9.3
+EDU-2026-488,Kavya Malhotra,Female,Finance,Semester 3,64.73,96.56,Intermediate,Intermediate,Advanced,2,Not Completed,Placed,BlueCrest Healthcare,10.32
+EDU-2026-489,Pranav Iyer,Male,Marketing,Semester 3,61.59,73.75,Intermediate,Advanced,Intermediate,1,Completed,Placed,Vanguard Strategic Advisors,10.38
+EDU-2026-490,Rohan Bose,Male,Operations & Supply Chain,Semester 1,68.34,85.65,Advanced,Beginner,Intermediate,2,Completed,Placed,Zenith Retail Technologies,11.63
+EDU-2026-491,Taylor Chatterjee,Non-Binary,Human Resources,Semester 4,71.43,71.23,Intermediate,Intermediate,Advanced,0,Completed,Placed,Vanguard Strategic Advisors,7.91
+EDU-2026-492,Tara Reddy,Female,Finance,Semester 1,70.76,77.5,Intermediate,Intermediate,Intermediate,4,Completed,Placed,Nexus Global Consulting,14.21
+EDU-2026-493,Aarav Reddy,Male,Finance,Semester 2,66.56,73.87,Intermediate,Intermediate,Beginner,2,Completed,Placed,Apex Analytics,12.95
+EDU-2026-494,Pranav Chopra,Male,Marketing,Semester 4,67.23,68.79,Intermediate,Intermediate,Intermediate,1,Not Completed,Placed,Apex Analytics,7.72
+EDU-2026-495,Pranav Kulkarni,Male,Marketing,Semester 2,70.99,64.91,Intermediate,Beginner,Intermediate,1,Completed,Placed,BlueCrest Healthcare,18.26
+EDU-2026-496,Varun Mehta,Male,Operations & Supply Chain,Semester 3,80.67,81.62,Advanced,Intermediate,Beginner,0,Completed,Placed,Titan Capital Partners,12.34
+EDU-2026-497,Kabir Chatterjee,Male,Marketing,Semester 4,68.03,70.09,Intermediate,Advanced,Beginner,2,Completed,Placed,Quantum Insights,12.72
+EDU-2026-498,Arjun Verma,Male,Business Analytics,Semester 3,65.55,59.36,Intermediate,Beginner,Intermediate,1,Completed,Placed,Nexus Global Consulting,9.48
+EDU-2026-499,Pranav Nair,Male,Business Analytics,Semester 2,66.11,75.54,Advanced,Intermediate,Intermediate,2,Completed,Placed,Apex Analytics,15.09
+EDU-2026-500,Yash Chopra,Male,Marketing,Semester 3,66.15,77.41,Intermediate,Intermediate,Advanced,5,Completed,Placed,Titan Capital Partners,11.3
